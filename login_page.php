@@ -37,6 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p><input type="text" name="password" placeholder="パスワード"></p>
         <p><button type="submit" name="login">ログイン</button></p>
     </form>
-    <a href="registration.php">新規登録はこちら</a>
+    <a href="register.php">新規登録はこちら</a>
     _BODY_;
 }
