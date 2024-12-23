@@ -1,6 +1,6 @@
 <?php
 require_once("db_open.php");
-require_once("users.php");
+require_once("models/users.php");
 require_once("util.php");
 
 session_start();

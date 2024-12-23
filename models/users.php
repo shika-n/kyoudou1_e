@@ -17,3 +17,8 @@ function register(PDO $dbh, $name, $nickname, $email, $hashed_password) {
 		echo "Failed";
 	}
 }
+
+function get_users(PDO $dbh) {
+	$statement = $dbh->prepare("SELECT * FROM users;");
+	return $statement->fetchAll();
+}
