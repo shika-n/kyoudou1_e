@@ -4,7 +4,7 @@ require_once("util.php");
 
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") { 
 	$email = get_if_set("email", $_POST);
     $password = get_if_set("password", $_POST);
     if ($email == NULL || $password == NULL) {
@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql_res = $dbh->query($sql);
         $record = $sql_res->fetch();
         $email_and_password_are_right = false;
-        if (password_verify($password, $record['password'])) {
+        if ($record != NULL && password_verify($password, $record['password'])) {
             $email_and_password_are_right = true;
             $_SESSION["user_id"] = $record['user_id'];
             $_SESSION["name"] = $record['name'];
