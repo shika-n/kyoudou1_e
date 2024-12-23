@@ -1,6 +1,7 @@
 <?php
 require_once("db_open.php");
 require_once("util.php");
+require_once("models/login.php");
 
 session_start();
 
@@ -14,9 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (mb_strlen($password) < 6) {
         echo "password is too short, should be 6 characters or longer";
     } else {
-        $sql = "SELECT * FROM users WHERE email = '{$email}'";
-        $sql_res = $dbh->query($sql);
-        $record = $sql_res->fetch();
+        $record = get_user($dbh, $email);
         $email_and_password_are_right = false;
         if ($record != NULL && password_verify($password, $record['password'])) {
             $email_and_password_are_right = true;
