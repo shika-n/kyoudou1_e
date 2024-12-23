@@ -9,6 +9,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = get_if_set("password", $_POST);
     if ($email == NULL || $password == NULL) {
         echo "email or password or both not input";
+    } elseif (mb_strlen($email) > 120) {
+        echo "email is too long, should be no longer than 120 characters";
+    } elseif (mb_strlen($password) < 6) {
+        echo "password is too short, should be 6 characters or longer";
     } else {
         $sql = "SELECT * FROM users WHERE email = '{$email}'";
         $sql_res = $dbh->query($sql);
