@@ -12,9 +12,9 @@ function user_exists(PDO $dbh, $email) {
 function register(PDO $dbh, $name, $nickname, $email, $hashed_password) {
 	$statement = $dbh->prepare("INSERT INTO users (name, nickname, email, password) VALUES (?, ?, ?, ?)");
 	if ($statement->execute([$name, $nickname, $email, $hashed_password])) {
-		echo "Success";
+		return true;
 	} else {
-		echo "Failed";
+		return false;
 	}
 }
 
