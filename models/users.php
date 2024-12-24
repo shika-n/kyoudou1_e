@@ -22,3 +22,10 @@ function get_users(PDO $dbh) {
 	$statement = $dbh->prepare("SELECT * FROM users;");
 	return $statement->fetchAll();
 }
+
+function get_user_by_email(PDO $dbh, $email) {
+	$statement = $dbh->prepare("SELECT * FROM users WHERE email = ?;");
+	if ($statement->execute([$email])) {
+		return $statement->fetch();
+	}
+}
