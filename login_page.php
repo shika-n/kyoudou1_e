@@ -9,11 +9,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$email = get_if_set("email", $_POST);
     $password = get_if_set("password", $_POST);
     if ($email == NULL || $password == NULL) {
-        echo "email or password or both not input";
+        #echo "email or password or both not input";
+        $_SESSION["error"] = "メールとパスワードを入力してください";
+        header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+		return;
     } elseif (mb_strlen($email) > 120) {
-        echo "email is too long, should be no longer than 120 characters";
+        #echo "email is too long, should be no longer than 120 characters";
+        $_SESSION["error"] = "メールを120文字以下で入力してください";
+        header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+		return;
     } elseif (mb_strlen($password) < 6) {
-        echo "password is too short, should be 6 characters or longer";
+        #echo "password is too short, should be 6 characters or longer";
+        $_SESSION["error"] = "パスワードは6文字以上で入力してください";
+        header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+		return;
     } else {
         $record = get_user_by_email($dbh, $email);
         $email_and_password_are_right = false;
@@ -23,7 +32,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["name"] = $record['name'];
         }
         if (!$email_and_password_are_right) {
-            echo "email/password is wrong";
+            #echo "email/password is wrong";
+            $_SESSION["error"] = "メールかパスワードが間違っています";
+            header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+		    return;
         } else {
             echo "logged in as {$_SESSION["name"]} id={$_SESSION["user_id"]}";
         }
