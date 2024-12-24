@@ -17,25 +17,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if (!$name || mb_strlen($name) < 1) {
 		$_SESSION["error"] = "名前は1文字以上で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}#submit-form", true, 303);
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
 
 	if (!$nickname || mb_strlen($nickname) < 1) {
 		$_SESSION["error"] = "ニックネームは1文字以上で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}#submit-form", true, 303);
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
 
 	if (!$password || mb_strlen($password) < 6) {
 		$_SESSION["error"] = "パスワードは6文字以上で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}#submit-form", true, 303);
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
 
 	if (!$email || mb_strlen($email) < 1) {
 		$_SESSION["error"] = "メールは1文字以上で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}#submit-form", true, 303);
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
 
