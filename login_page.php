@@ -43,12 +43,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 } else {
     echo <<<_BODY_
-    <form method="POST">
-        <h2>ログイン</h2>
-        <p><input type="text" name="email" placeholder="メール"></p>
-        <p><input type="text" name="password" placeholder="パスワード"></p>
-        <p><button type="submit" name="login">ログイン</button></p>
-    </form>
-    <a href="register.php">新規登録はこちら</a>
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="login.css">
+        <title>ログイン画面</title>
+    </head>
+    <body>
+        <h1>ログイン</h1>
+        <div>
+            <form method="POST">
+            <input type="password" name="password" placeholder="パスワード"><br>
+            <input type="email" name="email" placeholder="メールアドレス"><br>
+            <input type="submit" name="log" value="ログイン">
+            </form>
+
+            <hr>
+
+            <input type="button" name="log" value="新規登録はこちら">
+        </div>
+    </body>
+    </html>
     _BODY_;
 }
