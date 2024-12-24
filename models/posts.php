@@ -11,7 +11,7 @@ function post(PDO $dbh, $user_id, $title, $content) {
 
 function get_posts(PDO $dbh) {
 	$statement = $dbh->prepare("SELECT * FROM posts;");
+	$statement->execute();
 	return $statement->fetchAll();
 }
-
 
