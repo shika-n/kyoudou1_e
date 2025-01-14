@@ -10,7 +10,7 @@ function post(PDO $dbh, $user_id, $title, $content) {
 }
 
 function get_posts(PDO $dbh) {
-	$statement = $dbh->prepare("SELECT * FROM posts;");
+	$statement = $dbh->prepare("SELECT * FROM posts JOIN users ON users.user_id = posts.user_id;");
 	$statement->execute();
 	return $statement->fetchAll();
 }
