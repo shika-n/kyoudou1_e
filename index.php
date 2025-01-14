@@ -18,9 +18,13 @@ foreach ($post_arr as $row) {
     $content .= <<<___EOF___
     <div>
         <hr>
-        <p>{$row['icon']}</p>
-        <p>{$row['nickname']}</p>
-        <p>{$row['created_at']}</p>
+        <div class="flex flex-row">
+            <p>{$row['icon']}</p>
+            <div class="flex flex-col ml-10">
+                <p>{$row['nickname']}</p>
+                <p>{$row['created_at']}</p>
+            </div>
+        </div>
         <p>{$row['title']}</p>
         <p>{$row['content']}</p>
         <hr>
