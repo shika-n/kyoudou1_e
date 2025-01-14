@@ -5,34 +5,25 @@ body{
 	background-size: cover;
 }
 
-html, body {
-	margin: 0px;
-	padding: 0px;
-}
-
-.fullscreen {
-	position: fixed;
-	top: 0px;
-	left: 0px;
+.fullcenter {
 	width: 100%;
-	height: 100vh;
-	backdrop-filter: blur(16px);
+	height: calc(100vh - 68px);
 
 	/* フォームを画面の中に */
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	backdrop-filter: blur(16px);
 }
 
 .form-top{
     background-color: rgb(255, 255, 255);
 	min-width: 400px;
-	height: fit-content;
     text-align: center;
     h1{
-        padding-top:45px;
-        padding-bottom: 45px;
-        margin-bottom: 50px;
+		padding: 24px 0px;
+        margin-bottom: 30px;
     }
 
 	/* 任意 */
@@ -40,51 +31,38 @@ html, body {
 	border-radius: 16px;
 }
 
-.input-contents{
-    list-style: none;
-    
-}
-.input-item{
-        
-  
-}
-
 .button{
-    background-color:#d5d5d9;
-    padding:10px 40px 10px 40px;
-    border-width:2px;
-	border-color: #999999;
-	border-style: solid;	
-  }
+	background-color:#d5d5d9;
+	padding:10px 40px;
+	border: solid 2px #999999;
+	border-radius: 8px;
+	cursor: pointer;
+}
 
+.button:hover {
+	background-color:#c5c5c9;
+}
 
+.button:active {
+	background-color:#b5b5b9;
+}
+
+input:not([type="submit"]) {
+	border: solid 1px gray;
+	border-radius: 4px;
+	padding: 2px 8px;
+}
 
 @media screen and (max-width:600px){
     body{
         background-color: rgb(242, 242, 242);
         text-align: center;
     }
-    .form-top{
-        background-color: rgb(255, 255, 255);
-        width:390px;
-        height:644px;
-        margin-left:50px;
-        text-align: center;
-        h1{
-            padding-top:45px;
-            padding-bottom: 45px;
-            margin-bottom: 50px;
-            margin-left: 15px;
-        }
-    }
-    
-    .input-contents{
-        list-style: none;
-    
-        li{
-            margin-bottom: 50px;
-            width: 100px;
-        }
-        
-    }
+	.form-top{
+		width: 100vw;
+		min-width: fit-content;
+		/* 任意 */
+		box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.8);
+		border-radius: 16px;
+	}
 }
