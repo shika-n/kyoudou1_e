@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$_SESSION["email"] = null;
 			$_SESSION["error"] = null;
             // echo "logged in as {$_SESSION["name"]} id={$_SESSION["user_id"]}";
-            header("Location: index.php", true, 303);
+            header("Location: .", true, 303);
         } else {
             #echo "email/password is wrong";
             $_SESSION["error"] = "メールかパスワードが間違っています";
