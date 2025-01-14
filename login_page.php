@@ -15,6 +15,9 @@ if (get_if_set("user_id", $_SESSION)) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") { 
 	$email = get_if_set("email", $_POST);
     $password = get_if_set("password", $_POST);
+
+	$_SESSION["email"] = $email;
+
     if ($email == NULL || $password == NULL) {
         #echo "email or password or both not input";
         $_SESSION["error"] = "メールとパスワードを入力してください";
@@ -43,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 } else {
-	$name = htmlspecialchars(get_if_set("name", $_SESSION, ""), ENT_QUOTES);
 	$email = htmlspecialchars(get_if_set("email", $_SESSION, ""), ENT_QUOTES);
 
 	$error = htmlspecialchars(get_if_set("error", $_SESSION, ""));
