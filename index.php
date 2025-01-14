@@ -18,6 +18,8 @@ foreach ($post_arr as $row) {
     $content .= <<<___EOF___
     <div>
         <hr>
+        <p>{$row['icon']}</p>
+        <p>{$row['nickname']}</p>
         <p>{$row['created_at']}</p>
         <p>{$row['title']}</p>
         <p>{$row['content']}</p>
