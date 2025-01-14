@@ -6,6 +6,12 @@ require_once("util.php");
 
 session_start();
 
+// ログインしていたらトップページに投げる
+if (get_if_set("user_id", $_SESSION)) {
+	header("Location: .", true, 303);
+	return;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$name = get_if_set("name", $_POST);
 	$nickname = get_if_set("nickname", $_POST);

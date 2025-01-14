@@ -6,6 +6,12 @@ require_once("models/users.php");
 
 session_start();
 
+// ログインしていたらトップページに投げる
+if (get_if_set("user_id", $_SESSION)) {
+	header("Location: .", true, 303);
+	return;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") { 
 	$email = get_if_set("email", $_POST);
     $password = get_if_set("password", $_POST);
