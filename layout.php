@@ -7,6 +7,7 @@ $html = <<< ___EOF___
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Eチームの掲示板</title>
 		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- HEAD -->
 	</head>
 	<body>
 		<header class="px-4 flex justify-between items-center bg-slate-300">
@@ -27,6 +28,27 @@ $html = <<< ___EOF___
 					<!-- CONTENT -->
 				</div>
 			</div>
+		</main>
+	</body>
+</html>
+___EOF___;
+
+$guest_html = <<< ___EOF___
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Eチームの掲示板</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="sinup.css">
+	</head>
+	<body>
+		<header class="px-4 flex justify-around items-center bg-slate-300">
+			<h1 class="text-center py-4 font-bold text-3xl">掲示板</h1>
+		</header>
+		<main>
+			<!-- CONTENT -->
 		</main>
 	</body>
 </html>

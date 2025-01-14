@@ -1,6 +1,7 @@
 <?php
 require_once("db_open.php");
 require_once("models/users.php");
+require_once("layout.php");
 require_once("util.php");
 
 session_start();
@@ -41,26 +42,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if (user_exists($dbh, $email)) {
 		$_SESSION["error"] = "メールは既に存在しています";
-		header("Location: {$_SERVER['HTTP_REFERER']}#submit-form", true, 303);
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
 
 	$hashed_password = password_hash($password, PASSWORD_ARGON2I);
 	
 	register($dbh, $name, $nickname, $email, $hashed_password);
+
+	header("Location: index.php", true, 303);
 } else {
-	echo $_SESSION["error"];
 	$name = htmlspecialchars(get_if_set("name", $_SESSION, ""), ENT_QUOTES);
 	$nickname = htmlspecialchars(get_if_set("nickname", $_SESSION, ""), ENT_QUOTES);
 	$email = htmlspecialchars(get_if_set("email", $_SESSION, ""), ENT_QUOTES);
 
-	echo <<< ___EOF
-		<form method="POST">
-			<input type="text" name="name" placeholder="name" value="$name">
-			<input type="text" name="nickname" placeholder="nickname" value="$nickname">
-			<input type="text" name="email" placeholder="email" value="$email">
-			<input type="password" name="password" placeholder="password">
-			<input type="submit" value="登録">
-		</form>
-	___EOF;
+	$error = htmlspecialchars(get_if_set("error", $_SESSION, ""));
+
+	$content = <<< ___EOF___
+		<div class="fullcenter">
+			<div class="form-top px-8 md:px-16 py-8">
+				<h1 class="text-2xl font-bold">新規登録</h1>
+				<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
+				<form method="POST" class="flex flex-col gap-4">
+					<!-- 名前 -->
+					<input type="text" id="name" name="name" placeholder="名前" value="$name">
+					<!-- ニックネーム -->
+					<input type="text" id="nickname" name="nickname" placeholder="ニックネーム" value="$nickname">
+					<!-- メール -->
+					<input type="text" name="email" placeholder="メール" value="$email">
+					<!-- パスワード -->
+					<input type="password" name="password" placeholder="パスワード">
+					<!-- 送信 -->
+					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">
+				</form>
+				<hr class="my-4 border-black">
+				<a href="login_page.php" class="linkbutton block bg-blue-200 hover:bg-blue-300 active:bg-blue-400 border-blue-500 border-2 p-1 rounded-lg transition-all">ログインに戻る</a>
+			</div>
+		</div>
+	___EOF___;
+
+	echo str_replace("<!-- CONTENT -->", $content, $guest_html);
+
+	$_SESSION["error"] = null;
 }
