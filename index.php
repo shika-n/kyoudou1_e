@@ -16,18 +16,18 @@ $content = "";
 $post_arr = get_posts($dbh);
 foreach ($post_arr as $row) {
     $content .= <<<___EOF___
-    <div>
-        <hr>
+    <div class="my-1">
         <div class="flex flex-row">
-            <p>{$row['icon']}</p>
-            <div class="flex flex-col ml-10">
+            <button class="rounded-full">
+                <img src="profile_pictures/{$row['icon']}" class="w-8">
+            </button>
+            <div class="flex flex-col ml-10 text-sm border-2">
                 <p>{$row['nickname']}</p>
                 <p>{$row['created_at']}</p>
             </div>
         </div>
         <p>{$row['title']}</p>
         <p>{$row['content']}</p>
-        <hr>
     </div>
     ___EOF___;
 }
