@@ -1,8 +1,9 @@
 <?php
 
 function post(PDO $dbh, $user_id, $title, $content) {
-	$statement = $dbh->prepare("INSERT INTO posts(user_id, title, content) VALUES (?, ?, ?);");
-	if ($statement->execute([$user_id, $title, $content])) {
+	$statement = $dbh->prepare("INSERT INTO posts(user_id, title, content, created_at) VALUES (?, ?, ?, ?);");
+	date_default_timezone_set("UTC");
+	if ($statement->execute([$user_id, $title, $content, date("Y-m-d H:i:s")])) {
 		return true;
 	} else {
 		return false;
