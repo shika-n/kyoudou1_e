@@ -31,7 +31,7 @@ $html = <<< ___EOF___
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md" href="#">プロファイル</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md" href="#">ユーザー一覧</a>
 				</div>
-				<div class="p-4 md:px-8 border border-2 border-black rounded-xl flex-grow">
+				<div class="p-4 md:px-8 flex-grow">
 					<!-- CONTENT -->
 				</div>
 			</div>
