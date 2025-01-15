@@ -19,7 +19,7 @@ foreach ($post_arr as $row) {
     <div class="border-2 rounded-lg border-black p-2 bg-slate-100">
         <div class="flex flex-row items-center">
             <div class="rounded-full">
-                <img src="profile_pictures/{$row['icon']}" class="w-8 rounded-full">
+                <img src="profile_pictures/{$row['icon']}" class="w-8 rounded-full aspect-square object-cover object-center">
             </div>
             <div class="flex flex-col ml-5 text-sm p-2 divide-y divide-black">
                 <div class="font-semibold">
