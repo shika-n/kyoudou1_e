@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$nickname = get_if_set("nickname", $_POST);
 	$password = get_if_set("password", $_POST);
 	$email = get_if_set("email", $_POST);
+	$icon = get_if_set("icon", $_FILES);
 
 	$_SESSION["name"] = $name;
 	$_SESSION["nickname"] = $nickname;
@@ -52,9 +53,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		return;
 	}
 
+	if (get_if_set("tmp_name", $icon)) {
+		if (getimagesize($icon["tmp_name"]) === false) {
+			$_SESSION["error"] = "アイコンのアップロードエラー";
+			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+			return;
+		}
+		if ($icon["size"] > 500000) {
+			$_SESSION["error"] = "アイコンのサイズが大きすぎます";
+			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+			return;
+		}
+		$icon_filename = time() . "_" . uniqid() . "_" . $icon["name"];
+		move_uploaded_file($icon["tmp_name"], "profile_pictures/" . $icon_filename);
+	} else {
+		$icon_filename = "man.png";
+	}
+
 	$hashed_password = password_hash($password, PASSWORD_ARGON2I);
 	
-	register($dbh, $name, $nickname, $email, $hashed_password);
+	register($dbh, $name, $nickname, $email, $hashed_password, $icon_filename);
 
 	header("Location: index.php", true, 303);
 } else {
@@ -69,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div class="form-top px-8 md:px-16 py-8">
 				<h1 class="text-2xl font-bold">新規登録</h1>
 				<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
-				<form method="POST" class="flex flex-col gap-4">
+				<form method="POST" class="flex flex-col gap-4" enctype="multipart/form-data">
 					<!-- 名前 -->
 					<input type="text" id="name" name="name" placeholder="名前" value="$name">
 					<!-- ニックネーム -->
@@ -78,6 +96,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="text" name="email" placeholder="メール" value="$email">
 					<!-- パスワード -->
 					<input type="password" name="password" placeholder="パスワード">
+					<div>
+						<label>アイコン</label>
+						<input type="file" name="icon" accept="image/png, image/jpeg">
+					</div>
 					<!-- 送信 -->
 					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">
 				</form>

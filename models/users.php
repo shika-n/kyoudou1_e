@@ -9,9 +9,9 @@ function user_exists(PDO $dbh, $email) {
 	}
 }
 
-function register(PDO $dbh, $name, $nickname, $email, $hashed_password) {
-	$statement = $dbh->prepare("INSERT INTO users (name, nickname, email, password, icon) VALUES (?, ?, ?, ?, 'man.png')");
-	if ($statement->execute([$name, $nickname, $email, $hashed_password])) {
+function register(PDO $dbh, $name, $nickname, $email, $hashed_password, $icon) {
+	$statement = $dbh->prepare("INSERT INTO users (name, nickname, email, password, icon) VALUES (?, ?, ?, ?, ?)");
+	if ($statement->execute([$name, $nickname, $email, $hashed_password, $icon])) {
 		return true;
 	} else {
 		return false;
