@@ -1,7 +1,7 @@
 <?php
 $html = <<< ___EOF___
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@ $html = <<< ___EOF___
 			</div>
 		</header>
 		<main>
-			<div class="flex gap-8 w-full md:w-4/5 m-auto">
+			<div class="flex py-4 gap-8 w-full md:w-4/5 m-auto">
 				<div id="navMenu" class="hidden md:flex flex-col fixed md:sticky md:gap-4 divide-y md:divide-none divide-gray-500 bg-slate-300 md:bg-transparent mt-0 md:mt-4 top-0 md:top-4 h-full md:h-min shadow-[0px_0px_32px_16px_rgba(0,0,0,0.3)] md:shadow-none">
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md md:hidden" href="#">ユーザー名</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md md:hidden" href="logout.php">ログアウト</a>
@@ -57,7 +57,7 @@ $guest_html = <<< ___EOF___
 		<link rel="stylesheet" href="sinup.css">
 	</head>
 	<body>
-		<header class="px-4 flex justify-around items-center bg-slate-300">
+		<header class="px-4 w-full justify-center items-center bg-slate-300">
 			<h1 class="text-center py-4 font-bold text-3xl">掲示板</h1>
 		</header>
 		<main>

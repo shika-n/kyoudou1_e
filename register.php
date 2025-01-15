@@ -101,9 +101,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="text" name="email" placeholder="メール" value="$email">
 					<!-- パスワード -->
 					<input type="password" name="password" placeholder="パスワード">
-					<div>
+					<div class="flex flex-col md:flex-row md:gap-2 items-left text-left">
 						<label>アイコン</label>
-						<input type="file" name="icon" accept="image/*">
+						<input type="file" name="icon" accept="image/*" class="flex-grow">
 					</div>
 					<!-- 送信 -->
 					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">

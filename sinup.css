@@ -15,12 +15,13 @@ body{
 	align-items: center;
 
 	backdrop-filter: blur(16px);
+
+	padding: 0.5em 0em;
 }
 
 .form-top{
     background-color: rgb(255, 255, 255);
-	min-width: 400px;
-    text-align: center;
+	height: fit-content;
     h1{
 		padding: 24px 0px;
         margin-bottom: 30px;
@@ -66,9 +67,19 @@ input:not([type="submit"]) {
 
 	.form-top{
 		width: 100vw;
-		min-width: fit-content;
 		/* 任意 */
 		box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.8);
 		border-radius: 16px;
+	}
+	.fullcenter {
+		display: block;
+	}
+}
+
+/* TODO: Login page broken atm when height < 630 */
+@media screen and (max-height:630px) { /* For register page */
+	.fullcenter {
+		align-items: initial;
+		height: max-content;
 	}
 }

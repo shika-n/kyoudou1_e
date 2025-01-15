@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
 	$content = <<< ___EOF___
 		<div class="fullcenter">
-			<div class="form-top px-8 md:px-16 py-8">
+			<div class="form-top px-8 md:px-16 py-8 md:min-w-96">
 				<h1 class="text-2xl font-bold">ログイン</h1>
 				<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
 				<form method="POST" class="flex flex-col gap-4">
