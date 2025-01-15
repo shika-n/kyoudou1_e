@@ -74,6 +74,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	
 	register($dbh, $name, $nickname, $email, $hashed_password, $icon_filename);
 
+	$_SESSION["name"] = null;
+	$_SESSION["nickname"] = null;
+	$_SESSION["email"] = null;
+	$_SESSION["error"] = null;
+
 	header("Location: index.php", true, 303);
 } else {
 	$name = htmlspecialchars(get_if_set("name", $_SESSION, ""), ENT_QUOTES);
@@ -98,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="password" name="password" placeholder="パスワード">
 					<div>
 						<label>アイコン</label>
-						<input type="file" name="icon" accept="image/png, image/jpeg">
+						<input type="file" name="icon" accept="image/*">
 					</div>
 					<!-- 送信 -->
 					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">
