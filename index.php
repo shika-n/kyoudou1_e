@@ -16,7 +16,7 @@ $content = "";
 $post_arr = get_posts($dbh);
 foreach ($post_arr as $row) {
     $content .= <<<___EOF___
-    <div class="my-2  border-2 rounded-lg border-black p-2 bg-slate-100">
+    <div class="border-2 rounded-lg border-black p-2 bg-slate-100">
         <div class="flex flex-row items-center">
             <div class="rounded-full">
                 <img src="profile_pictures/{$row['icon']}" class="w-8 rounded-full">
