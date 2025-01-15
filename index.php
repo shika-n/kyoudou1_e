@@ -12,9 +12,13 @@ if (!get_if_set("user_id", $_SESSION)) {
 	return;
 }
 
+date_default_timezone_set("UTC");
+$target_timezone = new DateTimeZone("Asia/Tokyo");
+
 $content = "";
 $post_arr = get_posts($dbh);
 foreach ($post_arr as $row) {
+	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
     $content .= <<<___EOF___
     <div class="border-2 rounded-lg border-black p-2 bg-slate-100">
         <div class="flex flex-row items-center">
@@ -26,7 +30,7 @@ foreach ($post_arr as $row) {
                     <p>{$row['nickname']}</p>
                 </div>
                 <div>
-                    <p>{$row['created_at']}</p>
+                    <p>{$created_at}</p>
                 </div>
             </div>
         </div>
