@@ -31,6 +31,11 @@ body{
 	border-radius: 16px;
 }
 
+.input-contents{
+    list-style: none;
+    
+}
+
 .button{
 	background-color:#d5d5d9;
 	padding:10px 40px;
@@ -58,6 +63,7 @@ input:not([type="submit"]) {
         background-color: rgb(242, 242, 242);
         text-align: center;
     }
+
 	.form-top{
 		width: 100vw;
 		min-width: fit-content;
