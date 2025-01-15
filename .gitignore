@@ -1,1 +1,4 @@
 db_open.php
+
+profile_pictures/*
+!profile_pictures/man.png
