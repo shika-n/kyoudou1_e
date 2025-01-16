@@ -1,4 +1,5 @@
 <?php
+require_once("util.php");
 $html = <<< ___EOF___
 <!DOCTYPE html>
 <html lang="ja" class="scroll-smooth">
@@ -66,3 +67,8 @@ $guest_html = <<< ___EOF___
 	</body>
 </html>
 ___EOF___;
+session_start();
+$loggedinusername = get_if_set("name", $_SESSION) ;
+if ($loggedinusername) {
+	$html = str_replace("ユーザー名", $loggedinusername, $html);
+}
