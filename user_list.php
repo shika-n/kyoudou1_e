@@ -17,7 +17,7 @@ while ($record = $sql_res->fetch()) {
             <img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
             <span class="mr-4">$user</span>
             <span class="mr-4">($nickname)</span>
-            <a href="" class="text-blue-500 hover:underline">投稿記事一覧</a>
+            <a href="profile.php?id=$user_id" class="text-blue-500 hover:underline">投稿記事一覧</a>
         </li>
         <hr class="m-4">
     ___EOF___;
