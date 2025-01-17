@@ -21,7 +21,7 @@ while ($record = $sql_res->fetch()) {
 					<span class="w-full text-sm text-left text-gray-700 truncate">($nickname)</span>
 				</div>
 			</div>
-			<!-- <a href="" class="block w-min-40 text-blue-500 align-middle text-center md:text-left shrink-0 whitespace-nowrap hover:underline">投稿記事一覧</a> -->
+			<!-- <a href="profile.php" class="block w-min-40 text-blue-500 align-middle text-center md:text-left shrink-0 whitespace-nowrap hover:underline">投稿記事一覧</a> -->
 		</div>
 		<hr class="m-4">
 	___EOF___;
