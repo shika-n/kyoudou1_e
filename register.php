@@ -21,14 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["nickname"] = $nickname;
 	$_SESSION["email"] = $email;
 
-	if (!$name || mb_strlen($name) < 1) {
-		$_SESSION["error"] = "名前は1文字以上で入力してください";
+	if (!$name || mb_strlen($name) < 1 || mb_strlen($name) > 20) {
+		$_SESSION["error"] = "名前は1~20文字で入力してください";
 		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
 
-	if (!$nickname || mb_strlen($nickname) < 1) {
-		$_SESSION["error"] = "ニックネームは1文字以上で入力してください";
+	if (!$nickname || mb_strlen($nickname) < 1 || mb_strlen($nickname) > 20) {
+		$_SESSION["error"] = "ニックネームは1~20文字で入力してください";
 		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
@@ -39,8 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		return;
 	}
 
-	if (!$email || mb_strlen($email) < 1) {
-		$_SESSION["error"] = "メールは1文字以上で入力してください";
+	if (!$email || mb_strlen($email) < 1 || mb_strlen($email) > 120) {
+		$_SESSION["error"] = "メールは1~120文字で入力してください";
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+		return;
+	}
+
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$_SESSION["error"] = "メールに間違いがあります";
 		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
