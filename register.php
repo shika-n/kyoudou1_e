@@ -39,8 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		return;
 	}
 
-	if (!$email || mb_strlen($email) < 1 || mb_strlen($email) > 120 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+	if (!$email || mb_strlen($email) < 1 || mb_strlen($email) > 120) {
 		$_SESSION["error"] = "メールは1~120文字で入力してください";
+		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+		return;
+	}
+
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$_SESSION["error"] = "メールに間違いがあります";
 		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
 	}
