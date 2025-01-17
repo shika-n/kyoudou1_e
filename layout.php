@@ -41,6 +41,11 @@ $html = <<< ___EOF___
 					<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
 				</svg>
 			</a>
+			<a class="fixed flex w-12 aspect-square right-8 bottom-24 items-center justify-center bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full shadow-xl shadow-gray-800/30" href="#top">
+				<svg xmlns="http://www.w3.org/2000/svg" class="size-6" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M12 19V6M5 12l7-7 7 7"/>
+				</svg>
+			</a>
 		</main>
 		<script src="js/toggle.js"></script>
 	</body>
