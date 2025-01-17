@@ -9,12 +9,17 @@ if (!get_if_set("user_id", $_SESSION)) {
 	return;
 }
 
+$target_id = get_if_set("id", $_GET);
+if (!$target_id) {
+	$target_id = $_SESSION["user_id"];
+}
+
 $content = "";
-$user = get_user_by_id($dbh, $_SESSION["user_id"]);
+$user = get_user_by_id($dbh, $target_id);
 $icon = $user["icon"];
 $name = htmlspecialchars($user["name"], ENT_QUOTES, "UTF-8");
 $nickname = htmlspecialchars($user["nickname"], ENT_QUOTES, "UTF-8");
-$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"]);
+$post_arr = get_posts_by_user($dbh, $target_id);
 
 if (count($post_arr) === 0) {
     // 記事がない場合のメッセージ

@@ -8,6 +8,7 @@ $sql_res = $dbh->query($sql);
 // ユーザーリストのHTML
 $user_list = "";
 while ($record = $sql_res->fetch()) {
+    $id = htmlspecialchars($record['user_id'], ENT_QUOTES, 'UTF-8');
     $icon = htmlspecialchars($record['icon'], ENT_QUOTES, 'UTF-8');
     $user = htmlspecialchars($record['name'], ENT_QUOTES, 'UTF-8');
     $nickname = htmlspecialchars($record['nickname'], ENT_QUOTES, 'UTF-8');
@@ -17,7 +18,7 @@ while ($record = $sql_res->fetch()) {
 			<div class="flex items-center w-full">
 				<img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
 				<div class="flex flex-col md:flex-row flex-wrap items-baseline overflow-hidden">
-					<a href="#" class="w-full mr-2 font-bold hover:underline truncate">$user</a>
+					<a href="profile.php?id=$id" class="w-full mr-2 font-bold hover:underline truncate">$user</a>
 					<span class="w-full text-sm text-left text-gray-700 truncate">($nickname)</span>
 				</div>
 			</div>
