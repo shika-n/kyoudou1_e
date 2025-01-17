@@ -19,24 +19,24 @@ $html = <<< ___EOF___
 			</button>
 			<h1 class="text-center py-4 text-xl">掲示板</h1>
 			<div class="hidden md:flex flex-col">
-				<div class="border-b-2 border-black">ユーザー名</div>
+				<a href="profile.php" class="border-b-2 border-black">ユーザー名</a>
 				<a href="logout.php">ログアウト</a>
 			</div>
 		</header>
 		<main>
 			<div class="flex py-4 gap-8 w-full md:w-4/5 m-auto">
 				<div id="navMenu" class="hidden md:flex flex-col fixed md:sticky md:gap-4 divide-y md:divide-none divide-gray-500 bg-slate-300 md:bg-transparent mt-0 md:mt-4 top-0 md:top-4 h-full md:h-min shadow-[0px_0px_32px_16px_rgba(0,0,0,0.3)] md:shadow-none">
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md md:hidden" href="#">ユーザー名</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md md:hidden" href="logout.php">ログアウト</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md" href=".">TOP</a>
-				<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md" href="profile.php">プロファイル</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 md:rounded-md" href="user_list.php">ユーザー一覧</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden" href="profile.php">ユーザー名</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden" href="logout.php">ログアウト</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md" href=".">TOP</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md" href="profile.php">プロファイル</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md" href="user_list.php">ユーザー一覧</a>
 				</div>
-				<div class="px-4 mt-16 md:mt-4 flex-grow flex flex-col gap-2">
+				<div class="px-4 mt-16 md:mt-4 flex-grow flex flex-col gap-2 overflow-hidden">
 					<!-- CONTENT -->
 				</div>
 			</div>
-			<a class="fixed flex w-12 aspect-square right-8 bottom-8 items-center justify-center bg-slate-300 rounded-full shadow-xl shadow-gray-800/30" href="post.php">
+			<a class="fixed flex w-12 aspect-square right-8 bottom-8 items-center justify-center bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full shadow-xl shadow-gray-800/30" href="post.php">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
 					<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
 				</svg>

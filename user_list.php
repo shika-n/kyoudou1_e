@@ -12,25 +12,29 @@ while ($record = $sql_res->fetch()) {
     $user = htmlspecialchars($record['name'], ENT_QUOTES, 'UTF-8');
     $nickname = htmlspecialchars($record['nickname'], ENT_QUOTES, 'UTF-8');
 
-    $user_list .= <<< ___EOF___
-        <li class="flex items-center mb-4">
-            <img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
-            <span class="mr-4">$user</span>
-            <span class="mr-4">($nickname)</span>
-            <a href="profile.php?id=$user_id" class="text-blue-500 hover:underline">投稿記事一覧</a>
-        </li>
-        <hr class="m-4">
-    ___EOF___;
+	$user_list .= <<< ___EOF___
+		<div class="flex flex-col md:flex-row flex-wrap items-left md:items-center align-middle mb-4">
+			<div class="flex items-center w-full">
+				<img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
+				<div class="flex flex-col md:flex-row flex-wrap items-baseline overflow-hidden">
+					<a href="#" class="w-full mr-2 font-bold hover:underline truncate">$user</a>
+					<span class="w-full text-sm text-left text-gray-700 truncate">($nickname)</span>
+				</div>
+			</div>
+			<!-- <a href="profile.php" class="block w-min-40 text-blue-500 align-middle text-center md:text-left shrink-0 whitespace-nowrap hover:underline">投稿記事一覧</a> -->
+		</div>
+		<hr class="m-4">
+	___EOF___;
 }
 
 $content = <<< ___EOF___
 
-    <h1 class="ml-16 text-xl">ユーザー一覧</h1>
+    <h1 class="text-xl">ユーザー一覧</h1>
 
     <!--ユーザー情報取得・表示-->
-    <ul class="border-8 border-slate-300 rounded-md h-96 my-2 mx-2 p-2 text-xl overflow-auto">
+    <div class="my-2 mx-2 p-2 text-xl border border-4">
         $user_list
-    </ul>
+    </div>
 
 ___EOF___;
 
