@@ -18,8 +18,8 @@ while ($record = $sql_res->fetch()) {
 			<div class="flex items-center w-full">
 				<img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
 				<div class="flex flex-col md:flex-row flex-wrap items-baseline overflow-hidden">
-					<a href="profile.php?id=$id" class="w-full mr-2 font-bold hover:underline truncate">$user</a>
-					<span class="w-full text-sm text-left text-gray-700 truncate">($nickname)</span>
+					<a href="profile.php?id=$id" class="w-full mr-2 font-bold hover:underline truncate">$nickname</a>
+					<span class="w-full text-sm text-left text-gray-700 truncate">($user)</span>
 				</div>
 			</div>
 			<!-- <a href="profile.php" class="block w-min-40 text-blue-500 align-middle text-center md:text-left shrink-0 whitespace-nowrap hover:underline">投稿記事一覧</a> -->
@@ -33,7 +33,7 @@ $content = <<< ___EOF___
     <h1 class="text-xl">ユーザー一覧</h1>
 
     <!--ユーザー情報取得・表示-->
-    <div class="my-2 mx-2 p-2 text-xl border border-4">
+    <div class="my-2 mx-2 p-2 text-xl border border-2 border-gray-300 rounded-lg">
         $user_list
     </div>
 

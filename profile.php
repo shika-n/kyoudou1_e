@@ -29,38 +29,41 @@ if (count($post_arr) === 0) {
     </div>
     HTML;
 } else {
+	date_default_timezone_set("UTC");
+	$target_timezone = new DateTimeZone("Asia/Tokyo");
     // 記事がある場合の表示
     foreach ($post_arr as $row) {
         // 投稿データをエスケープ処理
-        $row['icon'] = htmlspecialchars($row['icon'], ENT_QUOTES, 'UTF-8');
-        $row['nickname'] = htmlspecialchars($row['nickname'], ENT_QUOTES, 'UTF-8');
-        $row['created_at'] = htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8');
-        $row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
-        $row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
-
-        $content .= <<<___EOF___
-        <div class="my-1 border-2 rounded-lg border-black p-2 bg-slate-100">
-            <div class="flex flex-row">
-                <button class="rounded-full">
-                    <img src="profile_pictures/{$row['icon']}" alt="アイコン" class="w-8">
-                </button>
-                <div class="flex flex-col ml-5 text-sm p-2 divide-y divide-black">
-                    <div class="font-semibold">
-                        <p>{$row['nickname']}</p>
-                    </div>
-                    <div>
-                        <p>{$row['created_at']}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="font-semibold">
-                <p>{$row['title']}</p>
-            </div>
-            <div class="leading-4">
-                <p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
-            </div>
-        </div>
-        ___EOF___;
+		$id = htmlspecialchars($row["user_id"], ENT_QUOTES, "UTF-8");
+		$row['icon'] = htmlspecialchars($row['icon'], ENT_QUOTES, 'UTF-8');
+		$row['nickname'] = htmlspecialchars($row['nickname'], ENT_QUOTES, 'UTF-8');
+		$row['created_at'] = htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8');
+		$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
+		$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
+		$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
+		$content .= <<<___EOF___
+			<div class="border-2 rounded-lg border-black p-2 bg-slate-100">
+				<div class="flex flex-row flex-wrap items-center">
+					<div class="rounded-full">
+						<img src="profile_pictures/{$row['icon']}" class="w-8 rounded-full aspect-square object-cover object-center">
+					</div>
+					<div class="flex flex-col flex-wrap ml-5 text-sm p-2 divide-y divide-black">
+						<div class="font-semibold">
+							<a href="profile.php?id=$id">{$row['nickname']}</a>
+						</div>
+						<div>
+							<p>{$created_at}</p>
+						</div>
+					</div>
+				</div>
+				<div class="font-semibold">
+					<p>{$row['title']}</p>
+				</div>
+				<div class="leading-4">
+					<p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
+				</div>
+			</div>
+		___EOF___;
     }
 }
 
@@ -70,10 +73,10 @@ $user_info = <<<HTML
     <!-- ユーザー情報 -->
     <div class="rounded-lg p-4 flex items-center">
         <img src="profile_pictures/$icon" alt="アイコン" class="w-24 h-24 rounded-full mr-4 aspect-square object-cover object-center">
-        <div class="border-2 border-gray-300 rounded-lg p-4 w-full">
-            <p class="font-bold text-lg">名前: $name</p>
+        <div class="border-2 border-gray-300 rounded-lg p-4 min-w-0 w-full">
+            <p class="font-bold text-lg overflow-hidden text-ellipsis">名前: $name</p>
             <hr>
-            <p class="font-bold text-lg">ニックネーム: $nickname</p>
+            <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
         </div>
     </div>
 </div>
@@ -85,7 +88,7 @@ $post_section = <<<HTML
 <div class="container mx-auto p-4">
     <!-- 投稿一覧 -->
     <h2 class="text-xl font-bold mb-4 text-center">記事一覧</h2>
-    <div class="post-list border-2 border-gray-300 rounded-lg p-4">
+    <div class="post-list border-2 border-gray-300 rounded-lg p-4 flex flex-col gap-2">
         $content
     </div>
 </div>
