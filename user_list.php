@@ -2,6 +2,12 @@
 require_once("layout.php");
 include "db_open.php";
 
+// ログインしていないとログインページに投げる
+if (!get_if_set("user_id", $_SESSION)) {
+	header("Location: login_page.php", true, 303);
+	return;
+}
+
 $sql = "select * from users";
 $sql_res = $dbh->query($sql);
 
