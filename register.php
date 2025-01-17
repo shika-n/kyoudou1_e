@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		return;
 	}
 
-	if (!$email || mb_strlen($email) < 1) {
+	if (!$email || mb_strlen($email) < 1 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		$_SESSION["error"] = "メールは1文字以上で入力してください";
 		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 		return;
