@@ -19,7 +19,7 @@ $html = <<< ___EOF___
 			</button>
 			<h1 class="text-center py-4 text-xl">掲示板</h1>
 			<div class="hidden md:flex flex-col">
-				<div class="border-b-2 border-black">ユーザー名</div>
+				<a href="profile.php" class="border-b-2 border-black">ユーザー名</a>
 				<a href="logout.php">ログアウト</a>
 			</div>
 		</header>
