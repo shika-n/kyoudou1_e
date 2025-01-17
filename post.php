@@ -4,8 +4,6 @@ require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
 
-session_start();
-
 // ログインしていないとログインページに投げる
 if (!get_if_set("user_id", $_SESSION)) {
 	header("Location: login_page.php", true, 303);
