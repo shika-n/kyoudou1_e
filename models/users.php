@@ -29,3 +29,10 @@ function get_user_by_email(PDO $dbh, $email) {
 		return $statement->fetch();
 	}
 }
+
+function get_user_by_id(PDO $dbh, $id) {
+	$statement = $dbh->prepare("SELECT * FROM users WHERE user_id = ?;");
+	if ($statement->execute([$id])) {
+		return $statement->fetch();
+	}
+}

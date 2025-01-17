@@ -1,31 +1,20 @@
 <?php
 require_once("layout.php"); // レイアウトテンプレート
 include "db_open.php";  // データベース接続
+include("models/posts.php");
+include("models/users.php");
 
-// ** ユーザー情報取得と表示 **
-$sql = "SELECT * FROM users LIMIT 1"; // ユーザー情報を1件取得
-$sql_res = $dbh->query($sql);
-
-// ユーザー情報を初期化
-$name = "";  
-$nickname = "";  
-$icon = "";    
-
-if ($record = $sql_res->fetch()) {
-    $icon = htmlspecialchars($record['icon'], ENT_QUOTES, 'UTF-8');
-    $name = htmlspecialchars($record['name'], ENT_QUOTES, 'UTF-8');
-    $nickname = htmlspecialchars($record['nickname'], ENT_QUOTES, 'UTF-8');
-}
-
-// ** 投稿一覧取得と表示 **
-function get_posts($dbh) {
-    $sql = "SELECT * FROM posts ORDER BY created_at DESC"; // 投稿を新しい順に取得
-    $stmt = $dbh->query($sql);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (!get_if_set("user_id", $_SESSION)) {
+	header("Location: login_page.php", true, 303);
+	return;
 }
 
 $content = "";
-$post_arr = get_posts($dbh);
+$user = get_user_by_id($dbh, $_SESSION["user_id"]);
+$icon = $user["icon"];
+$name = htmlspecialchars($user["name"], ENT_QUOTES, "UTF-8");
+$nickname = htmlspecialchars($user["nickname"], ENT_QUOTES, "UTF-8");
+$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"]);
 
 if (count($post_arr) === 0) {
     // 記事がない場合のメッセージ
@@ -74,8 +63,8 @@ if (count($post_arr) === 0) {
 $user_info = <<<HTML
 <div class="container mx-auto p-4">
     <!-- ユーザー情報 -->
-    <div class="rounded-lg p-4 mb-6 flex items-center">
-        <img src="$icon" alt="アイコン" class="w-24 h-24 rounded-full mr-4">
+    <div class="rounded-lg p-4 flex items-center">
+        <img src="profile_pictures/$icon" alt="アイコン" class="w-24 h-24 rounded-full mr-4 aspect-square object-cover object-center">
         <div class="border-2 border-gray-300 rounded-lg p-4 w-full">
             <p class="font-bold text-lg">名前: $name</p>
             <hr>
@@ -87,7 +76,7 @@ HTML;
 
 // ** 投稿一覧HTML生成 **
 $post_section = <<<HTML
-<hr class="mt-8">
+<hr>
 <div class="container mx-auto p-4">
     <!-- 投稿一覧 -->
     <h2 class="text-xl font-bold mb-4 text-center">記事一覧</h2>
@@ -98,9 +87,6 @@ $post_section = <<<HTML
 HTML;
 
 // ** レイアウトに組み込み＆出力 **
-$html = str_replace("<!-- CONTENT -->", $user_info, $html);
+$html = str_replace("<!-- CONTENT -->", $user_info . $post_section, $html);
 echo $html;
-
-// ** 記事一覧を枠外に出力（別エリア） **
-echo $post_section;
 ?>

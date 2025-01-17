@@ -16,3 +16,8 @@ function get_posts(PDO $dbh) {
 	return $statement->fetchAll();
 }
 
+function get_posts_by_user(PDO $dbh, $user_id) {
+	$statement = $dbh->prepare("SELECT * FROM posts JOIN users ON users.user_id = posts.user_id WHERE posts.user_id = ? ORDER BY created_at DESC;");
+	$statement->execute([$user_id]);
+	return $statement->fetchAll();
+}
