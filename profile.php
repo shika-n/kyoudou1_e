@@ -57,7 +57,7 @@ if (count($post_arr) === 0) {
                 <p>{$row['title']}</p>
             </div>
             <div class="leading-4">
-                <p>{$row['content']}</p>
+                <p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
             </div>
         </div>
         ___EOF___;
