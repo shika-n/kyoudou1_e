@@ -96,6 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div class="form-top px-8 md:px-16 py-8">
 				<h1 class="text-2xl font-bold">新規登録</h1>
 				<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
+				<img class="mx-auto mb-4 w-20 aspect-square object-cover object-center rounded-full" id="preview" src="profile_pictures/man.png">
 				<form method="POST" class="flex flex-col gap-4" enctype="multipart/form-data">
 					<!-- 名前 -->
 					<input type="text" id="name" name="name" placeholder="名前" value="$name">
@@ -107,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="password" name="password" placeholder="パスワード">
 					<div class="flex flex-col md:flex-row md:gap-2 items-left text-left">
 						<label>アイコン</label>
-						<input type="file" name="icon" accept="image/*" class="flex-grow">
+						<input type="file" id="icon" name="icon" accept="image/*" class="flex-grow">
 					</div>
 					<!-- 送信 -->
 					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">
@@ -116,6 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<a href="login_page.php" class="linkbutton block bg-blue-200 hover:bg-blue-300 active:bg-blue-400 border-blue-500 border-2 p-1 rounded-lg transition-all">ログインに戻る</a>
 			</div>
 		</div>
+		<script src="js/icon_preview.js"></script>
 	___EOF___;
 
 	echo str_replace("<!-- CONTENT -->", $content, $guest_html);
