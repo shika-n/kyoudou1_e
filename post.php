@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["content"] = null;
 	$_SESSION["error"] = null;
 
-	post($dbh, $_SESSION["user_id"], $title, $content);
+	post($dbh, $_SESSION["user_id"], $title, $content, null);
 	header("Location: .", true, 303);
 } else {
 	$title = htmlspecialchars(get_if_set("title", $_SESSION, ""), ENT_QUOTES);

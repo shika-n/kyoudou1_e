@@ -11,10 +11,17 @@ function user_exists(PDO $dbh, $email) {
 
 function register(PDO $dbh, $name, $nickname, $email, $hashed_password, $icon) {
 	$statement = $dbh->prepare("INSERT INTO users (name, nickname, email, password, icon) VALUES (?, ?, ?, ?, ?)");
-	if ($statement->execute([$name, $nickname, $email, $hashed_password, $icon])) {
-		return true;
+	return $statement->execute([$name, $nickname, $email, $hashed_password, $icon]);
+}
+
+function edit_profile(PDO $dbh, $user_id, $name, $nickname, $email, $hashed_password, $icon) {
+	if ($hashed_password) {
+		$statement = $dbh->prepare("UPDATE users SET name = ?, nickname = ?, email = ?, password = ?, icon = WHERE user_id = ?;");
+		return $statement->execute([$name, $nickname, $email, $hashed_password, $icon, $user_id]);
+
 	} else {
-		return false;
+		$statement = $dbh->prepare("UPDATE users SET name = ?, nickname = ?, email = ?, icon = WHERE user_id = ?;");
+		return $statement->execute([$name, $nickname, $email, $icon, $user_id]);
 	}
 }
 
@@ -28,6 +35,7 @@ function get_user_by_email(PDO $dbh, $email) {
 	if ($statement->execute([$email])) {
 		return $statement->fetch();
 	}
+	return false;
 }
 
 function get_user_by_id(PDO $dbh, $id) {
@@ -35,4 +43,5 @@ function get_user_by_id(PDO $dbh, $id) {
 	if ($statement->execute([$id])) {
 		return $statement->fetch();
 	}
+	return false;
 }
