@@ -58,29 +58,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 
 	if (get_if_set("tmp_name", $icon)) {
-		$imagesize = getimagesize($icon["tmp_name"]);
-		if ($imagesize === false) {
-			$_SESSION["error"] = "アイコンのアップロードエラー";
+		$is_uploadable = check_uploadable_image($icon);
+		if ($is_uploadable !== true) {
+			$_SESSION["error"] = $is_uploadable;
 			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 			return;
 		}
-		if ($icon["size"] > 500000) {
-			$_SESSION["error"] = "アイコンのサイズが大きすぎます";
-			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-			return;
-		}
-		$extension = array_search(mime_content_type($icon["tmp_name"]), [
-			"png" => "image/png",
-			"jpg" => "image/jpeg",
-			"gif" => "image/gif",
-		]);
-		if ($extension === false) {
-			$_SESSION["error"] = "アップロード不可能な拡張子です";
-			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-			return;
-		}
-		
-		$icon_filename = time() . "_" . uniqid() . "_" . sha1_file($icon["tmp_name"]) . "." . $extension;
+		$icon_filename = get_unique_image_name($icon);
 		move_uploaded_file($icon["tmp_name"], "profile_pictures/" . $icon_filename);
 	} else {
 		$icon_filename = "man.png";
