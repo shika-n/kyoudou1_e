@@ -1,5 +1,22 @@
 <?php
 require_once("util.php");
+
+session_start();
+
+$info_message = get_if_set("info", $_SESSION);
+$_SESSION["info"] = null;
+$info_message_comp = "";
+if ($info_message) {
+	$info_message_comp = <<< ___EOF___
+		<div class="flex px-2 py-1 bg-blue-100 rounded-lg border-2 border-black">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-1 text-blue-500">
+				<path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+			</svg>
+			$info_message
+		</div>
+	___EOF___;
+}
+
 $html = <<< ___EOF___
 <!DOCTYPE html>
 <html lang="ja" class="scroll-smooth">
@@ -25,7 +42,7 @@ $html = <<< ___EOF___
 		</header>
 		<main>
 			<div class="flex py-4 gap-8 w-full md:w-4/5 m-auto">
-				<div id="navMenu" class="hidden md:flex flex-col fixed md:sticky md:gap-4 divide-y md:divide-none divide-gray-500 bg-slate-300 md:bg-transparent mt-0 md:mt-4 top-0 md:top-4 h-full md:h-min shadow-[0px_0px_32px_16px_rgba(0,0,0,0.3)] md:shadow-none">
+				<div id="navMenu" class="hidden md:flex flex-col fixed md:sticky md:gap-4 divide-y md:divide-none divide-gray-500 bg-slate-300 md:bg-transparent mt-0 md:mt-4 top-0 md:top-4 h-full md:h-min shadow-[0px_0px_32px_16px_rgba(0,0,0,0.3)] md:shadow-none z-50">
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden truncate" href="profile.php">ユーザー名</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden" href="logout.php">ログアウト</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md" href=".">TOP</a>
@@ -33,6 +50,7 @@ $html = <<< ___EOF___
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md" href="user_list.php">ユーザー一覧</a>
 				</div>
 				<div class="px-4 mt-16 md:mt-4 flex-grow flex flex-col gap-2 overflow-hidden">
+					$info_message_comp
 					<!-- CONTENT -->
 				</div>
 			</div>
@@ -72,7 +90,6 @@ $guest_html = <<< ___EOF___
 	</body>
 </html>
 ___EOF___;
-session_start();
 $loggedinusername = get_if_set("name", $_SESSION) ;
 if ($loggedinusername) {
 	$html = str_replace("ユーザー名", $loggedinusername, $html);
