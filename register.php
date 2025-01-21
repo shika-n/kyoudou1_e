@@ -58,7 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 
 	if (get_if_set("tmp_name", $icon)) {
-		if (getimagesize($icon["tmp_name"]) === false) {
+		$imagesize = getimagesize($icon["tmp_name"]);
+		if ($imagesize === false) {
 			$_SESSION["error"] = "アイコンのアップロードエラー";
 			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 			return;
@@ -68,14 +69,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
 			return;
 		}
-		$icon_filename = time() . "_" . uniqid() . "_" . $icon["name"];
+		$extension = array_search(mime_content_type($icon["tmp_name"]), [
+			"png" => "image/png",
+			"jpg" => "image/jpeg",
+			"gif" => "image/gif",
+		]);
+		if ($extension === false) {
+			$_SESSION["error"] = "アップロード不可能な拡張子です";
+			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
+			return;
+		}
+		
+		$icon_filename = time() . "_" . uniqid() . "_" . sha1_file($icon["tmp_name"]) . "." . $extension;
 		move_uploaded_file($icon["tmp_name"], "profile_pictures/" . $icon_filename);
 	} else {
 		$icon_filename = "man.png";
 	}
 
 	$hashed_password = password_hash($password, PASSWORD_ARGON2I);
-	
 	register($dbh, $name, $nickname, $email, $hashed_password, $icon_filename);
 
 	$_SESSION["name"] = null;
@@ -108,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="password" name="password" placeholder="パスワード">
 					<div class="flex flex-col md:flex-row md:gap-2 items-left text-left">
 						<label>アイコン</label>
-						<input type="file" id="icon" name="icon" accept="image/*" class="flex-grow">
+						<input type="file" id="icon" name="icon" accept="image/png, image/jpeg, image/gif" class="flex-grow">
 					</div>
 					<!-- 送信 -->
 					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">
