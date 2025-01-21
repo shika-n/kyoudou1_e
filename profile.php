@@ -40,7 +40,7 @@ $user_info = <<<HTML
 <div class="container mx-auto p-4">
     <!-- ユーザー情報 -->
     <div class="rounded-lg p-4 flex items-center">
-        <img src="profile_pictures/$icon" alt="アイコン" class="w-24 h-24 rounded-full mr-4 aspect-square object-cover object-center">
+        <img src="$icon" alt="アイコン" class="w-24 h-24 rounded-full mr-4 aspect-square object-cover object-center">
         <div class="border-2 border-gray-300 rounded-lg p-4 min-w-0 w-full">
             <p class="font-bold text-lg overflow-hidden text-ellipsis">名前: $name</p>
             <hr>
