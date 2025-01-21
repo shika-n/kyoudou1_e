@@ -4,11 +4,7 @@ require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
 
-// ログインしていないとログインページに投げる
-if (!get_if_set("user_id", $_SESSION)) {
-	header("Location: login_page.php", true, 303);
-	return;
-}
+require("require_auth.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$title = $_POST["title"];

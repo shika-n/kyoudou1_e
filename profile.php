@@ -4,10 +4,7 @@ include "db_open.php";  // データベース接続
 include("models/posts.php");
 include("models/users.php");
 
-if (!get_if_set("user_id", $_SESSION)) {
-	header("Location: login_page.php", true, 303);
-	return;
-}
+require("require_auth.php");
 
 $target_id = get_if_set("id", $_GET);
 if (!$target_id) {
