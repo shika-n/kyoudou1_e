@@ -3,6 +3,7 @@ require_once("layout.php"); // レイアウトテンプレート
 include "db_open.php";  // データベース接続
 include("models/posts.php");
 include("models/users.php");
+require_once("templates.php");
 
 require("require_auth.php");
 
@@ -30,38 +31,8 @@ if (count($post_arr) === 0) {
 	$target_timezone = new DateTimeZone("Asia/Tokyo");
     // 記事がある場合の表示
     foreach ($post_arr as $row) {
-        // 投稿データをエスケープ処理
-		$id = htmlspecialchars($row["user_id"], ENT_QUOTES, "UTF-8");
-		$row['icon'] = htmlspecialchars($row['icon'], ENT_QUOTES, 'UTF-8');
-		$row['nickname'] = htmlspecialchars($row['nickname'], ENT_QUOTES, 'UTF-8');
-		$row['created_at'] = htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8');
-		$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
-		$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
-		$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
-		$content .= <<<___EOF___
-			<div class="border-2 rounded-lg border-black p-2 bg-slate-100">
-				<div class="flex flex-row flex-wrap items-center">
-					<div class="rounded-full">
-						<img src="profile_pictures/{$row['icon']}" class="w-8 rounded-full aspect-square object-cover object-center">
-					</div>
-					<div class="flex flex-col flex-wrap ml-5 text-sm p-2 divide-y divide-black">
-						<div class="font-semibold">
-							<a href="profile.php?id=$id">{$row['nickname']}</a>
-						</div>
-						<div>
-							<p>{$created_at}</p>
-						</div>
-					</div>
-				</div>
-				<div class="font-semibold">
-					<p>{$row['title']}</p>
-				</div>
-				<div class="leading-4">
-					<p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
-				</div>
-			</div>
-		___EOF___;
-    }
+		$content .= post_panel($row, $target_timezone);
+	}
 }
 
 // ** HTML出力生成（ユーザー情報） **
