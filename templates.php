@@ -56,6 +56,8 @@ function comment_panel($comment, $target_timezone) {
 	if ($comment["user_id"] === $_SESSION["user_id"]) {
 		$actions = post_actions_comp($comment);
 	}
+	
+	$like_icon = like_svg($comment);
 
 	return <<< ___EOF___
 		<div class="p-2 border-l-2 border-slate-500 bg-slate-200">
@@ -77,6 +79,14 @@ function comment_panel($comment, $target_timezone) {
 			</div>
 			<div class="leading-4">
 				<p class="text-wrap text-xs break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$comment['content']}</p>
+			</div>
+			<div class="mt-2 flex gap-2 items-center">
+				<div class="flex gap-1 items-center text-xs">
+					<a href="#" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
+						$like_icon
+					</a>
+					{$comment["like_count"]}
+				</div>
 			</div>
 		</div>
 	___EOF___;
@@ -129,7 +139,7 @@ function post_panel($row, $target_timezone, $comments) {
 			</div>
 			<div class="mt-2 flex gap-2 items-center">
 				<div class="flex gap-1 items-center text-xs">
-					<a href="#" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full">
+					<a href="#" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
 						$like_icon
 					</a>
 					{$row["like_count"]}
@@ -142,7 +152,7 @@ function post_panel($row, $target_timezone, $comments) {
 				$comments_html
 				<div class="flex gap-2 p-1 border-l-2 border-slate-500 bg-slate-200 text-xs">
 					<input type="text" name="comment" class="px-2 py-1 flex-grow border rounded-md">
-					<button type="" class="px-4 bg-blue-300 hover:bg-blue-200 active:bg-blue-400 rounded-md font-bold">送信</button>
+					<button type="" class="px-4 bg-blue-300 hover:bg-blue-200 active:bg-blue-400 rounded-md font-bold transition-all">送信</button>
 				</div>
 			</div>
 		</div>
