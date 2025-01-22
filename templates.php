@@ -7,6 +7,7 @@ function post_panel($row, $target_timezone) {
 	$row['created_at'] = htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8');
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
+	$row['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 	
 	$actions = "";
@@ -19,6 +20,12 @@ function post_panel($row, $target_timezone) {
 		___EOF___;
 	}
 	
+	$image = "";
+	if ($row["image"]) {
+		$image = <<< ___EOF___
+				<img class="mx-auto max-h-60" src="post_images/{$row['image']}">
+		___EOF___;
+	}
 	return <<< ___EOF___
 		<div class="border-2 rounded-lg border-black p-2 bg-slate-100">
 			<div class="flex justify-between">
@@ -41,6 +48,7 @@ function post_panel($row, $target_timezone) {
 				<p>{$row['title']}</p>
 			</div>
 			<div class="leading-4">
+				{$image}
 				<p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
 			</div>
 		</div>
