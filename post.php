@@ -4,6 +4,7 @@ require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
 
+require("require_auth.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$title = trim(get_if_set("title", $_POST, ""));
