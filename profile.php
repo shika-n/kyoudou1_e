@@ -5,7 +5,9 @@ include("models/posts.php");
 include("models/users.php");
 require_once("templates.php");
 
-require("require_auth.php");
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 $target_id = get_if_set("id", $_GET);
 if (!$target_id) {
@@ -30,8 +32,14 @@ if (count($post_arr) === 0) {
 	date_default_timezone_set("UTC");
 	$target_timezone = new DateTimeZone("Asia/Tokyo");
     // 記事がある場合の表示
-    foreach ($post_arr as $row) {
-		$content .= post_panel($row, $target_timezone);
+	$comments = [];
+
+	foreach ($post_arr as $row) {
+		if ($row["reply_to"]) {
+			$comments[$row["reply_to"]][] = $row;
+		} else {
+			$content .= post_panel($row, $target_timezone, get_if_set($row["post_id"], $comments));
+		}
 	}
 }
 

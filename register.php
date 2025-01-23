@@ -5,9 +5,8 @@ require_once("layout.php");
 require_once("util.php");
 
 // ログインしていたらトップページに投げる
-if (get_if_set("user_id", $_SESSION)) {
-	header("Location: .", true, 303);
-	return;
+if (is_authenticated()) {
+	redirect_to(Pages::k_index);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -23,46 +22,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if (!$name || mb_strlen($name) < 1 || mb_strlen($name) > 20) {
 		$_SESSION["error"] = "名前は1~20文字で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (!$nickname || mb_strlen($nickname) < 1 || mb_strlen($nickname) > 20) {
 		$_SESSION["error"] = "ニックネームは1~20文字で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (!$password || mb_strlen($password) < 6) {
 		$_SESSION["error"] = "パスワードは6文字以上で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (!$email || mb_strlen($email) < 1 || mb_strlen($email) > 120) {
 		$_SESSION["error"] = "メールは1~120文字で入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		$_SESSION["error"] = "メールに間違いがあります";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (user_exists($dbh, $email)) {
 		$_SESSION["error"] = "メールは既に存在しています";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (get_if_set("tmp_name", $icon)) {
 		$is_uploadable = check_uploadable_image($icon);
 		if ($is_uploadable !== true) {
 			$_SESSION["error"] = $is_uploadable;
-			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-			return;
+			redirect_back();
 		}
 		$icon_filename = get_unique_image_name($icon);
 		move_uploaded_file($icon["tmp_name"], "profile_pictures/" . $icon_filename);
@@ -78,13 +70,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["email"] = null;
 	$_SESSION["error"] = null;
 
-	header("Location: index.php", true, 303);
+	redirect_to(Pages::k_index);
 } else {
 	$name = htmlspecialchars(get_if_set("name", $_SESSION, ""), ENT_QUOTES);
 	$nickname = htmlspecialchars(get_if_set("nickname", $_SESSION, ""), ENT_QUOTES);
 	$email = htmlspecialchars(get_if_set("email", $_SESSION, ""), ENT_QUOTES);
 
 	$error = htmlspecialchars(get_if_set("error", $_SESSION, ""));
+
+	$pages = Pages::k_base_url;
 
 	$content = <<< ___EOF___
 		<div class="fullcenter">
@@ -109,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<input type="submit" class="button font-bold bg-amber-200 hover:bg-amber-300 active:bg-amber-400 transition-all" value="登録完了">
 				</form>
 				<hr class="my-4 border-black">
-				<a href="login_page.php" class="linkbutton block bg-blue-200 hover:bg-blue-300 active:bg-blue-400 border-blue-500 border-2 p-1 rounded-lg transition-all">ログインに戻る</a>
+				<a href="{$pages::k_login->get_url()}" class="linkbutton block bg-blue-200 hover:bg-blue-300 active:bg-blue-400 border-blue-500 border-2 p-1 rounded-lg transition-all">ログインに戻る</a>
 			</div>
 		</div>
 		<script src="js/icon_preview.js"></script>

@@ -5,7 +5,9 @@ require_once("util.php");
 require_once("models/posts.php");
 require_once("templates.php");
 
-require("require_auth.php");
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 date_default_timezone_set("UTC");
 $target_timezone = new DateTimeZone("Asia/Tokyo");

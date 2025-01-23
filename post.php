@@ -4,7 +4,9 @@ require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
 
-require("require_auth.php");
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$title = trim(get_if_set("title", $_POST, ""));
@@ -16,21 +18,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if (!$title || mb_strlen($title) > 20) {
 		$_SESSION["error"] = "タイトルは1~20文字まで入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 	if (!$content || mb_strlen($content) > 255) {
 		$_SESSION["error"] = "コンテンツは1~255文字まで入力してください";
-		header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-		return;
+		redirect_back();
 	}
 
 	if (get_if_set("tmp_name", $image)) {
 		$is_uploadable = check_uploadable_image($image);
 		if ($is_uploadable !== true) {
 			$_SESSION["error"] = $is_uploadable;
-			header("Location: {$_SERVER['HTTP_REFERER']}", true, 303);
-			return;
+			redirect_back();
 		}
 		$image_filename = get_unique_image_name($image);
 		move_uploaded_file($image["tmp_name"], "post_images/" . $image_filename);
@@ -43,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["error"] = null;
 
 	post($dbh, $_SESSION["user_id"], $title, $content, $image_filename);
-	header("Location: .", true, 303);
+	redirect_to(Pages::k_index);
 } else {
 	$title = htmlspecialchars(get_if_set("title", $_SESSION, ""), ENT_QUOTES);
 	$content = htmlspecialchars(get_if_set("content", $_SESSION, ""), ENT_QUOTES);

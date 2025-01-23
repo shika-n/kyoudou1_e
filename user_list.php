@@ -2,10 +2,14 @@
 require_once("layout.php");
 include "db_open.php";
 
-require("require_auth.php");
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 $sql = "select * from users";
 $sql_res = $dbh->query($sql);
+
+$pages = Pages::k_base_url;
 
 // ユーザーリストのHTML
 $user_list = "";
@@ -20,11 +24,10 @@ while ($record = $sql_res->fetch()) {
 			<div class="flex items-center w-full">
 				<img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
 				<div class="flex flex-col md:flex-row flex-wrap items-baseline overflow-hidden">
-					<a href="profile.php?id=$id" class="w-full mr-2 font-bold hover:underline truncate">$nickname</a>
+					<a href="{$pages::k_profile->get_url()}?id=$id" class="w-full mr-2 font-bold hover:underline truncate">$nickname</a>
 					<span class="w-full text-sm text-left text-gray-700 truncate">($user)</span>
 				</div>
 			</div>
-			<!-- <a href="profile.php" class="block w-min-40 text-blue-500 align-middle text-center md:text-left shrink-0 whitespace-nowrap hover:underline">投稿記事一覧</a> -->
 		</div>
 		<hr class="m-4">
 	___EOF___;

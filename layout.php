@@ -17,6 +17,8 @@ if ($info_message) {
 	___EOF___;
 }
 
+$pages = Pages::k_base_url;
+
 $html = <<< ___EOF___
 <!DOCTYPE html>
 <html lang="ja" class="scroll-smooth">
@@ -36,25 +38,25 @@ $html = <<< ___EOF___
 			</button>
 			<h1 class="text-center py-4 text-xl">掲示板</h1>
 			<div class="hidden md:flex flex-col">
-				<a href="profile.php" class="border-b-2 border-black">ユーザー名</a>
-				<a href="logout.php">ログアウト</a>
+				<a href="{$pages::k_profile->get_url()}" class="border-b-2 border-black">ユーザー名</a>
+				<a href="{$pages::k_logout->get_url()}">ログアウト</a>
 			</div>
 		</header>
 		<main>
 			<div class="flex py-4 gap-8 w-full md:w-4/5 m-auto">
 				<div id="navMenu" class="hidden md:flex flex-col fixed md:sticky md:gap-4 divide-y md:divide-none divide-gray-500 bg-slate-300 md:bg-transparent mt-0 md:mt-4 top-0 md:top-4 h-full md:h-min shadow-[0px_0px_32px_16px_rgba(0,0,0,0.3)] md:shadow-none z-50">
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden truncate transition-all" href="profile.php">ユーザー名</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden transition-all" href="logout.php">ログアウト</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href=".">TOP</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="profile.php">プロファイル</a>
-					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="user_list.php">ユーザー一覧</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden truncate transition-all" href="{$pages::k_profile->get_url()}">ユーザー名</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md md:hidden transition-all" href="{$pages::k_logout->get_url()}">ログアウト</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_index->get_url()}">TOP</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_profile->get_url()}">プロファイル</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_user_list->get_url()}">ユーザー一覧</a>
 				</div>
 				<div class="px-4 mt-16 md:mt-4 flex-grow flex flex-col gap-2 overflow-hidden">
 					$info_message_comp
 					<!-- CONTENT -->
 				</div>
 			</div>
-			<a class="fixed flex w-12 aspect-square right-8 bottom-8 items-center justify-center bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full shadow-xl shadow-gray-800/30 transition-all" href="post.php">
+			<a class="fixed flex w-12 aspect-square right-8 bottom-8 items-center justify-center bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full shadow-xl shadow-gray-800/30 transition-all" href="{$pages::k_post->get_url()}">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
 					<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
 				</svg>
