@@ -3,3 +3,5 @@ db_open.php
 profile_pictures/*
 !profile_pictures/man.png
 post_images/*
+
+.vscode
