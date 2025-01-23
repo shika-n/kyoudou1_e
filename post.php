@@ -4,11 +4,10 @@ require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
 
-require("require_auth.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$title = $_POST["title"];
-	$content = $_POST["content"];
+	$title = trim(get_if_set("title", $_POST, ""));
+	$content = trim(get_if_set("content", $_POST, ""));
 	$image = get_if_set("image", $_FILES);
 
 	$_SESSION["title"] = $title;

@@ -11,10 +11,10 @@ if (get_if_set("user_id", $_SESSION)) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$name = get_if_set("name", $_POST);
-	$nickname = get_if_set("nickname", $_POST);
+	$name = trim(get_if_set("name", $_POST, ""));
+	$nickname = trim(get_if_set("nickname", $_POST, ""));
 	$password = get_if_set("password", $_POST);
-	$email = get_if_set("email", $_POST);
+	$email = trim(get_if_set("email", $_POST, ""));
 	$icon = get_if_set("icon", $_FILES);
 
 	$_SESSION["name"] = $name;
