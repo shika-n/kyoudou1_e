@@ -27,13 +27,13 @@ function edit_profile(PDO $dbh, $user_id, $name, $nickname, $email, $hashed_pass
 
 function get_users(PDO $dbh) {
 	$statement = $dbh->prepare("SELECT * FROM users;");
-	return $statement->fetchAll();
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function get_user_by_email(PDO $dbh, $email) {
 	$statement = $dbh->prepare("SELECT * FROM users WHERE email = ?;");
 	if ($statement->execute([$email])) {
-		return $statement->fetch();
+		return $statement->fetch(PDO::FETCH_ASSOC);
 	}
 	return false;
 }
@@ -41,7 +41,7 @@ function get_user_by_email(PDO $dbh, $email) {
 function get_user_by_id(PDO $dbh, $id) {
 	$statement = $dbh->prepare("SELECT * FROM users WHERE user_id = ?;");
 	if ($statement->execute([$id])) {
-		return $statement->fetch();
+		return $statement->fetch(PDO::FETCH_ASSOC);
 	}
 	return false;
 }

@@ -64,7 +64,7 @@ function get_posts(PDO $dbh, $user_id) {
 				JOIN users u ON u.user_id = p.user_id
 				WHERE p.reply_to IS NULL
 				ORDER BY created_at DESC
-				LIMIT 10
+				LIMIT 5 OFFSET 0
 			)
 			UNION ALL
 			(
@@ -105,7 +105,7 @@ function get_posts(PDO $dbh, $user_id) {
 	$statement->bindParam(":user_id1", $user_id);
 	$statement->bindParam(":user_id2", $user_id);
 	$statement->execute();
-	return $statement->fetchAll();
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function get_posts_by_user(PDO $dbh, $user_id) {
@@ -186,5 +186,5 @@ function get_posts_by_user(PDO $dbh, $user_id) {
 	$statement->bindParam(":user_id2", $user_id);
 	$statement->bindParam(":user_id3", $user_id);
 	$statement->execute();
-	return $statement->fetchAll();
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
