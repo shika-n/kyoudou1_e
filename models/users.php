@@ -16,11 +16,11 @@ function register(PDO $dbh, $name, $nickname, $email, $hashed_password, $icon) {
 
 function edit_profile(PDO $dbh, $user_id, $name, $nickname, $email, $hashed_password, $icon) {
 	if ($hashed_password) {
-		$statement = $dbh->prepare("UPDATE users SET name = ?, nickname = ?, email = ?, password = ?, icon = WHERE user_id = ?;");
+		$statement = $dbh->prepare("UPDATE users SET name = ?, nickname = ?, email = ?, password = ?, icon = ? WHERE user_id = ?;");
 		return $statement->execute([$name, $nickname, $email, $hashed_password, $icon, $user_id]);
 
 	} else {
-		$statement = $dbh->prepare("UPDATE users SET name = ?, nickname = ?, email = ?, icon = WHERE user_id = ?;");
+		$statement = $dbh->prepare("UPDATE users SET name = ?, nickname = ?, email = ?, icon = ? WHERE user_id = ?;");
 		return $statement->execute([$name, $nickname, $email, $icon, $user_id]);
 	}
 }
