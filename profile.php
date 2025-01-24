@@ -54,6 +54,7 @@ $user_info = <<<HTML
             <hr>
             <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
         </div>
+        <a href='edit_profile.php' class='ml-4'>編集</a>
     </div>
 </div>
 HTML;
