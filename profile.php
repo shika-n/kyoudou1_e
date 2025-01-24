@@ -43,6 +43,8 @@ if (count($post_arr) === 0) {
 	}
 }
 
+$pages = Pages::k_base_url;
+
 // ** HTML出力生成（ユーザー情報） **
 $user_info = <<<HTML
 <div class="container mx-auto p-4">
@@ -54,6 +56,7 @@ $user_info = <<<HTML
             <hr>
             <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
         </div>
+		<a href="{$pages::k_profile_edit->get_url()}" class="ml-4">編集</a>
     </div>
 </div>
 HTML;
