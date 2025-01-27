@@ -12,9 +12,17 @@ if (!is_authenticated()) {
 
 date_default_timezone_set("UTC");
 $target_timezone = new DateTimeZone("Asia/Tokyo");
-$post_arr = get_posts($dbh, $_SESSION["user_id"]);
+if (isset($_GET["page"]) && $_GET['page'] > 0) {
+	$page = (int)$_GET["page"];
+} else {
+	$page = 1;
+}
+$limit = 5;
+$offset = $limit * ($page - 1);
+$post_arr = get_posts($dbh, $_SESSION["user_id"], $limit, $offset);
 $content = "";
 $comments = [];
+
 
 foreach ($post_arr as $row) {
 	if ($row["reply_to"]) {
