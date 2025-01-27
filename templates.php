@@ -19,8 +19,8 @@ function like_svg($row) {
 function post_actions_comp($post) {
 	return <<< ___EOF___
 			<div class="flex items-center">
-				<a href="edit_post.php/{$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="w-3 aspect-square"></a>
-				<a href="delete_post.php/{$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="w-3 aspect-square"></a>
+				<a href="edit_post.php?post_id={$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="w-3 aspect-square"></a>
+				<a href="delete_post.php?post_id={$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="w-3 aspect-square"></a>
 			</div>
 	___EOF___;
 }
