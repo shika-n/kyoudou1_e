@@ -20,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$_SESSION["error"] = "タイトルは1~20文字まで入力してください";
 		redirect_back();
 	}
-	if (!$content || mb_strlen($content) > 255) {
-		$_SESSION["error"] = "コンテンツは1~255文字まで入力してください";
+	if (!$content || mb_strlen($content) > 8192) {
+		$_SESSION["error"] = "コンテンツは1~8192文字まで入力してください";
 		redirect_back();
 	}
 

@@ -28,7 +28,52 @@ function comment(PDO $dbh, $user_id, $content, $reply_to) {
 	return $statement->execute([$user_id, $content, $now, $now, $reply_to]);
 }
 
+<<<<<<< HEAD
 function get_posts(PDO $dbh, $user_id, $limit, $offset) {
+=======
+function get_post_by_id(PDO $dbh, $user_id, $post_id) {
+	$statement = $dbh->prepare("
+		SELECT
+			post_id,
+			p.user_id,
+			created_at,
+			title,
+			content,
+			image,
+			updated_at,
+			reply_to,
+			deleted_at,
+			name,
+			nickname,
+			icon,
+			(
+				SELECT COUNT(l.user_id)
+				FROM likes l
+				WHERE l.post_id = p.post_id 
+			) AS 'like_count',
+			(
+				SELECT COUNT(c.post_id)
+				FROM posts c
+				WHERE c.reply_to = p.post_id
+			) AS 'comment_count',
+			EXISTS(
+				SELECT 1
+				FROM likes
+				WHERE p.post_id = post_id AND user_id = :user_id1
+			) AS 'liked_by_user'
+		FROM posts p
+		JOIN users u ON u.user_id = p.user_id
+		WHERE p.post_id = :post_id AND deleted_at IS NULL
+		LIMIT 1
+	");
+	$statement->bindParam(":user_id1", $user_id);
+	$statement->bindParam(":post_id", $post_id);
+	$statement->execute();
+	return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
+function get_posts(PDO $dbh, $user_id) {
+>>>>>>> e20853e93c59628bb4c41ef72d71101ab7564cbd
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (
 			(
@@ -62,7 +107,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset) {
 					) AS 'liked_by_user'
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
-				WHERE p.reply_to IS NULL
+				WHERE p.reply_to IS NULL AND deleted_at IS NULL
 				ORDER BY created_at DESC
 				LIMIT $limit OFFSET $offset
 			)
@@ -142,7 +187,7 @@ function get_posts_by_user(PDO $dbh, $user_id) {
 					) AS 'liked_by_user'
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
-				WHERE p.reply_to IS NULL AND p.user_id = :user_id2
+				WHERE p.reply_to IS NULL AND p.user_id = :user_id2 AND deleted_at IS NULL
 				ORDER BY created_at DESC
 				LIMIT 10
 			)
