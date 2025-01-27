@@ -15,7 +15,7 @@ function loadNextPosts() {
     });
 }
 window.addEventListener('scroll', function() {
-    const isAtBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.body.offsetHeight;
+    const isAtBottom = Math.ceil(window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight;
     if (isAtBottom) {
         loadNextPosts();
     }
