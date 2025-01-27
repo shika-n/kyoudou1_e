@@ -28,9 +28,6 @@ function comment(PDO $dbh, $user_id, $content, $reply_to) {
 	return $statement->execute([$user_id, $content, $now, $now, $reply_to]);
 }
 
-<<<<<<< HEAD
-function get_posts(PDO $dbh, $user_id, $limit, $offset) {
-=======
 function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 	$statement = $dbh->prepare("
 		SELECT
@@ -72,8 +69,7 @@ function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 	return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-function get_posts(PDO $dbh, $user_id) {
->>>>>>> e20853e93c59628bb4c41ef72d71101ab7564cbd
+function get_posts(PDO $dbh, $user_id, $limit, $offset) {
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (
 			(
