@@ -19,7 +19,7 @@ $user = get_user_by_id($dbh, $target_id);
 $icon = $user["icon"];
 $name = htmlspecialchars($user["name"], ENT_QUOTES, "UTF-8");
 $nickname = htmlspecialchars($user["nickname"], ENT_QUOTES, "UTF-8");
-$post_arr = get_posts_by_user($dbh, $target_id);
+$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"], $target_id);
 
 if (count($post_arr) === 0) {
     // 記事がない場合のメッセージ
