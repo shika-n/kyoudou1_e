@@ -28,6 +28,47 @@ function comment(PDO $dbh, $user_id, $content, $reply_to) {
 	return $statement->execute([$user_id, $content, $now, $now, $reply_to]);
 }
 
+function get_post_by_id(PDO $dbh, $user_id, $post_id) {
+	$statement = $dbh->prepare("
+		SELECT
+			post_id,
+			p.user_id,
+			created_at,
+			title,
+			content,
+			image,
+			updated_at,
+			reply_to,
+			deleted_at,
+			name,
+			nickname,
+			icon,
+			(
+				SELECT COUNT(l.user_id)
+				FROM likes l
+				WHERE l.post_id = p.post_id 
+			) AS 'like_count',
+			(
+				SELECT COUNT(c.post_id)
+				FROM posts c
+				WHERE c.reply_to = p.post_id
+			) AS 'comment_count',
+			EXISTS(
+				SELECT 1
+				FROM likes
+				WHERE p.post_id = post_id AND user_id = :user_id1
+			) AS 'liked_by_user'
+		FROM posts p
+		JOIN users u ON u.user_id = p.user_id
+		WHERE p.post_id = :post_id
+		LIMIT 1
+	");
+	$statement->bindParam(":user_id1", $user_id);
+	$statement->bindParam(":post_id", $post_id);
+	$statement->execute();
+	return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
 function get_posts(PDO $dbh, $user_id) {
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (

@@ -43,7 +43,7 @@ function post_owner_comp($id, $icon, $nickname, $created_at) {
 	___EOF___;
 }
 
-function comment_panel($comment, $target_timezone) {
+function comment_panel($comment, $target_timezone, $hidden = false) {
 	$id = htmlspecialchars($comment["user_id"], ENT_QUOTES, "UTF-8");
 	$comment['icon'] = htmlspecialchars($comment['icon'], ENT_QUOTES, 'UTF-8');
 	$comment['nickname'] = htmlspecialchars($comment['nickname'], ENT_QUOTES, 'UTF-8');
@@ -59,8 +59,13 @@ function comment_panel($comment, $target_timezone) {
 	
 	$like_icon = like_svg($comment);
 
+	$hidden_class = "";
+	if ($hidden) {
+		$hidden_class = "hidden";
+	}
+
 	return <<< ___EOF___
-		<div class="p-2 border-l-2 border-slate-500 bg-slate-200">
+		<div class="p-2 border-l-2 border-slate-500 bg-slate-200 $hidden_class">
 			<div class="flex justify-between">
 				<div class="flex flex-row flex-wrap items-center">
 					<div class="rounded-full">
@@ -111,9 +116,19 @@ function post_panel($row, $target_timezone, $comments) {
 	$post_owner = post_owner_comp($id, $row["icon"], $row["nickname"], $created_at);
 
 	$comments_html = "";
+	$show_more_comments_button = "";
 	if ($comments) {
-		foreach ($comments as $comment) {
-			$comments_html .= comment_panel($comment, $target_timezone);
+		$comments_count = count($comments);
+		for ($i = $comments_count - 1; $i >= 0; $i--) {
+			$comments_html .= comment_panel($comments[$i], $target_timezone, $i > 2);
+		}
+		
+		if ($comments_count > 3) {
+			$show_more_comments_button = <<< ___EOF___
+				<div class="flex gap-2 p-1 border-l-2 border-slate-500 bg-slate-200 text-xs">
+					<button onclick="showAllComments({$row['post_id']})" class="px-1 w-fit rounded-md text-blue-700 font-bold text-left hover:underline transition-all">コメントをすべて表示する</button>
+				</div>
+			___EOF___;
 		}
 	}
 	
@@ -148,11 +163,12 @@ function post_panel($row, $target_timezone, $comments) {
 					コメント：{$row["comment_count"]}
 				</div>
 			</div>
-			<div class="flex flex-col gap-1">
+			<div id="comment-region-{$row["post_id"]}" class="flex flex-col gap-1" data-is-comments-hidden>
+				$show_more_comments_button
 				$comments_html
 				<div class="flex gap-2 p-1 border-l-2 border-slate-500 bg-slate-200 text-xs">
-					<input type="text" name="comment" class="px-2 py-1 flex-grow border rounded-md">
-					<button type="" class="px-4 bg-blue-300 hover:bg-blue-200 active:bg-blue-400 rounded-md font-bold transition-all">送信</button>
+					<input type="text" id="comment-content-{$row["post_id"]}" name="comment" class="px-2 py-1 flex-grow border rounded-md">
+					<button onclick="comment({$row["post_id"]})" class="px-4 bg-blue-300 hover:bg-blue-200 active:bg-blue-400 rounded-md font-bold transition-all">送信</button>
 				</div>
 			</div>
 		</div>

@@ -68,6 +68,7 @@ $html = <<< ___EOF___
 			</a>
 		</main>
 		<script src="js/toggle.js"></script>
+		<script src="js/comment.js"></script>
 	</body>
 </html>
 ___EOF___;
