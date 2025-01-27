@@ -82,10 +82,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // データベースを更新
     if (edit_profile($dbh, $target_user_id, $name, $nickname, $email, $hashed_password, $icon)) {
-        $_SESSION["info"] = "<p>ユーザー情報の変更が完了しました！</p>";
+        $_SESSION["info"] = "ユーザー情報の変更が完了しました！";
 		redirect_to(Pages::k_profile);
     } else {
-        $_SESSION["error"] = "<p>更新に失敗しました。</p>";
+        $_SESSION["error"] = "更新に失敗しました。";
 		redirect_back();
     }
 	return;
