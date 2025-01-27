@@ -64,13 +64,9 @@ HTML;
 // ** 投稿一覧HTML生成 **
 $post_section = <<<HTML
 <hr>
-<div class="container mx-auto p-4">
-    <!-- 投稿一覧 -->
-    <h2 class="text-xl font-bold mb-4 text-center">記事一覧</h2>
-    <div class="post-list border-2 border-gray-300 rounded-lg p-4 flex flex-col gap-2">
-        $content
-    </div>
-</div>
+<!-- 投稿一覧 -->
+<h2 class="text-xl font-bold mb-4 text-center">記事一覧</h2>
+$content
 HTML;
 
 // ** レイアウトに組み込み＆出力 **
