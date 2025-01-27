@@ -6,15 +6,16 @@ function loadNextPosts() {
     fetch(`api/get_posts.php?page=${currentPage}`)
     .then(response => response.text())
     .then(html => {
+        loading = false;
+		if (html == "") return;
         const content = document.getElementById('content');
         content.innerHTML += html;
         console.log(`Fetching page: ${currentPage}`);
         currentPage++;
-        loading = false;
     });
 }
 window.addEventListener('scroll', function() {
-    const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
+    const isAtBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.body.offsetHeight;
     if (isAtBottom) {
         loadNextPosts();
     }
