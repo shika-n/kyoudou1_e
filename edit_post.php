@@ -14,10 +14,14 @@ $content = "";
 $image = "";
 $error = "";
 
+// $post_id = $_GET["post_id"];
+$post_id = get_if_set("post_id", $_GET);
+
 // データベースからユーザーの投稿内容を取得
-$sql = "SELECT * FROM posts WHERE user_id = :user_id";
+$sql = "SELECT * FROM posts WHERE user_id = :user_id AND post_id = :post_id";
 $stmt = $dbh->prepare($sql);
 $stmt->bindParam(':user_id', $target_user_id, PDO::PARAM_INT);
+$stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
 $stmt->execute();
 
 if ($record = $stmt->fetch()) {
