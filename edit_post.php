@@ -5,6 +5,10 @@ require_once("layout.php");
 require_once("models/posts.php");
 require_once("util.php");
 
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
+
 // セッションのユーザーID取得
 $target_user_id = $_SESSION['user_id'];
 
@@ -38,13 +42,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // フォームからの入力値を取得
-    $title = htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8');
-    $content = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
+    $title = htmlspecialchars(trim(get_if_set("title", $_POST, "")), ENT_QUOTES, 'UTF-8');
+    $content = htmlspecialchars(trim(get_if_set("content", $_POST, "")), ENT_QUOTES, 'UTF-8');
 
     // 入力チェック
-    if (!$title || mb_strlen($title) > 20) {
+    if (!$title || mb_strlen($title) < 1 || mb_strlen($title) > 20) {
         $error = "タイトルは1~20文字まで入力してください";
-    } elseif (!$content || mb_strlen($content) > 8192) {
+    } elseif (!$content || mb_strlen($content) < 1 || mb_strlen($content) > 8192) {
         $error = "コンテンツは1~8192文字まで入力してください";
     } else {
         // ファイルアップロード処理
@@ -58,25 +62,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             } elseif (!move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file)) {
                 $error = "画像のアップロードに失敗しました。";
             } else {
-                $image = htmlspecialchars($image_filename, ENT_QUOTES, 'UTF-8');
+                $image = $image_filename;
             }
         }
 
         // エラーがなければデータベース更新
         if (empty($error)) {
-            $update_sql = "UPDATE posts SET title = :title, content = :content, image = :image WHERE user_id = :user_id";
-            $update_stmt = $dbh->prepare($update_sql);
-            $update_stmt->bindParam(':title', $title, PDO::PARAM_STR);
-            $update_stmt->bindParam(':content', $content, PDO::PARAM_STR);
-            $update_stmt->bindParam(':image', $image, PDO::PARAM_STR);
-            $update_stmt->bindParam(':user_id', $target_user_id, PDO::PARAM_INT);
-
-
-
-            if ($update_stmt->execute()) {
+            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image)) {
                 $_SESSION["info"] = "投稿を更新しました。";
-                header("Location: /kyoudou1_e/", true, 303);
-                exit;
+				redirect_to(Pages::k_index);
             } else {
                 $error = "更新に失敗しました。";
             }
