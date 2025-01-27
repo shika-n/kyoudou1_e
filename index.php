@@ -13,7 +13,7 @@ date_default_timezone_set("UTC");
 $target_timezone = new DateTimeZone("Asia/Tokyo");
 
 $content = "";
-$post_arr = get_posts($dbh, $_SESSION["user_id"]);
+$post_arr = get_posts($dbh, $_SESSION["user_id"], 5, 0);
 
 $comments = [];
 

@@ -28,7 +28,7 @@ function comment(PDO $dbh, $user_id, $content, $reply_to) {
 	return $statement->execute([$user_id, $content, $now, $now, $reply_to]);
 }
 
-function get_posts(PDO $dbh, $user_id) {
+function get_posts(PDO $dbh, $user_id, $limit, $offset) {
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (
 			(
@@ -64,7 +64,7 @@ function get_posts(PDO $dbh, $user_id) {
 				JOIN users u ON u.user_id = p.user_id
 				WHERE p.reply_to IS NULL
 				ORDER BY created_at DESC
-				LIMIT 5 OFFSET 0
+				LIMIT $limit OFFSET $offset
 			)
 			UNION ALL
 			(
