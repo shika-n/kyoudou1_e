@@ -60,7 +60,7 @@ function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 			) AS 'liked_by_user'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
-		WHERE p.post_id = :post_id
+		WHERE p.post_id = :post_id AND deleted_at IS NULL
 		LIMIT 1
 	");
 	$statement->bindParam(":user_id1", $user_id);
@@ -103,7 +103,7 @@ function get_posts(PDO $dbh, $user_id) {
 					) AS 'liked_by_user'
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
-				WHERE p.reply_to IS NULL
+				WHERE p.reply_to IS NULL AND deleted_at IS NULL
 				ORDER BY created_at DESC
 				LIMIT 5 OFFSET 0
 			)
@@ -183,7 +183,7 @@ function get_posts_by_user(PDO $dbh, $user_id) {
 					) AS 'liked_by_user'
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
-				WHERE p.reply_to IS NULL AND p.user_id = :user_id2
+				WHERE p.reply_to IS NULL AND p.user_id = :user_id2 AND deleted_at IS NULL
 				ORDER BY created_at DESC
 				LIMIT 10
 			)
