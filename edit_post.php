@@ -17,6 +17,7 @@ $title = "";
 $content = "";
 $image = "";
 $error = "";
+$is_a_comment = false;
 
 // $post_id = $_GET["post_id"];
 $post_id = get_if_set("post_id", $_GET);
@@ -32,6 +33,9 @@ if ($record = $stmt->fetch()) {
     $title = htmlspecialchars($record['title'], ENT_QUOTES, 'UTF-8');
     $content = htmlspecialchars($record['content'], ENT_QUOTES, 'UTF-8');
     $image = htmlspecialchars($record['image'], ENT_QUOTES, 'UTF-8');
+    if (isset($record['reply_to'])) {
+        $is_a_comment = true;
+    }
 }
 
 // POSTリクエスト処理
@@ -46,7 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $content = htmlspecialchars(trim(get_if_set("content", $_POST, "")), ENT_QUOTES, 'UTF-8');
 
     // 入力チェック
-    if (!$title || mb_strlen($title) < 1 || mb_strlen($title) > 20) {
+
+    if ((!$title || mb_strlen($title) < 1 || mb_strlen($title) > 20) && !$is_a_comment) {
         $error = "タイトルは1~20文字まで入力してください";
     } elseif (!$content || mb_strlen($content) < 1 || mb_strlen($content) > 8192) {
         $error = "コンテンツは1~8192文字まで入力してください";
@@ -149,21 +154,31 @@ $content = <<< ___EOF___
         <?php endif; ?>
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="$csrf_token">
-            <label for="title">タイトル</label>
-            <input type="text" id="title" name="title" value="$title" maxlength="20" required>
+
+            <!-- TITLE INPUT -->
 
             <label for="content">コンテンツ</label>
             <textarea id="content" name="content" rows="5" maxlength="255" required>$content</textarea>
 
-            <label for="image">画像 (任意)</label>
-            <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
-
+            <!-- IMAGE INPUT -->
+           
             <button type="submit">保存</button>
         </form>
     </div>
 </body>
 </html>
 ___EOF___;
-
+$title_input = <<< ___EOF___
+<label for="title">タイトル</label>
+<input type="text" id="title" name="title" value="$title" maxlength="20" required>
+___EOF___;
+$image_input = <<< ___EOF___
+<label for="image">画像 (任意)</label>
+<input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
+___EOF___;
+if (!$is_a_comment) {
+    $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);
+    $content = str_replace("<!-- IMAGE INPUT -->", $image_input, $content);
+}
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 	echo $html;
