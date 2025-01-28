@@ -61,15 +61,34 @@ $html = <<< ___EOF___
 					<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
 				</svg>
 			</a>
-			<a class="fixed flex w-12 aspect-square right-8 bottom-24 items-center justify-center bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full shadow-xl shadow-gray-800/30 transition-all" href="#top">
+			<a class="fixed flex w-12 aspect-square right-8 bottom-24 items-center justify-center bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full shadow-xl shadow-gray-800/30 transition-all" href="#top" id="scrollToTopButton">
 				<svg xmlns="http://www.w3.org/2000/svg" class="size-6" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M12 19V6M5 12l7-7 7 7"/>
 				</svg>
 			</a>
 		</main>
+		<script>
+			// トップに戻るボタンの表示制御
+			document.addEventListener("DOMContentLoaded", function() {
+				const scrollToTopButton = document.getElementById("scrollToTopButton");
+
+				// 初期状態で非表示に設定
+    				scrollToTopButton.style.display = "none";
+
+				// スクロールイベントを監視
+				window.addEventListener("scroll", function() {
+					if (window.scrollY > 200) { // スクロール量が200pxを超えた場合
+						scrollToTopButton.style.display = "flex"; // ボタンを表示
+					} else {
+						scrollToTopButton.style.display = "none"; // ボタンを非表示
+					}
+				});
+			});
+		</script>
 		<script src="js/toggle.js"></script>
 		<script src="js/reach_bottom_action.js"></script>
 		<script src="js/comment.js"></script>
+		<script src="js/like.js"></script>
 	</body>
 </html>
 ___EOF___;

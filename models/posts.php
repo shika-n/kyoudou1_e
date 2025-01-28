@@ -149,7 +149,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function get_posts_by_user(PDO $dbh, $auth_id, $user_id) {
+function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset) {
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (
 			(
@@ -185,7 +185,7 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id) {
 				JOIN users u ON u.user_id = p.user_id
 				WHERE p.reply_to IS NULL AND p.user_id = :user_id AND deleted_at IS NULL
 				ORDER BY created_at DESC
-				LIMIT 10
+				LIMIT :limit OFFSET :offset
 			)
 			UNION ALL
 			(
@@ -226,6 +226,8 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id) {
 	$statement->bindParam(":auth_id1", $auth_id);
 	$statement->bindParam(":auth_id2", $auth_id);
 	$statement->bindParam(":user_id", $user_id);
+	$statement->bindParam(":limit", $limit);
+	$statement->bindParam(":offset", $offset);
 	$statement->execute();
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }

@@ -17,8 +17,13 @@ $post_id = $_GET["post_id"];
 if (!is_liked($dbh, $post_id)) {
 	// いいね
 	if (like($dbh, $user_id, $post_id)) {
+		$new_like_count = get_post_like_count($dbh, $post_id);
 		header("Content-Type: text/json;", true, 200);
-		echo json_encode(["message" => "いいねしました"]);
+		echo json_encode([
+			"message" => "OK",
+			"like_count" => $new_like_count,
+			"is_liked" => true,
+		]);
 	} else {
 		header("Content-Type: text/json", true, 500);
 		echo json_encode(["message" => "いいね失敗しました"]);
@@ -26,8 +31,13 @@ if (!is_liked($dbh, $post_id)) {
 } else {
 	// いいね取り消し
 	if (unlike($dbh, $user_id, $post_id)) {
-		header("Content-Type: text/json", true, 200);
-		echo json_encode(["message" => "いいね取り消しました"]);
+		$new_like_count = get_post_like_count($dbh, $post_id);
+		header("Content-Type: text/json;", true, 200);
+		echo json_encode([
+			"message" => "OK",
+			"like_count" => $new_like_count,
+			"is_liked" => false,
+		]);
 	} else {
 		header("Content-Type: text/json", true, 500);
 		echo json_encode(["message" => "いいえの取り消しは失敗しました"]);

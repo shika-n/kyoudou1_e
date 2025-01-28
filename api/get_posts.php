@@ -19,10 +19,19 @@ if (isset($_GET["page"]) && $_GET['page'] > 0) {
 }
 $limit = 5;
 $offset = $limit * ($page - 1);
-$post_arr = get_posts($dbh, $_SESSION["user_id"], $limit, $offset);
+
+$profile_id = get_if_set("id", $_GET);
+if ($profile_id) {
+	if ($profile_id == -1) {
+		$profile_id = $_SESSION["user_id"];
+	}
+	$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"], $profile_id, $limit, $offset);
+} else {
+	$post_arr = get_posts($dbh, $_SESSION["user_id"], $limit, $offset);
+}
+
 $content = "";
 $comments = [];
-
 
 foreach ($post_arr as $row) {
 	if ($row["reply_to"]) {

@@ -3,7 +3,20 @@ let loading = false;
 function loadNextPosts() {
     if (loading) return;
     loading = true;
-    fetch(`api/get_posts.php?page=${currentPage}`)
+
+	const url = new URL(window.location.href);
+	const params = url.searchParams;
+
+	let urlToFetch = `api/get_posts.php?page=${currentPage}`;
+	if (url.pathname.endsWith("profile.php")) {
+		if (params.get("id")) {
+			urlToFetch += `&id=${params.get("id")}`;
+		} else {
+			urlToFetch += `&id=-1`;
+		}
+	}
+
+    fetch(urlToFetch)
     .then(response => response.text())
     .then(html => {
         loading = false;
