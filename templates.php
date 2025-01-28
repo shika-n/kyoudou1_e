@@ -25,8 +25,14 @@ function post_actions_comp($post) {
 	___EOF___;
 }
 
-function post_owner_comp($id, $icon, $nickname, $created_at) {
-	return <<< ___EOF___
+function post_owner_comp($id, $icon, $nickname, $created_at, $updated_at) {
+	$showed_datetime = $created_at;
+	$hover = "";
+	if ($created_at != $updated_at) {
+		$showed_datetime = $created_at . "*";
+		$hover = "title='{$updated_at}に編集された'";
+	}
+	$post_owner_comp_layout = <<< ___EOF___
 		<div class="flex flex-row flex-wrap items-center">
 			<div class="rounded-full">
 				<img src="profile_pictures/{$icon}" class="w-8 rounded-full aspect-square object-cover object-center">
@@ -36,11 +42,13 @@ function post_owner_comp($id, $icon, $nickname, $created_at) {
 					<a href="profile.php?id=$id">{$nickname}</a>
 				</div>
 				<div>
-					<p>{$created_at}</p>
+					<p <!-- HOVER -->>{$showed_datetime}</p>
 				</div>
 			</div>
 		</div>
 	___EOF___;
+	$post_owner_comp_layout = str_replace("<!-- HOVER -->", $hover, $post_owner_comp_layout);
+	return $post_owner_comp_layout;
 }
 
 function comment_panel($comment, $target_timezone, $hidden = false) {
@@ -48,9 +56,11 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 	$comment['icon'] = htmlspecialchars($comment['icon'], ENT_QUOTES, 'UTF-8');
 	$comment['nickname'] = htmlspecialchars($comment['nickname'], ENT_QUOTES, 'UTF-8');
 	$comment['created_at'] = htmlspecialchars($comment['created_at'], ENT_QUOTES, 'UTF-8');
+	$comment['updated_at'] = htmlspecialchars($comment['updated_at'], ENT_QUOTES, 'UTF-8');
 	$comment['title'] = htmlspecialchars($comment['title'], ENT_QUOTES, 'UTF-8');
 	$comment['content'] = htmlspecialchars($comment['content'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($comment["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
+	$updated_at = (new DateTime($comment["updated_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 	
 	$actions = "";
 	if ($comment["user_id"] === $_SESSION["user_id"]) {
@@ -64,7 +74,13 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 		$hidden_class = "hidden";
 	}
 
-	return <<< ___EOF___
+	$showed_datetime = $created_at;
+	$hover = "";
+	if ($created_at != $updated_at) {
+		$showed_datetime = $created_at . "*";
+		$hover = "title='{$updated_at}に編集された'";
+	}
+	$comment_panel_layout = <<< ___EOF___
 		<div class="p-2 border-l-2 border-slate-500 bg-slate-200 $hidden_class">
 			<div class="flex justify-between">
 				<div class="flex flex-row flex-wrap items-center">
@@ -76,7 +92,7 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 							<a href="profile.php?id=$id">{$comment['nickname']}</a>
 						</div>
 						<div>
-							<p>{$created_at}</p>
+							<p <!-- HOVER -->>{$showed_datetime}</p>
 						</div>
 					</div>
 				</div>
@@ -95,6 +111,8 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 			</div>
 		</div>
 	___EOF___;
+	$comment_panel_layout = str_replace("<!-- HOVER -->", $hover, $comment_panel_layout);
+	return $comment_panel_layout;
 }
 
 function post_panel($row, $target_timezone, $comments) {
@@ -102,10 +120,13 @@ function post_panel($row, $target_timezone, $comments) {
 	$row['icon'] = htmlspecialchars($row['icon'], ENT_QUOTES, 'UTF-8');
 	$row['nickname'] = htmlspecialchars($row['nickname'], ENT_QUOTES, 'UTF-8');
 	$row['created_at'] = htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8');
+	$row['updated_at'] = htmlspecialchars($row['updated_at'], ENT_QUOTES, 'UTF-8');
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$row['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
+	$updated_at = (new DateTime($row["updated_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
+
 	
 	$actions = "";
 	if ($row["user_id"] === $_SESSION["user_id"]) {
@@ -113,7 +134,7 @@ function post_panel($row, $target_timezone, $comments) {
 	}
 
 	$like_icon = like_svg($row);
-	$post_owner = post_owner_comp($id, $row["icon"], $row["nickname"], $created_at);
+	$post_owner = post_owner_comp($id, $row["icon"], $row["nickname"], $created_at , $updated_at);
 
 	$comments_html = "";
 	$show_more_comments_button = "";
