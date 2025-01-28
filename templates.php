@@ -87,9 +87,9 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 			</div>
 			<div class="mt-2 flex gap-2 items-center">
 				<div class="flex gap-1 items-center text-xs">
-					<a href="#" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
+					<button onclick="like({$comment['post_id']})" id="like-button-{$comment['post_id']}" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
 						$like_icon
-					</a>
+					</button>
 					{$comment["like_count"]}
 				</div>
 			</div>
@@ -154,9 +154,9 @@ function post_panel($row, $target_timezone, $comments) {
 			</div>
 			<div class="mt-2 flex gap-2 items-center">
 				<div class="flex gap-1 items-center text-xs">
-					<a href="#" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
+					<button onclick="like({$row['post_id']})" id="like-button-{$row['post_id']}" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
 						$like_icon
-					</a>
+					</button>
 					{$row["like_count"]}
 				</div>
 				<div class="px-2 py-1 bg-slate-300 rounded-lg text-xs">

@@ -70,6 +70,7 @@ $html = <<< ___EOF___
 		<script src="js/toggle.js"></script>
 		<script src="js/reach_bottom_action.js"></script>
 		<script src="js/comment.js"></script>
+		<script src="js/like.js"></script>
 	</body>
 </html>
 ___EOF___;
