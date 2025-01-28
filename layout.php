@@ -51,7 +51,7 @@ $html = <<< ___EOF___
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_profile->get_url()}">プロファイル</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_user_list->get_url()}">ユーザー一覧</a>
 				</div>
-				<div class="px-4 mt-16 md:mt-4 flex-grow flex flex-col gap-2 overflow-hidden">
+				<div id="content" class="px-4 mt-16 md:mt-4 flex-grow flex flex-col gap-2 overflow-hidden">
 					$info_message_comp
 					<!-- CONTENT -->
 				</div>
@@ -87,6 +87,9 @@ $html = <<< ___EOF___
 		</script>
 		</main>
 		<script src="js/toggle.js"></script>
+		<script src="js/reach_bottom_action.js"></script>
+		<script src="js/comment.js"></script>
+		<script src="js/like.js"></script>
 	</body>
 </html>
 ___EOF___;

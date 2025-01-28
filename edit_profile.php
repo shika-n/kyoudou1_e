@@ -71,6 +71,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // アップロードされたアイコン処理
 	$icon_file = get_if_set("icon", $_FILES);
     if ($icon_file && !empty($icon_file['name'])) {
+		$is_uploadable = check_uploadable_image($icon_file);
+		if ($is_uploadable !== true) {
+			$_SESSION["error"] = $is_uploadable;
+			redirect_back();
+		}
         $upload_dir = "profile_pictures/";
         $uploaded_file = $upload_dir . get_unique_image_name($icon_file);
         
@@ -82,10 +87,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // データベースを更新
     if (edit_profile($dbh, $target_user_id, $name, $nickname, $email, $hashed_password, $icon)) {
-        $_SESSION["info"] = "<p>ユーザー情報の変更が完了しました！</p>";
+        $_SESSION["info"] = "ユーザー情報の変更が完了しました！";
 		redirect_to(Pages::k_profile);
     } else {
-        $_SESSION["error"] = "<p>更新に失敗しました。</p>";
+        $_SESSION["error"] = "更新に失敗しました。";
 		redirect_back();
     }
 	return;
