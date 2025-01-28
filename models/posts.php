@@ -69,7 +69,12 @@ function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 	return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-function get_posts(PDO $dbh, $user_id, $limit, $offset) {
+function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
+	if ($sort_order === "newest") {
+		$sort_order_inject = "";
+	} else {
+		$sort_order_inject = "like_count DESC, ";
+	}
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (
 			(
@@ -104,7 +109,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset) {
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
 				WHERE p.reply_to IS NULL AND deleted_at IS NULL
-				ORDER BY created_at DESC
+				ORDER BY $sort_order_inject created_at DESC
 				LIMIT $limit OFFSET $offset
 			)
 			UNION ALL
@@ -140,16 +145,38 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset) {
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
 				JOIN base b ON b.post_id = p.reply_to
+				ORDER BY created_at ASC
 			)
-		) SELECT * FROM base ORDER BY reply_to IS NULL, created_at DESC;
+		) SELECT * FROM base;
 	");
 	$statement->bindParam(":user_id1", $user_id);
 	$statement->bindParam(":user_id2", $user_id);
 	$statement->execute();
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+
+	$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+	$comment_start_index = count($rows);
+	for ($i = 0; $i < count($rows); ++$i) {
+		if ($rows[$i]["reply_to"]) {
+			$comment_start_index = $i;
+			break;
+		}
+	}
+
+	$comments = [];
+	for ($i = $comment_start_index; $i < count($rows); ++$i) {
+		$comments[$rows[$i]["reply_to"]][] = $rows[$i];
+	}
+
+	return [ array_splice($rows, 0, $comment_start_index), $comments ];
 }
 
-function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset) {
+function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_order) {
+	if ($sort_order === "newest") {
+		$sort_order_inject = "";
+	} else {
+		$sort_order_inject = "like_count DESC, ";
+	}
 	$statement = $dbh->prepare("
 		WITH RECURSIVE base AS (
 			(
@@ -184,7 +211,7 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset) {
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
 				WHERE p.reply_to IS NULL AND p.user_id = :user_id AND deleted_at IS NULL
-				ORDER BY created_at DESC
+				ORDER BY $sort_order_inject created_at DESC
 				LIMIT :limit OFFSET :offset
 			)
 			UNION ALL
@@ -220,8 +247,9 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset) {
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
 				JOIN base b ON b.post_id = p.reply_to
+				ORDER BY created_at ASC
 			)
-		) SELECT * FROM base ORDER BY reply_to IS NULL, created_at DESC;
+		) SELECT * FROM base;
 	");
 	$statement->bindParam(":auth_id1", $auth_id);
 	$statement->bindParam(":auth_id2", $auth_id);
@@ -229,5 +257,21 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset) {
 	$statement->bindParam(":limit", $limit);
 	$statement->bindParam(":offset", $offset);
 	$statement->execute();
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+	
+	$rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+	$comment_start_index = count($rows);
+	for ($i = 0; $i < count($rows); ++$i) {
+		if ($rows[$i]["reply_to"]) {
+			$comment_start_index = $i;
+			break;
+		}
+	}
+
+	$comments = [];
+	for ($i = $comment_start_index; $i < count($rows); ++$i) {
+		$comments[$rows[$i]["reply_to"]][] = $rows[$i];
+	}
+
+	return [ array_splice($rows, 0, $comment_start_index), $comments ];
 }

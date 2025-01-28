@@ -89,6 +89,7 @@ $html = <<< ___EOF___
 		<script src="js/reach_bottom_action.js"></script>
 		<script src="js/comment.js"></script>
 		<script src="js/like.js"></script>
+		<script src="js/post_sort_order.js"></script>
 	</body>
 </html>
 ___EOF___;

@@ -1,4 +1,22 @@
 <?php
+require_once("util.php");
+
+function sort_order_select() {
+	$sort_order = get_if_set("sort_order", $_SESSION, "newest");
+
+	$selected_newest = $sort_order === "newest" ? "selected" : "";
+	$selected_likes = $sort_order === "likes" ? "selected" : "";
+
+	return <<< ___EOF___
+		<div class="text-right text-xs">
+			<label for="post-sort-order">並び順</label>
+			<select id="post-sort-order" onchange="changeSortOrder(this)" class="w-fit px-1 border border-gray-400 rounded-md">
+				<option value="newest" $selected_newest>最新順</option>
+				<option value="likes" $selected_likes>いいねが多い</option>
+			</select>
+		</div>
+	___EOF___;
+}
 
 function like_svg($row) {
 	if ($row["liked_by_user"]) {
@@ -119,8 +137,8 @@ function post_panel($row, $target_timezone, $comments) {
 	$show_more_comments_button = "";
 	if ($comments) {
 		$comments_count = count($comments);
-		for ($i = $comments_count - 1; $i >= 0; $i--) {
-			$comments_html .= comment_panel($comments[$i], $target_timezone, $i > 2);
+		for ($i = 0; $i < $comments_count; ++$i) {
+			$comments_html .= comment_panel($comments[$i], $target_timezone, $i < $comments_count - 3);
 		}
 		
 		if ($comments_count > 3) {
