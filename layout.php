@@ -85,7 +85,6 @@ $html = <<< ___EOF___
 				});
 			});
 		</script>
-		</main>
 		<script src="js/toggle.js"></script>
 		<script src="js/reach_bottom_action.js"></script>
 		<script src="js/comment.js"></script>
