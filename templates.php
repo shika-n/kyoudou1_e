@@ -90,7 +90,7 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 					<button onclick="like({$comment['post_id']})" id="like-button-{$comment['post_id']}" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
 						$like_icon
 					</button>
-					{$comment["like_count"]}
+					<span id="like-count-{$comment['post_id']}">{$comment["like_count"]}</span>
 				</div>
 			</div>
 		</div>
@@ -157,7 +157,7 @@ function post_panel($row, $target_timezone, $comments) {
 					<button onclick="like({$row['post_id']})" id="like-button-{$row['post_id']}" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
 						$like_icon
 					</button>
-					{$row["like_count"]}
+					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
 				</div>
 				<div class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
 					コメント：{$row["comment_count"]}

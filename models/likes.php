@@ -13,3 +13,9 @@ function is_liked(PDO $dbh, $post_id) {
 		return false;
 	}
 }
+
+function get_post_like_count(PDO $dbh, $post_id) {
+	$statement = $dbh->prepare("SELECT COUNT(user_id) FROM likes WHERE post_id = ?");
+	$statement->execute([$post_id]);
+	return $statement->fetchAll()[0][0];
+}
