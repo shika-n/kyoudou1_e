@@ -25,20 +25,15 @@ if ($profile_id) {
 	if ($profile_id == -1) {
 		$profile_id = $_SESSION["user_id"];
 	}
-	$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"], $profile_id, $limit, $offset);
+	[ $post_arr, $comments ] = get_posts_by_user($dbh, $_SESSION["user_id"], $profile_id, $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
 } else {
-	$post_arr = get_posts($dbh, $_SESSION["user_id"], $limit, $offset);
+	[ $post_arr, $comments ] = get_posts($dbh, $_SESSION["user_id"], $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
 }
 
 $content = "";
-$comments = [];
 
 foreach ($post_arr as $row) {
-	if ($row["reply_to"]) {
-		$comments[$row["reply_to"]][] = $row;
-	} else {
-		$content .= post_panel($row, $target_timezone, get_if_set($row["post_id"], $comments));
-	}
+	$content .= post_panel($row, $target_timezone, get_if_set($row["post_id"], $comments));
 }
 
 
