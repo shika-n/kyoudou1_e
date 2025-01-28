@@ -21,7 +21,8 @@ if (!is_liked($dbh, $post_id)) {
 		header("Content-Type: text/json;", true, 200);
 		echo json_encode([
 			"message" => "OK",
-			"like_count" => $new_like_count
+			"like_count" => $new_like_count,
+			"is_liked" => true,
 		]);
 	} else {
 		header("Content-Type: text/json", true, 500);
@@ -34,7 +35,8 @@ if (!is_liked($dbh, $post_id)) {
 		header("Content-Type: text/json;", true, 200);
 		echo json_encode([
 			"message" => "OK",
-			"like_count" => $new_like_count
+			"like_count" => $new_like_count,
+			"is_liked" => false,
 		]);
 	} else {
 		header("Content-Type: text/json", true, 500);
