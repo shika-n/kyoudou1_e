@@ -86,7 +86,6 @@ $html = <<< ___EOF___
 			});
 		</script>
 		<script src="js/toggle.js"></script>
-		<script src="js/reach_bottom_action.js"></script>
 		<script src="js/comment.js"></script>
 		<script src="js/like.js"></script>
 	</body>
@@ -110,7 +109,7 @@ $guest_html = <<< ___EOF___
 		<main>
 			<!-- CONTENT -->
 		</main>
-	</body>
+	</body>		
 </html>
 ___EOF___;
 $loggedinusername = get_if_set("name", $_SESSION) ;
