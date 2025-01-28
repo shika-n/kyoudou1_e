@@ -51,7 +51,7 @@ function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 			(
 				SELECT COUNT(c.post_id)
 				FROM posts c
-				WHERE c.reply_to = p.post_id
+				WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
 			) AS 'comment_count',
 			EXISTS(
 				SELECT 1
@@ -99,7 +99,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 					(
 						SELECT COUNT(c.post_id)
 						FROM posts c
-						WHERE c.reply_to = p.post_id
+						WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
 					) AS 'comment_count',
 					EXISTS(
 						SELECT 1
@@ -135,7 +135,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 					(
 						SELECT COUNT(c.post_id)
 						FROM posts c
-						WHERE c.reply_to = p.post_id
+						WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
 					) AS 'comment_count',
 					EXISTS(
 						SELECT 1
@@ -145,6 +145,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
 				JOIN base b ON b.post_id = p.reply_to
+				WHERE p.deleted_at IS NULL
 				ORDER BY created_at ASC
 			)
 		) SELECT * FROM base;
@@ -201,7 +202,7 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 					(
 						SELECT COUNT(c.post_id)
 						FROM posts c
-						WHERE c.reply_to = p.post_id
+						WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
 					) AS 'comment_count',
 					EXISTS(
 						SELECT 1
@@ -237,7 +238,7 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 					(
 						SELECT COUNT(c.post_id)
 						FROM posts c
-						WHERE c.reply_to = p.post_id
+						WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
 					) AS 'comment_count',
 					EXISTS(
 						SELECT 1
@@ -247,6 +248,7 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 				FROM posts p
 				JOIN users u ON u.user_id = p.user_id
 				JOIN base b ON b.post_id = p.reply_to
+				WHERE p.deleted_at IS NULL
 				ORDER BY created_at ASC
 			)
 		) SELECT * FROM base;

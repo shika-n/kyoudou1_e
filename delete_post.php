@@ -2,6 +2,11 @@
 require_once("db_open.php");
 require_once("models/posts.php");
 require_once("layout.php");
+require_once("util.php");
+
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 function post_panel($row, $target_timezone) {
 	$id = htmlspecialchars($row["user_id"], ENT_QUOTES, "UTF-8");
@@ -11,17 +16,13 @@ function post_panel($row, $target_timezone) {
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
-	
-	// $actions = "";
-	// if ($row["user_id"] === $_SESSION["user_id"]) {
-	// 	$actions = <<< ___EOF___
-	// 			<div class="flex items-center gap-4">
-	// 				<a href="edit_post.php/{$row['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="w-5 aspect-square"></a>
-	// 				<a href="delete_post.php/{$row['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="w-5 aspect-square"></a>
-	// 			</div>
-	// 	___EOF___;
-	// }
-	// $actions
+
+	$image = "";
+	if ($row["image"]) {
+		$image = <<< ___EOF___
+				<img class="mx-auto max-h-60" src="post_images/{$row['image']}">
+		___EOF___;
+	}
 	
 	return <<< ___EOF___
 		<style>
@@ -97,12 +98,12 @@ function post_panel($row, $target_timezone) {
 						</div>
 					</div>
 				</div>
-				
 			</div>
 			<div class="font-semibold">
 				<p>{$row['title']}</p>
 			</div>
 			<div class="leading-4">
+				{$image}
 				<p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
 			</div>
 		</div>
@@ -129,6 +130,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $post_id = $_GET["post_id"];
 
 $dummy = get_post_by_id($dbh, $_SESSION["user_id"], $post_id);
+
+if ($dummy["user_id"] != $_SESSION["user_id"]) {
+	redirect_to(Pages::k_profile);
+}
 
 // ** レイアウトに組み込み＆出力 **
 $html = str_replace("<!-- CONTENT -->", post_panel($dummy, new DateTimeZone("Asia/Tokyo")), $html);
