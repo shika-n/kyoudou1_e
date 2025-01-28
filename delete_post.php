@@ -2,6 +2,11 @@
 require_once("db_open.php");
 require_once("models/posts.php");
 require_once("layout.php");
+require_once("util.php");
+
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 function post_panel($row, $target_timezone) {
 	$id = htmlspecialchars($row["user_id"], ENT_QUOTES, "UTF-8");
@@ -117,6 +122,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $post_id = $_GET["post_id"];
 
 $dummy = get_post_by_id($dbh, $_SESSION["user_id"], $post_id);
+
+if ($dummy["user_id"] != $_SESSION["user_id"]) {
+	redirect_to(Pages::k_profile);
+}
 
 // ** レイアウトに組み込み＆出力 **
 $html = str_replace("<!-- CONTENT -->", post_panel($dummy, new DateTimeZone("Asia/Tokyo")), $html);
