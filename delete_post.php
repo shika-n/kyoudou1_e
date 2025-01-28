@@ -12,15 +12,16 @@ function post_panel($row, $target_timezone) {
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 	
-	$actions = "";
-	if ($row["user_id"] === $_SESSION["user_id"]) {
-		$actions = <<< ___EOF___
-				<div class="flex items-center gap-4">
-					<a href="edit_post.php/{$row['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="w-5 aspect-square"></a>
-					<a href="delete_post.php/{$row['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="w-5 aspect-square"></a>
-				</div>
-		___EOF___;
-	}
+	// $actions = "";
+	// if ($row["user_id"] === $_SESSION["user_id"]) {
+	// 	$actions = <<< ___EOF___
+	// 			<div class="flex items-center gap-4">
+	// 				<a href="edit_post.php/{$row['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="w-5 aspect-square"></a>
+	// 				<a href="delete_post.php/{$row['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="w-5 aspect-square"></a>
+	// 			</div>
+	// 	___EOF___;
+	// }
+	// $actions
 	
 	return <<< ___EOF___
 		<style>
@@ -63,7 +64,7 @@ function post_panel($row, $target_timezone) {
 				font-weight:bold;
 				border:2px solid black ;
 				border-radius: 8px;
-				padding:11px 15px 13px 15px;
+				padding:13px 60px 13px 60px;
 				width: 170px;
 			}
 			.cancelbutton:hover{
@@ -96,7 +97,7 @@ function post_panel($row, $target_timezone) {
 						</div>
 					</div>
 				</div>
-				$actions
+				
 			</div>
 			<div class="font-semibold">
 				<p>{$row['title']}</p>
