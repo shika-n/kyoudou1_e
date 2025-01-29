@@ -165,7 +165,17 @@ $content = <<< ___EOF___
 
             <!-- IMAGE INPUT -->
            
-            <button type="submit">保存</button>
+            <button type="button" onclick="showDialog()">保存</button>
+			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
+				<div class="bg-white w-fit h-fit p-4 rounded-xl">
+					<p>本当に更新しますか？</p>
+					<div class="flex gap-2">
+						<button type="submit" onclick="hideDialog()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-4 flex-1 min-w-32">保存</button>
+						<button type="button" onclick="hideDialog()" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg mt-4 flex-1 min-w-32">キャンセル</button>
+					</div>
+				</div>
+				<script src="js/dialog.js"></script>
+			</div>
         </form>
     </div>
 </body>

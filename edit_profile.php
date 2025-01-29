@@ -102,46 +102,55 @@ $_SESSION["error"] = null;
 $content = <<<___EOF___
     <div class="container mx-auto p-4 text-center">
         <h1 class="text-xl font-bold mb-4">ユーザー情報の編集</h1>
-    <div class="border-2 border-gray-300 rounded-lg p-4 flex flex-col gap-2">
-        <p class="text-red-500">変更したい項目を入力してください<p>
-		<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
+    	<div class="border-2 border-gray-300 rounded-lg p-4 flex flex-col gap-2">
+			<p class="text-red-500">変更したい項目を入力してください<p>
+			<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
 
-        <!-- プロフィール編集フォーム -->
-        <form method="post" action="" enctype="multipart/form-data">
-        <!-- アイコン変更 -->
-        <div class="mb-4">
-                <label for="icon" class="block font-bold mb-1">アイコン画像:</label>
-                 <div class="mt-2 text-center">
-                        <img src="profile_pictures/$icon" alt="現在のアイコン" id="preview" class="w-24 h-24 rounded-full block m-auto object-cover object-center mb-4">
-                    </div>
-                <input type="file" id="icon" name="icon" class="border-2 rounded-lg p-2 w-full" accept="image/png, image/jpeg, image/gif" class="flex-grow">
-                   
-        <!-- 名前変更 -->
-            <div class="mb-4">
-                <label for="name" class="block font-bold mb-1">名前:</label>
-                <input type="text" id="name" name="name" value="$name" required class="border-2 rounded-lg p-2 w-full">
-            </div>
-    <!-- ニックネーム変更 -->
-            <div class="mb-4">
-                <label for="nickname" class="block font-bold mb-1">ニックネーム:</label>
-                <input type="text" id="nickname" name="nickname" value="$nickname" required class="border-2 rounded-lg p-2 w-full">
-            </div>
-    <!-- メールアドレス変更 -->
-            <div class="mb-4">
-                <label for="email" class="block font-bold mb-1">メールアドレス:</label>
-                <input type="email" id="email" name="email" value="$email" required class="border-2 rounded-lg p-2 w-full">
-            </div>
-    <!-- パスワード変更 -->
-            <div class="mb-4">
-                <label for="password" class="block font-bold mb-1">パスワード:</label>
-                <input type="password" id="password" name="password" required class="border-2 rounded-lg p-2 w-full">
-            </div>
-            </div>
-                <?php endif; ?>
-            </div>
-            <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-4 w-1/2">更新</button>
-        </form>
-    </div>
+			<!-- プロフィール編集フォーム -->
+			<form method="post" action="" enctype="multipart/form-data">
+				<!-- アイコン変更 -->
+				<div class="mb-4">
+					<label for="icon" class="block font-bold mb-1">アイコン画像:</label>
+					<div class="mt-2 text-center">
+						<img src="profile_pictures/$icon" alt="現在のアイコン" id="preview" class="w-24 h-24 rounded-full block m-auto object-cover object-center mb-4">
+					</div>
+					<input type="file" id="icon" name="icon" class="border-2 rounded-lg p-2 w-full" accept="image/png, image/jpeg, image/gif" class="flex-grow">
+					   
+					<!-- 名前変更 -->
+					<div class="mb-4">
+						<label for="name" class="block font-bold mb-1">名前:</label>
+						<input type="text" id="name" name="name" value="$name" required class="border-2 rounded-lg p-2 w-full">
+					</div>
+					<!-- ニックネーム変更 -->
+					<div class="mb-4">
+						<label for="nickname" class="block font-bold mb-1">ニックネーム:</label>
+						<input type="text" id="nickname" name="nickname" value="$nickname" required class="border-2 rounded-lg p-2 w-full">
+					</div>
+					<!-- メールアドレス変更 -->
+					<div class="mb-4">
+						<label for="email" class="block font-bold mb-1">メールアドレス:</label>
+						<input type="email" id="email" name="email" value="$email" required class="border-2 rounded-lg p-2 w-full">
+					</div>
+					<!-- パスワード変更 -->
+					<div class="mb-4">
+						<label for="password" class="block font-bold mb-1">パスワード:</label>
+						<input type="password" id="password" name="password" required class="border-2 rounded-lg p-2 w-full">
+					</div>
+				</div>
+				<button type="button" onclick="showDialog()" class="bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-4 flex-1 w-1/2 transition-all">更新</button>
+				<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
+					<div class="bg-white w-fit h-fit p-4 rounded-xl">
+						<p>本当に更新しますか？</p>
+						<div class="flex gap-2">
+							<button type="submit" onclick="hideDialog()" class="bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mt-4 min-w-32 transition-all">更新</button>
+							<button type="button" onclick="hideDialog()" class="bg-gray-500 hover:bg-gray-400 active:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mt-4 min-w-32 transition-all">キャンセル</button>
+						</div>
+					</div>
+					<script src="js/dialog.js"></script>
+				</div>
+			</form>
+		</div>
+	</div>
 	<script src="js/icon_preview.js"></script>
 ___EOF___;
 $html = str_replace("<!-- CONTENT -->", $content, $html);
