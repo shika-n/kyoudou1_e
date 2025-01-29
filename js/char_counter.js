@@ -1,5 +1,5 @@
 const charCounterElement = document.getElementById("charCounter");
-const textAreaElement = document.getElementById("content");
+const textAreaElement = document.getElementById("post_content");
 
 charCounterElement.textContent = textAreaElement.textLength + "/8192";
 textAreaElement.addEventListener("input", (_) => {

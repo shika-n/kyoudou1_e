@@ -101,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
 			<input type="text" id="title" name="title" placeholder="タイトル" value="$title">
 			<div class="relative">
-				<textarea id="content" name="content" rows="5" placeholder="コンテンツ">$content</textarea>
+				<textarea id="post_content" name="post_content" rows="5" placeholder="コンテンツ">$content</textarea>
 				<div class="absolute bottom-2 right-1 pr-5">
 					<p id="charCounter" class="pb-5"></p>
 				</div>
