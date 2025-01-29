@@ -112,7 +112,7 @@ $content = <<<___EOF___
         <div class="mb-4">
                 <label for="icon" class="block font-bold mb-1">アイコン画像:</label>
                  <div class="mt-2 text-center">
-                        <img src="profile_pictures/$icon" alt="現在のアイコン" class="w-24 h-24 rounded-full block m-auto object-cover object-center mb-4">
+                        <img src="profile_pictures/$icon" alt="現在のアイコン" id="preview" class="w-24 h-24 rounded-full block m-auto object-cover object-center mb-4">
                     </div>
                 <input type="file" id="icon" name="icon" class="border-2 rounded-lg p-2 w-full" accept="image/png, image/jpeg, image/gif" class="flex-grow">
                    
@@ -142,6 +142,7 @@ $content = <<<___EOF___
             <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-4 w-1/2">更新</button>
         </form>
     </div>
+	<script src="js/icon_preview.js"></script>
 ___EOF___;
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 echo $html;
