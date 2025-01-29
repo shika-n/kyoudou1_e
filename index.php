@@ -13,7 +13,7 @@ date_default_timezone_set("UTC");
 $target_timezone = new DateTimeZone("Asia/Tokyo");
 
 $content = "";
-[ $post_arr, $comments ]= get_posts($dbh, $_SESSION["user_id"], 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
+[ $post_arr, $comments ] = get_posts($dbh, $_SESSION["user_id"], 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
 
 $content .= sort_order_select();
 
