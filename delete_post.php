@@ -16,6 +16,7 @@ function post_panel($row, $target_timezone) {
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
+
 	$image = "";
 	if ($row["image"]) {
 		$image = <<< ___EOF___
@@ -64,7 +65,7 @@ function post_panel($row, $target_timezone) {
 				font-weight:bold;
 				border:2px solid black ;
 				border-radius: 8px;
-				padding:11px 15px 13px 15px;
+				padding:13px 60px 13px 60px;
 				width: 170px;
 			}
 			.cancelbutton:hover{
