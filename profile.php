@@ -44,14 +44,14 @@ $pages = Pages::k_base_url;
 $user_info = <<<HTML
 <div class="container mx-auto p-4">
     <!-- ユーザー情報 -->
-    <div class="rounded-lg p-4 flex items-center">
-        <img src="profile_pictures/$icon" alt="アイコン" class="w-24 h-24 rounded-full mr-4 aspect-square object-cover object-center">
+    <div class="flex flex-col md:flex-row gap-4 rounded-lg p-4 flex items-center">
+        <img src="profile_pictures/$icon" alt="アイコン" class="w-24 h-24 rounded-full aspect-square object-cover object-center">
         <div class="border-2 border-gray-300 rounded-lg p-4 min-w-0 w-full">
             <p class="font-bold text-lg overflow-hidden text-ellipsis">名前: $name</p>
             <hr>
             <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
         </div>
-		<a href="{$pages::k_profile_edit->get_url()}" class="ml-4">編集</a>
+		<a href="{$pages::k_profile_edit->get_url()}">編集</a>
     </div>
 </div>
 HTML;

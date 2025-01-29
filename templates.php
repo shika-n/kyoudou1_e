@@ -206,9 +206,9 @@ function post_panel($row, $target_timezone, $comments) {
 			<div id="comment-region-{$row["post_id"]}" class="flex flex-col gap-1" data-is-comments-hidden>
 				$show_more_comments_button
 				$comments_html
-				<div class="flex gap-2 p-1 border-l-2 border-slate-500 bg-slate-200 text-xs">
-					<input type="text" id="comment-content-{$row["post_id"]}" name="comment" class="px-2 py-1 flex-grow border rounded-md">
-					<button onclick="comment({$row["post_id"]})" class="px-4 bg-blue-300 hover:bg-blue-200 active:bg-blue-400 rounded-md font-bold transition-all">送信</button>
+				<div class="flex flex-col md:flex-row gap-1 md:gap-2 p-1 border-l-2 border-slate-500 bg-slate-200 text-xs">
+					<input type="text" id="comment-content-{$row["post_id"]}" name="comment" class="px-2 py-2 md:py-1 flex-grow border rounded-md">
+					<button onclick="comment({$row["post_id"]})" class="px-4 py-2 md:py-1 bg-blue-300 hover:bg-blue-200 active:bg-blue-400 rounded-md font-bold transition-all">送信</button>
 				</div>
 			</div>
 		</div>

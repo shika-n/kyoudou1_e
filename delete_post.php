@@ -34,8 +34,9 @@ function post_panel($row, $target_timezone) {
 				border:1px solid black ;
 				border-radius: 8px;
 				border-color:rgb(208, 66, 58);
-				padding:15px 12px 15px 100px;
-				width: 390px;
+				padding:15px 12px 15px 12px;
+				max-width: 390px;
+				text-align: center;
 			}
 			button{
 				display: inline-block;
@@ -48,8 +49,8 @@ function post_panel($row, $target_timezone) {
 				border:2px solid black ;
 				border-radius: 8px;
 				padding:11px 15px 13px 15px;
-				margin:0px 50px 0px 0px; 
-				width: 170px;
+				width: 180px;
+				text-align: center
 			}
 			.deletebutton:hover{
 				background: #c94036;
@@ -61,12 +62,14 @@ function post_panel($row, $target_timezone) {
 				border-color: #000000;
 			}
 			.cancelbutton{
+				display: inline-block;
 				font-size: 13px;
 				font-weight:bold;
 				border:2px solid black ;
 				border-radius: 8px;
-				padding:13px 60px 13px 60px;
-				width: 170px;
+				padding:13px 0px 13px 0px;
+				width: 180px;
+				text-align: center;
 			}
 			.cancelbutton:hover{
 				background: #b9b9b9;

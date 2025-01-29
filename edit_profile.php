@@ -77,16 +77,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 			redirect_back();
 		}
         $upload_dir = "profile_pictures/";
-        $uploaded_file = $upload_dir . get_unique_image_name($icon_file);
+        $uploaded_file = get_unique_image_name($icon_file);
         
         // ファイルの安全性確認と保存
-        if (move_uploaded_file($_FILES['icon']['tmp_name'], $uploaded_file)) {
+        if (move_uploaded_file($_FILES['icon']['tmp_name'], $upload_dir . $uploaded_file)) {
             $icon = $uploaded_file;
         }
     }
 
     // データベースを更新
-    if (edit_profile($dbh, $target_user_id, $name, $nickname, $email, $hashed_password, $icon)) {
+    if (edit_profile($dbh, $target_user_id, $name, $nickname, $new_email, $hashed_password, $icon)) {
         $_SESSION["info"] = "ユーザー情報の変更が完了しました！";
 		redirect_to(Pages::k_profile);
     } else {
@@ -112,9 +112,9 @@ $content = <<<___EOF___
         <div class="mb-4">
                 <label for="icon" class="block font-bold mb-1">アイコン画像:</label>
                  <div class="mt-2 text-center">
-                        <img src="profile_pictures/$icon" alt="現在のアイコン" class="w-24 h-24 rounded-full block m-auto object-cover object-center mb-4">
+                        <img src="profile_pictures/$icon" alt="現在のアイコン" id="preview" class="w-24 h-24 rounded-full block m-auto object-cover object-center mb-4">
                     </div>
-                <input type="file" id="icon" name="icon" class="border-2 rounded-lg p-2 w-full">
+                <input type="file" id="icon" name="icon" class="border-2 rounded-lg p-2 w-full" accept="image/png, image/jpeg, image/gif" class="flex-grow">
                    
         <!-- 名前変更 -->
             <div class="mb-4">
@@ -142,6 +142,7 @@ $content = <<<___EOF___
             <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg mt-4 w-1/2">更新</button>
         </form>
     </div>
+	<script src="js/icon_preview.js"></script>
 ___EOF___;
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 echo $html;

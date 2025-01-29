@@ -46,8 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // フォームからの入力値を取得
-    $title = htmlspecialchars(trim(get_if_set("title", $_POST, "")), ENT_QUOTES, 'UTF-8');
-    $content = htmlspecialchars(trim(get_if_set("content", $_POST, "")), ENT_QUOTES, 'UTF-8');
+    $title = trim(get_if_set("title", $_POST, ""));
+    $content = trim(get_if_set("content", $_POST, ""));
 
     // 入力チェック
 
@@ -81,6 +81,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
     }
+
+	$title = htmlspecialchars($title, ENT_QUOTES, "UTF-8");
+	$content = htmlspecialchars($content, ENT_QUOTES, "UTF-8");
 }
 
 
