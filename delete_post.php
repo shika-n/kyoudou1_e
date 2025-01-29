@@ -88,11 +88,11 @@ function post_panel($row, $target_timezone) {
 		<div class="border-2 rounded-lg border-black p-2 bg-slate-100">
 		
 			<div class="flex justify-between">
-				<div class="flex flex-row flex-wrap items-center">
+				<div class="flex flex-row items-center overflow-hidden">
 					<div class="rounded-full">
-						<img src="profile_pictures/{$row['icon']}" class="w-8 rounded-full aspect-square object-cover object-center">
+						<img src="profile_pictures/{$row['icon']}" class="min-w-8 w-8 rounded-full aspect-square object-cover object-center">
 					</div>
-					<div class="flex flex-col flex-wrap ml-5 text-sm p-2 divide-y divide-black">
+					<div class="flex flex-col flex-wrap ml-5 text-sm p-2 divide-y divide-black truncate">
 						<div class="font-semibold">
 							<a href="profile.php?id=$id">{$row['nickname']}</a>
 						</div>
