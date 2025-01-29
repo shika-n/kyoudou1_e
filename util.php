@@ -41,7 +41,7 @@ function check_uploadable_image($image) {
 	if (getimagesize($image["tmp_name"]) === false) {
 		return "ファイルのアップロードエラー";
 	}
-	if ($image["size"] > 500000) {
+	if ($image["size"] > 5000000) {
 		return "ファイルのサイズが大きすぎます";
 	}
 	$extension = get_image_extension($image);
