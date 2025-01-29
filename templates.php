@@ -37,8 +37,8 @@ function like_svg($row) {
 function post_actions_comp($post) {
 	return <<< ___EOF___
 			<div class="flex items-center">
-				<a href="edit_post.php?post_id={$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="w-3 aspect-square"></a>
-				<a href="delete_post.php?post_id={$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="w-3 aspect-square"></a>
+				<a href="edit_post.php?post_id={$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/edit.png" class="min-w-3 w-3 aspect-square"></a>
+				<a href="delete_post.php?post_id={$post['post_id']}" class="p-2 rounded-full hover:bg-slate-50 active:bg-slate-200"><img src="images/trash.png" class="min-w-3 w-3 aspect-square"></a>
 			</div>
 	___EOF___;
 }
@@ -51,9 +51,9 @@ function post_owner_comp($id, $icon, $nickname, $created_at, $updated_at) {
 		$hover = "title='{$updated_at}に編集された'";
 	}
 	$post_owner_comp_layout = <<< ___EOF___
-		<div class="flex flex-row flex-wrap items-center">
+		<div class="flex flex-row items-center truncate">
 			<div class="rounded-full">
-				<img src="profile_pictures/{$icon}" class="w-8 rounded-full aspect-square object-cover object-center">
+				<img src="profile_pictures/{$icon}" class="min-w-8 w-8 rounded-full aspect-square object-cover object-center">
 			</div>
 			<div class="flex flex-col flex-wrap ml-5 text-sm px-2 divide-y divide-black">
 				<div class="font-semibold">
