@@ -65,6 +65,6 @@ $content
 HTML;
 
 // ** レイアウトに組み込み＆出力 **
-$html = str_replace("<!-- CONTENT -->", $user_info . $post_section, $html);
+$html = str_replace("<!-- CONTENT -->", $user_info . $post_section . "<script src='js/reach_bottom_action.js'></script>", $html);
 echo $html;
 ?>

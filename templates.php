@@ -183,7 +183,6 @@ function post_panel($row, $target_timezone, $comments) {
 			<div class="flex justify-between">
 				$post_owner
 				$actions
-				<script src="js/reach_bottom_action.js"></script>
 			</div>
 			<div class="font-semibold">
 				<p>{$row['title']}</p>

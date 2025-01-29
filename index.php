@@ -16,10 +16,9 @@ $content = "";
 [ $post_arr, $comments ] = get_posts($dbh, $_SESSION["user_id"], 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
 
 $content .= sort_order_select();
-
 foreach ($post_arr as $row) {
 	$content .= post_panel($row, $target_timezone, get_if_set($row["post_id"], $comments));
 }
 
-$html = str_replace("<!-- CONTENT -->", $content, $html);
+$html = str_replace("<!-- CONTENT -->", $content . "<script src='js/reach_bottom_action.js'></script>", $html);
 echo $html;
