@@ -51,10 +51,13 @@ $user_info = <<<HTML
             <hr>
             <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
         </div>
-		<a href="{$pages::k_profile_edit->get_url()}">編集</a>
+		<!-- EDIT -->
     </div>
 </div>
 HTML;
+if ($target_id == $_SESSION["user_id"]) {
+    $user_info = str_replace("<!-- EDIT -->", "<a href='{$pages::k_profile_edit->get_url()}'>編集</a>", $user_info);
+}
 
 // ** 投稿一覧HTML生成 **
 $post_section = <<<HTML
