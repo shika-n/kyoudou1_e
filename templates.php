@@ -198,7 +198,7 @@ function post_panel($row, $target_timezone, $comments) {
 					</button>
 					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
 				</div>
-				<div class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
+				<div id="comment-count-{$row['post_id']}" class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
 					コメント：{$row["comment_count"]}
 				</div>
 			</div>

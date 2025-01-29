@@ -40,10 +40,13 @@ if (comment($dbh, $user_id, $content, $reply_to)) {
 
 	$comment_html = comment_panel($comment, $target_timezone);
 
+	$new_comment_count = get_comment_count($dbh, $reply_to);
+
 	header("Content-Type: text/json", true, 200);
 	echo json_encode([
 		"message" => "OK",
-		"html" => $comment_html	
+		"html" => $comment_html,
+		"comment_count" => $new_comment_count
 	]);
 } else {
 	header("Content-Type: text/json", true, 400);

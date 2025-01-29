@@ -28,6 +28,12 @@ function comment(PDO $dbh, $user_id, $content, $reply_to) {
 	return $statement->execute([$user_id, $content, $now, $now, $reply_to]);
 }
 
+function get_comment_count(PDO $dbh, $post_id) {
+	$statement = $dbh->prepare("SELECT COUNT(post_id) FROM posts WHERE reply_to = ?");
+	$statement->execute([$post_id]);
+	return $statement->fetchAll()[0][0];
+}
+
 function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 	$statement = $dbh->prepare("
 		SELECT

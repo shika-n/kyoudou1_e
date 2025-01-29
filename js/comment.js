@@ -17,6 +17,7 @@ function comment(reply_to) {
 			const commentsElem = document.getElementById("comment-region-" + reply_to);
 			commentsElem.children[commentsElem.childElementCount - 1].insertAdjacentHTML("beforebegin", body.html);
 			commentContentElement.value = "";
+			document.getElementById("comment-count-" + reply_to).textContent = "コメント：" + body.comment_count;
 		});
 	}
 }
