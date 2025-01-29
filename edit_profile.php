@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // データベースを更新
-    if (edit_profile($dbh, $target_user_id, $name, $nickname, $email, $hashed_password, $icon)) {
+    if (edit_profile($dbh, $target_user_id, $name, $nickname, $new_email, $hashed_password, $icon)) {
         $_SESSION["info"] = "ユーザー情報の変更が完了しました！";
 		redirect_to(Pages::k_profile);
     } else {
