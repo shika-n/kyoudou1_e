@@ -101,9 +101,9 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 	$comment_panel_layout = <<< ___EOF___
 		<div class="p-2 border-l-2 border-slate-500 bg-slate-200 $hidden_class">
 			<div class="flex justify-between">
-				<div class="flex flex-row flex-wrap items-center">
+				<div class="flex flex-row items-center truncate">
 					<div class="rounded-full">
-						<img src="profile_pictures/{$comment['icon']}" class="w-6 rounded-full aspect-square object-cover object-center">
+						<img src="profile_pictures/{$comment['icon']}" class="min-w-6 w-6 rounded-full aspect-square object-cover object-center">
 					</div>
 					<div class="flex flex-col flex-wrap ml-3 text-xs px-2 divide-y divide-black">
 						<div class="font-semibold">
