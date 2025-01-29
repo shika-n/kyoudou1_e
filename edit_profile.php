@@ -15,7 +15,7 @@ $user = get_user_by_id($dbh, $target_user_id);
 $name = "";
 $nickname = "";
 $email = "";
-$password = "";
+$current_password = "";
 $icon = "";
 
 if ($user) {
@@ -23,7 +23,7 @@ if ($user) {
     $name = htmlspecialchars($user['name'], ENT_QUOTES, 'UTF-8');
     $nickname = htmlspecialchars($user['nickname'], ENT_QUOTES, 'UTF-8');
     $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-    $password = $user['password'];
+    $current_password = $user['password'];
 }
 
 // ** プロフィール更新処理 **
@@ -33,6 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 	$nickname = trim(get_if_set("nickname", $_POST, ""));
 	$password = get_if_set("password", $_POST);
 	$new_email = trim(get_if_set("email", $_POST, ""));
+	$new_password = get_if_set("new-password", $_POST);
+	$re_new_password = get_if_set("re-new-password", $_POST);
 
 	if (!$name || mb_strlen($name) < 1 || mb_strlen($name) > 20) {
 		$_SESSION["error"] = "名前は1~20文字で入力してください";
@@ -44,8 +46,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		redirect_back();
 	}
 
-	if (!$password || mb_strlen($password) < 6) {
-		$_SESSION["error"] = "パスワードは6文字以上で入力してください";
+	if (!$password) {
+		$_SESSION["error"] = "現在パスワードを入力してください";
+		redirect_back();
+	}
+
+	if ($new_password && mb_strlen($new_password) < 6) {
+		$_SESSION["error"] = "新しいパスワードは6文字以上で入力してください";
 		redirect_back();
 	}
 
@@ -63,10 +70,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$_SESSION["error"] = "メールは既に存在しています";
 		redirect_back();
 	}
-
+	
+	if ($new_password && $new_password !== $re_new_password) {
+		$_SESSION["error"] = "新しいパスワードは一致していません";
+		redirect_back();
+	}
+	
+	if (!password_verify($password, $current_password)) {
+		$_SESSION["error"] = "現在のパスワードは間違います";
+		redirect_back();
+	}
 
     // パスワードを暗号化
-    $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+	$hashed_password = null;
+	if ($new_password) {
+		$hashed_password = password_hash($new_password, PASSWORD_ARGON2I);
+	}
 
     // アップロードされたアイコン処理
 	$icon_file = get_if_set("icon", $_FILES);
@@ -133,7 +152,15 @@ $content = <<<___EOF___
 					</div>
 					<!-- パスワード変更 -->
 					<div class="mb-4">
-						<label for="password" class="block font-bold mb-1">パスワード:</label>
+						<label for="new-password" class="block font-bold mb-1">新しいパスワード:</label>
+						<input type="password" id="new-password" name="new-password" class="border-2 rounded-lg p-2 w-full" placeholder="変更なし">
+					</div>
+					<div class="mb-4">
+						<label for="re-new-password" class="block font-bold mb-1">新しいパスワードの再確認:</label>
+						<input type="password" id="re-new-password" name="re-new-password" class="border-2 rounded-lg p-2 w-full" placeholder="変更なし">
+					</div>
+					<div class="mb-4">
+						<label for="password" class="block font-bold mb-1">現在のパスワード:</label>
 						<input type="password" id="password" name="password" required class="border-2 rounded-lg p-2 w-full">
 					</div>
 				</div>
