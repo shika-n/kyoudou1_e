@@ -161,7 +161,7 @@ $content = <<< ___EOF___
             <!-- TITLE INPUT -->
 
             <label for="content">コンテンツ</label>
-            <textarea id="content" name="content" rows="5" maxlength="255" required>$content</textarea>
+            <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
            
