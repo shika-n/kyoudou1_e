@@ -77,10 +77,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 			redirect_back();
 		}
         $upload_dir = "profile_pictures/";
-        $uploaded_file = $upload_dir . get_unique_image_name($icon_file);
+        $uploaded_file = get_unique_image_name($icon_file);
         
         // ファイルの安全性確認と保存
-        if (move_uploaded_file($_FILES['icon']['tmp_name'], $uploaded_file)) {
+        if (move_uploaded_file($_FILES['icon']['tmp_name'], $upload_dir . $uploaded_file)) {
             $icon = $uploaded_file;
         }
     }
