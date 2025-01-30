@@ -27,6 +27,7 @@ $html = <<< ___EOF___
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Eチームの掲示板</title>
 		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="css/markdown.css">
 		<!-- HEAD -->
 	</head>
 	<body>

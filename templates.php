@@ -1,5 +1,7 @@
 <?php
 require_once("util.php");
+require_once("externals/php-markdown/Michelf/Markdown.inc.php");
+use Michelf\Markdown;
 
 function sort_order_select() {
 	$sort_order = get_if_set("sort_order", $_SESSION, "newest");
@@ -154,6 +156,8 @@ function post_panel($row, $target_timezone, $comments) {
 	$like_icon = like_svg($row);
 	$post_owner = post_owner_comp($id, $row["icon"], $row["nickname"], $created_at , $updated_at);
 
+	$row["content"] = Markdown::defaultTransform($row["content"]); 
+
 	$comments_html = "";
 	$show_more_comments_button = "";
 	if ($comments) {
@@ -187,9 +191,9 @@ function post_panel($row, $target_timezone, $comments) {
 			<div class="font-semibold">
 				<p>{$row['title']}</p>
 			</div>
-			<div class="leading-4">
+			<div class="leading-none">
 				{$image}
-				<p class="text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</p>
+				<div class="markdown-content text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</div>
 			</div>
 			<div class="mt-2 flex gap-2 items-center">
 				<div class="flex gap-1 items-center text-xs">
