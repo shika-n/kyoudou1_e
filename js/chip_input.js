@@ -24,6 +24,15 @@ chipInput.addEventListener("keydown", (e) => {
 			chipInput.insertAdjacentHTML("beforebegin", chip(chipInput.value));
 			chipInput.value = "";
 		}
+	} else if (e.key == "Backspace") {
+		if (chipInput.value.length == 0) {
+			e.preventDefault();
+			const prevSibling = chipInput.previousElementSibling;
+			if (prevSibling != chipsField.children[0]) {
+				chipInput.value = prevSibling.children[0].value;
+				prevSibling.remove();
+			}
+		}
 	}
 });
 

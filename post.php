@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
 				<label for="chipInput">タグ</label>
-				<input id="chipInput" placeholder="タグを入力してください" class="flex-grow h-fit focus:outline-none">
+				<input id="chipInput" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
 				<script src="js/chip_input.js"></script>
 			</div>
 	
