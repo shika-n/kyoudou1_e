@@ -181,7 +181,21 @@ function post_panel($row, $target_timezone, $comments) {
 				<img class="mx-auto max-h-60" src="post_images/{$row['image']}">
 		___EOF___;
 	}
+    
+	$like_button = "";
+	if ($row["user_id"] !== $_SESSION["user_id"]) {
+		$like_button = <<<__EOF__
 
+				<div class="flex gap-1 items-center text-xs">
+					<button onclick="like({$row['post_id']})" id="like-button-{$row['post_id']}" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
+						$like_icon
+					</button>
+					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
+				</div>
+
+		__EOF__;
+	}
+		
 	return <<< ___EOF___
 		<div class="flex flex-col gap-1 border-2 rounded-lg border-black p-2 bg-slate-100">
 			<div class="flex justify-between">
@@ -196,12 +210,7 @@ function post_panel($row, $target_timezone, $comments) {
 				<div class="markdown-content text-wrap break-all hover:line-clamp-none text-ellipsis overflow-hidden line-clamp-3">{$row['content']}</div>
 			</div>
 			<div class="mt-2 flex gap-2 items-center">
-				<div class="flex gap-1 items-center text-xs">
-					<button onclick="like({$row['post_id']})" id="like-button-{$row['post_id']}" class="p-1 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 rounded-full ring-0 hover:ring-2 hover:ring-rose-400 transition-all">
-						$like_icon
-					</button>
-					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
-				</div>
+				$like_button 
 				<div id="comment-count-{$row['post_id']}" class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
 					コメント：{$row["comment_count"]}
 				</div>
