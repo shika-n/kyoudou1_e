@@ -19,7 +19,7 @@ $user = get_user_by_id($dbh, $target_id);
 $icon = $user["icon"];
 $name = htmlspecialchars($user["name"], ENT_QUOTES, "UTF-8");
 $nickname = htmlspecialchars($user["nickname"], ENT_QUOTES, "UTF-8");
-[ $post_arr, $comments ] = get_posts_by_user($dbh, $_SESSION["user_id"], $target_id, 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
+$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"], $target_id, 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
 
 if (count($post_arr) === 0) {
     // 記事がない場合のメッセージ
@@ -34,7 +34,7 @@ if (count($post_arr) === 0) {
     // 記事がある場合の表示
 	$content .= sort_order_select();
 	foreach ($post_arr as $row) {
-		$content .= post_panel($row, $target_timezone, get_if_set($row["post_id"], $comments));
+		$content .= post_panel($row, $target_timezone);
 	}
 }
 

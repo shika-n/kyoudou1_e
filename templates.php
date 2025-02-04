@@ -178,7 +178,7 @@ function comment_section($post_id, $comments, $target_timezone) {
 	___EOF___;
 }
 
-function post_panel($row, $target_timezone, $comments, $enable_comments = false, $collapse_post = true) {
+function post_panel($row, $target_timezone, $comments = null, $enable_comments = false, $collapse_post = true) {
 	$id = htmlspecialchars($row["user_id"], ENT_QUOTES, "UTF-8");
 	$row['icon'] = htmlspecialchars($row['icon'], ENT_QUOTES, 'UTF-8');
 	$row['nickname'] = htmlspecialchars($row['nickname'], ENT_QUOTES, 'UTF-8');
