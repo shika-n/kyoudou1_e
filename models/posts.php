@@ -1,10 +1,10 @@
 <?php
 
-function post(PDO $dbh, $user_id, $title, $content, $image) {
-	$statement = $dbh->prepare("INSERT INTO posts(user_id, title, content, created_at, updated_at, image) VALUES (?, ?, ?, ?, ?, ?);");
+function post(PDO $dbh, $user_id, $title, $content, $image, $category) {
+	$statement = $dbh->prepare("INSERT INTO posts(user_id, title, content, created_at, updated_at, image, category_id) VALUES (?, ?, ?, ?, ?, ?, ?);");
 	date_default_timezone_set("UTC");
 	$now = date("Y-m-d H:i:s");
-	return $statement->execute([$user_id, $title, $content, $now, $now, $image]);
+	return $statement->execute([$user_id, $title, $content, $now, $now, $image, $category]);
 }
 
 function edit_post(PDO $dbh, $user_id, $post_id, $title, $content, $image) {

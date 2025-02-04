@@ -3,6 +3,7 @@ require_once("db_open.php");
 require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
+require_once("models/categories.php");
 
 if (!is_authenticated()) {
 	redirect_to(Pages::k_login);
@@ -12,9 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$title = trim(get_if_set("title", $_POST, ""));
 	$content = trim(get_if_set("content", $_POST, ""));
 	$image = get_if_set("image", $_FILES);
+	$category = get_if_set("category", $_POST);
 
 	$_SESSION["title"] = $title;
 	$_SESSION["content"] = $content;
+	$_SESSION["category"] = $category;
 
 	if (!$title || mb_strlen($title) > 20) {
 		$_SESSION["error"] = "タイトルは1~20文字まで入力してください";
@@ -40,13 +43,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["title"] = null;
 	$_SESSION["content"] = null;
 	$_SESSION["error"] = null;
+	$_SESSION["category"] = null;
 
-	post($dbh, $_SESSION["user_id"], $title, $content, $image_filename);
+	post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category);
 	redirect_to(Pages::k_index);
 } else {
 	$title = htmlspecialchars(get_if_set("title", $_SESSION, ""), ENT_QUOTES);
 	$content = htmlspecialchars(get_if_set("content", $_SESSION, ""), ENT_QUOTES);
 	$error = htmlspecialchars(get_if_set("error", $_SESSION, ""));
+	$category_list = get_categories($dbh);
+	$select_options = "";
+	foreach ($category_list as $category) {
+		$select_options .= <<<___EOF___
+			<option value="{$category['category_id']}">{$category['name']}</option>
+			___EOF___;
+	}
 	
 	$content = <<< ___EOF___
 		<style>
@@ -106,12 +117,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<p id="charCounter" class="pb-5"></p>
 				</div>
 			</div>
+			
 			<input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif" class="flex-grow">
+			<select id="category" name="category">
+				<!-- SELECT OPTIONS -->
+			</select>
 			<button type="submit">投稿</button>
 		</form>
 		<script src="js/char_counter.js"></script>
 	___EOF___;
-
+	$content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
 	$_SESSION["error"] = null;
 	$html = str_replace("<!-- CONTENT -->", $content, $html);
 	echo $html;
