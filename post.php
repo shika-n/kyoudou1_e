@@ -42,11 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$image_filename = null;
 	}
 
-	$_SESSION["title"] = null;
-	$_SESSION["content"] = null;
-	$_SESSION["error"] = null;
-	$_SESSION["category"] = null;
-
+	if (count($tags) > 10) {
+		$_SESSION["error"] = "タグは10個まで入力してください";
+		redirect_back();
+	}
 	foreach ($tags as $tag) {
 		$tag = trim($tag);
 		if (mb_strlen($tag) < 1 || mb_strlen($tag) > 20) {
@@ -54,6 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			redirect_back();
 		}
 	}
+
+	$_SESSION["title"] = null;
+	$_SESSION["content"] = null;
+	$_SESSION["error"] = null;
+	$_SESSION["category"] = null;
 
 	$db_err = false;
 	$dbh->beginTransaction();
