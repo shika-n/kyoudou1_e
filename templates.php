@@ -192,7 +192,17 @@ function post_panel($row, $target_timezone, $comments) {
 					</button>
 					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
 				</div>
+		__EOF__;
+	}else {
+		$like_button = "";
+		$like_button = <<<__EOF__
 
+				<div class="flex gap-1 items-center text-xs">
+					<button class="p-1 rounded-full">
+						$like_icon
+					</button>
+					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
+				</div>
 		__EOF__;
 	}
 		
