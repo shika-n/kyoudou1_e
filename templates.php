@@ -187,6 +187,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$row['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
+	$row['category_name'] = htmlspecialchars($row['category_name'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 	$updated_at = (new DateTime($row["updated_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 
@@ -260,6 +261,9 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 			</div>
 			<div class="font-semibold">
 				<p>{$row['title']}</p>
+			</div>
+			<div class="font-semibold px-2 py-1 bg-slate-300 rounded-lg">
+				<p>{$row['category_name']}</p>
 			</div>
 			<div class="leading-none">
 				{$image}
