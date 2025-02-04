@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$db_err = false;
 	$dbh->beginTransaction();
 
-	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename);
+	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category);
 	$db_err = $db_err || $post_id === false;
 
 	foreach ($tags as $tag) {
