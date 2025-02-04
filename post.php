@@ -3,6 +3,7 @@ require_once("db_open.php");
 require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
+require_once("models/tags.php");
 require_once("models/categories.php");
 
 if (!is_authenticated()) {
@@ -12,6 +13,7 @@ if (!is_authenticated()) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$title = trim(get_if_set("title", $_POST, ""));
 	$content = trim(get_if_set("content", $_POST, ""));
+	$tags = get_if_set("tags", $_POST, []);
 	$image = get_if_set("image", $_FILES);
 	$category = get_if_set("category", $_POST);
 
@@ -45,8 +47,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["error"] = null;
 	$_SESSION["category"] = null;
 
-	post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category);
-	redirect_to(Pages::k_index);
+	foreach ($tags as $tag) {
+		$tag = trim($tag);
+		if (mb_strlen($tag) < 1 || mb_strlen($tag) > 20) {
+			$_SESSION["error"] = "タグは1~20文字まで入力してください";
+			redirect_back();
+		}
+	}
+
+	$db_err = false;
+	$dbh->beginTransaction();
+
+	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename);
+	$db_err = $db_err || $post_id === false;
+
+	foreach ($tags as $tag) {
+		$tag = trim($tag);
+		$tag_id = get_tag_id_or_create($dbh, $tag);
+		$db_err = $db_err || $tag_id === false;
+		if ($tag_id !== false) {
+			$db_err = $db_err || !tag_post($dbh, $post_id, $tag_id);
+		}
+	}
+	
+	if ($db_err) {
+		$dbh->rollBack();
+		$_SESSION["error"] = "データベースエラー";
+		redirect_back();
+	} else {
+		$dbh->commit();
+		redirect_to(Pages::k_index);
+	}
 } else {
 	$title = htmlspecialchars(get_if_set("title", $_SESSION, ""), ENT_QUOTES);
 	$content = htmlspecialchars(get_if_set("content", $_SESSION, ""), ENT_QUOTES);
@@ -78,21 +109,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 			.form-container label {
 				display: block;
-				margin-bottom: 10px;
 				font-weight: bold;
 			}
 
-			.form-container input[type="text"],
+			.form-container input[type="text"]:not(.chips),
 			.form-container textarea {
 				width: 100%;
 				padding: 10px;
-				margin-bottom: 20px;
 				border: 1px solid #ccc;
 				border-radius: 5px;
 				box-sizing: border-box;
 			}
 
-			.form-container button {
+			.form-container button:not(.chips) {
 				width: 100%;
 				padding: 10px;
 				background-color: #007BFF;
@@ -103,11 +132,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				cursor: pointer;
 			}
 
-			.form-container button:hover {
+			.form-container button:not(.chips):hover {
 				background-color: #0056b3;
 			}
 		</style>
-		<form method="POST" class="form-container flex flex-col" enctype="multipart/form-data">
+		<form method="POST" class="form-container flex flex-col gap-4" enctype="multipart/form-data">
 			<label for="title">投稿内容</label>
 			<p class="mb-2 text-red-600 font-bold underline decoration-wavy">{$error}</p>
 			<input type="text" id="title" name="title" placeholder="タイトル" value="$title">
@@ -119,6 +148,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			</div>
 			
 			<input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif" class="flex-grow">
+
+			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
+				<label for="chipInput">タグ</label>
+				<input id="chipInput" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+				<script src="js/chip_input.js"></script>
+			</div>
+	
 			<select id="category" name="category">
 				<!-- SELECT OPTIONS -->
 			</select>
