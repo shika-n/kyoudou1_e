@@ -5,6 +5,7 @@ require_once("layout.php");
 require_once("models/posts.php");
 require_once("util.php");
 require_once("models/categories.php");
+require_once("templates.php");
 
 if (!is_authenticated()) {
 	redirect_to(Pages::k_login);
@@ -31,19 +32,27 @@ foreach ($category_list as $category) {
 $post_id = get_if_set("post_id", $_GET);
 
 // データベースからユーザーの投稿内容を取得
-$sql = "SELECT * FROM posts WHERE user_id = :user_id AND post_id = :post_id";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(':user_id', $target_user_id, PDO::PARAM_INT);
-$stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
-$stmt->execute();
+$record = get_post_by_id($dbh, $_SESSION["user_id"], $post_id);
 
-if ($record = $stmt->fetch()) {
+if ($record) {
+	if ($record["user_id"] != $_SESSION["user_id"]) {
+		redirect_to(Pages::k_profile);
+	}
+
     $title = htmlspecialchars($record['title'], ENT_QUOTES, 'UTF-8');
     $content = htmlspecialchars($record['content'], ENT_QUOTES, 'UTF-8');
     $image = htmlspecialchars($record['image'], ENT_QUOTES, 'UTF-8');
     if (isset($record['reply_to'])) {
         $is_a_comment = true;
     }
+
+	$tags_html = "";
+	if ($record["tags"]) {
+		$tags = explode(",", get_if_set("tags", $record));
+		foreach ($tags as $key => $value) {
+			$tags_html .= chip(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
+		}
+	}
 }
 
 // POSTリクエスト処理
@@ -128,21 +137,19 @@ $content = <<< ___EOF___
 
 			.form-container label {
 				display: block;
-				margin-bottom: 10px;
 				font-weight: bold;
 			}
 
-			.form-container input[type="text"],
+			.form-container input[type="text"]:not(.chips),
 			.form-container textarea {
 				width: 100%;
 				padding: 10px;
-				margin-bottom: 20px;
 				border: 1px solid #ccc;
 				border-radius: 5px;
 				box-sizing: border-box;
 			}
 
-			.form-container button {
+			.form-container button:not(.chips) {
 				width: 100%;
 				padding: 10px;
 				background-color: #007BFF;
@@ -164,7 +171,7 @@ $content = <<< ___EOF___
         <?php if (!empty($error)): ?>
             <p class="error-message"><?= $error ?></p>
         <?php endif; ?>
-        <form method="POST" enctype="multipart/form-data">
+		<form method="POST" class="form-container flex flex-col gap-4" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="$csrf_token">
 
             <!-- TITLE INPUT -->
@@ -173,6 +180,13 @@ $content = <<< ___EOF___
             <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
+
+			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
+				<label for="chipInput" class="chips">タグ</label>
+				$tags_html
+				<input id="chipInput" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+				<script src="js/chip_input.js"></script>
+			</div>
 
             <select id="category" name="category">
 				<!-- SELECT OPTIONS -->

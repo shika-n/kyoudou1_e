@@ -65,6 +65,7 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 			u.name,
 			nickname,
 			icon,
+			cat.category_name,
 			(
 				SELECT COUNT(l.user_id)
 				FROM likes l
@@ -83,6 +84,7 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 			GROUP_CONCAT(t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.post_id IN (
@@ -99,10 +101,10 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function get_post_by_id(PDO $dbh, $user_id, $post_id) {
+function get_post_by_id(PDO $dbh, $auth_id, $post_id) {
 	$statement = $dbh->prepare("
 		SELECT
-			post_id,
+			p.post_id,
 			p.user_id,
 			created_at,
 			title,
@@ -111,7 +113,7 @@ function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 			updated_at,
 			reply_to,
 			deleted_at,
-			name,
+			u.name,
 			nickname,
 			icon,
 			cat.category_name,
@@ -128,15 +130,19 @@ function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 			EXISTS(
 				SELECT 1
 				FROM likes
-				WHERE p.post_id = post_id AND user_id = :user_id1
-			) AS 'liked_by_user'
+				WHERE p.post_id = post_id AND user_id = :auth_id
+			) AS 'liked_by_user',
+			GROUP_CONCAT(t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
 		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
+		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.post_id = :post_id AND deleted_at IS NULL
+		GROUP BY p.post_id
 		LIMIT 1
 	");
-	$statement->bindParam(":user_id1", $user_id);
+	$statement->bindParam(":auth_id", $user_id);
 	$statement->bindParam(":post_id", $post_id);
 	$statement->execute();
 	return $statement->fetch(PDO::FETCH_ASSOC);
