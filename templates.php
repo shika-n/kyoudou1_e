@@ -192,6 +192,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$row['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
+	$row['category_name'] = htmlspecialchars($row['category_name'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 	$updated_at = (new DateTime($row["updated_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 
@@ -237,7 +238,17 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 					</button>
 					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
 				</div>
+		__EOF__;
+	}else {
+		$like_button = "";
+		$like_button = <<<__EOF__
 
+				<div class="flex gap-1 items-center text-xs">
+					<button class="p-1 rounded-full">
+						$like_icon
+					</button>
+					<span id="like-count-{$row['post_id']}">{$row["like_count"]}</span>
+				</div>
 		__EOF__;
 	}
 	
@@ -255,6 +266,9 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 			</div>
 			<div class="font-semibold">
 				<a href="post_exclusive.php?id={$row['post_id']}">{$row['title']}</a>
+			</div>
+			<div class="font-semibold px-2 py-1 bg-slate-300 rounded-lg">
+				<p>{$row['category_name']}</p>
 			</div>
 			<div class="leading-none">
 				{$image}
