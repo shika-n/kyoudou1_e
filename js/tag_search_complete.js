@@ -5,15 +5,18 @@ const searchResult = document.getElementById("searchResult");
 let selection = -1;
 let suggestions = [];
 
+reachBottomActionSourceUrl = "api/post_search_by_tag.php";
+reachBottomActionTargetContainerId = "searchResult";
+
 function searchTags() {
 	const query = searchField.value.split(" ");
 	const params = new URLSearchParams({ "query": query });
+	reachBottomActionQuery.set("query", query);
 	fetch("api/post_search_by_tag.php?" + params)
 		.then((response) => response.text())
 		.then((text) => {
 			searchResult.innerHTML = text;
 		});
-	
 }
 
 function suggestionItem(value, frequency) {

@@ -9,7 +9,11 @@ $content = <<< ___EOF___
 	</div>
 	<div id="searchResult" class="flex flex-col gap-2">
 	</div>
-	<script src="js/tag_search_complete.js"></search>
 ___EOF___;;
 
-echo str_replace("<!-- CONTENT -->", $content, $html);
+$scripts = <<< ___EOF___
+	<script src='js/reach_bottom_action.js'></script>
+	<script src="js/tag_search_complete.js"></script>
+___EOF___;
+
+echo str_replace("<!-- CONTENT -->", $content . $scripts, $html);
