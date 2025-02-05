@@ -81,7 +81,7 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 				FROM likes
 				WHERE p.post_id = post_id AND user_id = ?
 			) AS 'liked_by_user',
-			GROUP_CONCAT(t.name) AS 'tags'
+			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
 		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
@@ -132,7 +132,7 @@ function get_post_by_id(PDO $dbh, $auth_id, $post_id) {
 				FROM likes
 				WHERE p.post_id = post_id AND user_id = :auth_id
 			) AS 'liked_by_user',
-			GROUP_CONCAT(t.name) AS 'tags'
+			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
 		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
@@ -180,7 +180,7 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 					FROM likes
 					WHERE p.post_id = post_id AND user_id = :auth_id1
 				) AS 'liked_by_user',
-				GROUP_CONCAT(t.name) AS 'tags'
+				GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 			FROM posts p
 			JOIN users u ON u.user_id = p.user_id
 			LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
@@ -290,7 +290,7 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 				FROM likes
 				WHERE p.post_id = post_id AND user_id = :user_id1
 			) AS 'liked_by_user',
-			GROUP_CONCAT(t.name) AS 'tags'
+			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
 		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
@@ -343,7 +343,7 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 				FROM likes
 				WHERE p.post_id = post_id AND user_id = :auth_id1
 			) AS 'liked_by_user',
-			GROUP_CONCAT(t.name) AS 'tags'
+			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
 		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
