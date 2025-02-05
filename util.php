@@ -12,7 +12,7 @@ enum Pages: string {
 	
 	case k_okiniiri = "/follow.php";
 
-	case k_kensaku = "/search.php";
+	case k_kensaku = "/tag_search.php";
 
 	case k_user_list = "/user_list.php";
 	

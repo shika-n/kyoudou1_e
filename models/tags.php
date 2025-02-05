@@ -9,6 +9,8 @@ function search_tags(PDO $dbh, $search) {
 		LEFT OUTER JOIN post_tag pt ON t.tag_id = pt.tag_id
 		WHERE name LIKE :search
 		GROUP BY t.tag_id
+		ORDER BY frequency DESC
+		LIMIT 20
 	");
 	$statement->bindValue(":search", "%$search%");
 	$statement->execute();

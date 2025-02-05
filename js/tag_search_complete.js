@@ -45,13 +45,16 @@ function updateSuggestionsElements(json) {
 	for (let i = 0; i < suggestions.length; ++i) {
 		suggestionList.insertAdjacentHTML("beforeend", suggestionItem(suggestions[i]["name"], suggestions[i]["frequency"]));
 	}
-	suggestionList.classList.remove("hidden");
-	suggestionList.classList.add("absolute");
+	if (suggestions.length > 0) {
+		suggestionList.classList.remove("hidden");
+	} else {
+		suggestionList.classList.add("hidden");
+	}
 }
 
 function complete(suggestion) {
 	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + suggestion["name"];
-	updateSuggestions([]);
+	updateSuggestionsElements([]);
 	searchField.focus();
 }
 
@@ -62,7 +65,11 @@ function updateSuggestions(searchValue) {
 }
 
 searchField.addEventListener("keypress", (e) => {
-	updateSuggestions(searchField.value.substring(searchField.value.lastIndexOf(" ") + 1) + e.key);
+	let searchValue = searchField.value.substring(searchField.value.lastIndexOf(" ") + 1) + e.key;
+	if (e.key == " ") {
+		searchValue = "";
+	}
+	updateSuggestions(searchValue);
 });
 
 searchField.addEventListener("keydown", (e) => {
