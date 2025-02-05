@@ -10,6 +10,10 @@ enum Pages: string {
 	case k_profile_edit = "/edit_profile.php";
 	case k_profile = "/profile.php";
 	
+	case k_okiniiri = "/follow.php";
+
+	case k_kensaku = "/search.php";
+
 	case k_user_list = "/user_list.php";
 	
 	case k_post = "/post.php";
