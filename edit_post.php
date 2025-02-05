@@ -3,6 +3,7 @@ require_once("db_open.php");
 require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
+require_once("models/tags.php");
 require_once("util.php");
 require_once("models/categories.php");
 require_once("templates.php");
@@ -66,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $title = trim(get_if_set("title", $_POST, ""));
     $content = trim(get_if_set("content", $_POST, ""));
     $category = trim(get_if_set("category", $_POST, ""));
+	$tags = get_if_set("tags", $_POST, []);
 
     // 入力チェック
 
@@ -89,13 +91,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
+		if (count($tags) > 10) {
+			$error = "タグは10個まで入力してください";
+		}
+		foreach ($tags as $tag) {
+			$tag = trim($tag);
+			if (mb_strlen($tag) < 1 || mb_strlen($tag) > 20) {
+				$error = "タグは1~20文字まで入力してください";
+			}
+		}
+
         // エラーがなければデータベース更新
         if (empty($error)) {
+			$dbh->beginTransaction();
+
             if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category)) {
-                $_SESSION["info"] = "投稿を更新しました。";
-				redirect_to(Pages::k_index);
+				$db_err = false;
+				$tag_ids = [];
+				foreach ($tags as $tag) {
+					$tag = trim($tag);
+					$tag_id = get_tag_id_or_create($dbh, $tag);
+					$db_err = $db_err || $tag_id === false;
+					if ($tag_id !== false) {
+						$tag_ids[] = $tag_id;
+						$db_err = $db_err || !tag_post($dbh, $post_id, $tag_id);
+					}
+				}
+				$db_err = $db_err || !remove_unlisted_tag($dbh, $post_id, $tag_ids);
+				if ($db_err) {
+					$error = "タグの更新失敗しました";
+					$dbh->rollBack();
+				} else {
+					$dbh->commit();
+					$_SESSION["info"] = "投稿を更新しました。";
+					redirect_to(Pages::k_index);
+				}
             } else {
                 $error = "更新に失敗しました。";
+				$dbh->rollBack();
             }
         }
     }
@@ -160,7 +193,7 @@ $content = <<< ___EOF___
 				cursor: pointer;
 			}
 
-			.form-container button:hover {
+			.form-container button:hover:not(.chips) {
 				background-color: #0056b3;
 			}
 		</style>
