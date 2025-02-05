@@ -140,6 +140,7 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 				u.name,
 				u.nickname,
 				u.icon,
+				NULL AS 'category_name',
 				(
 					SELECT COUNT(l.user_id)
 					FROM likes l
