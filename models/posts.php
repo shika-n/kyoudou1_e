@@ -83,7 +83,7 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 	$statement = $dbh->prepare("
 		WITH base AS (
 			SELECT
-				post_id,
+				p.post_id,
 				p.user_id,
 				created_at,
 				title,
@@ -92,7 +92,7 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 				updated_at,
 				reply_to,
 				deleted_at,
-				name,
+				u.name,
 				nickname,
 				icon,
 				(
@@ -108,11 +108,15 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 				EXISTS(
 					SELECT 1
 					FROM likes
-					WHERE p.post_id = post_id AND user_id = :auth_id
-				) AS 'liked_by_user'
+					WHERE p.post_id = post_id AND user_id = :auth_id1
+				) AS 'liked_by_user',
+				GROUP_CONCAT(t.name) AS 'tags'
 			FROM posts p
 			JOIN users u ON u.user_id = p.user_id
+			LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
+			LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 			WHERE p.post_id = :post_id AND p.reply_to IS NULL AND deleted_at IS NULL
+			GROUP BY p.post_id
 		)
 		(
 			SELECT * FROM base
@@ -146,7 +150,8 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 					SELECT 1
 					FROM likes
 					WHERE p.post_id = post_id AND user_id = :auth_id2
-				) AS 'liked_by_user'
+				) AS 'liked_by_user',
+				NULL AS 'tags'
 			FROM posts p
 			JOIN users u ON u.user_id = p.user_id
 			JOIN base b ON b.post_id = p.reply_to
