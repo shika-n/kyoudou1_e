@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$select_options = "";
 	foreach ($category_list as $category) {
 		$select_options .= <<<___EOF___
-			<option value="{$category['category_id']}">{$category['name']}</option>
+			<option value="{$category['category_id']}">{$category['category_name']}</option>
 			___EOF___;
 	}
 	
