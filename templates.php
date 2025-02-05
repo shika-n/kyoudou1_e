@@ -152,12 +152,17 @@ function comment_panel($comment, $target_timezone, $hidden = false) {
 }
 
 function comment_section($post_id, $comments, $target_timezone) {
-	$comments_count = count($comments);
+	if ($comments) {
+		$comments_count = count($comments);
+	} else {
+		$comments_count = 0;
+	}
 	$comments_html = "";
 	for ($i = 0; $i < $comments_count; ++$i) {
 		$comments_html .= comment_panel($comments[$i], $target_timezone, $i < $comments_count - 3);
 	}
 	
+	$show_more_comments_button = "";
 	if ($comments_count > 3) {
 		$show_more_comments_button = <<< ___EOF___
 			<div class="flex gap-2 p-1 border-l-2 border-slate-500 bg-slate-200 text-xs">
@@ -187,6 +192,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	$row['title'] = htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');
 	$row['content'] = htmlspecialchars($row['content'], ENT_QUOTES, 'UTF-8');
 	$row['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
+	$row['category_name'] = htmlspecialchars($row['category_name'], ENT_QUOTES, 'UTF-8');
 	$created_at = (new DateTime($row["created_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 	$updated_at = (new DateTime($row["updated_at"]))->setTimezone($target_timezone)->format("Y-m-d H:i:s");
 
@@ -259,7 +265,10 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 				$actions
 			</div>
 			<div class="font-semibold">
-				<p>{$row['title']}</p>
+				<a href="post_exclusive.php?id={$row['post_id']}">{$row['title']}</a>
+			</div>
+			<div class="font-semibold px-2 py-1 bg-slate-300 rounded-lg">
+				<p>{$row['category_name']}</p>
 			</div>
 			<div class="leading-none">
 				{$image}

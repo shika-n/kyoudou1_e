@@ -4,6 +4,7 @@ require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
 require_once("util.php");
+require_once("models/categories.php");
 
 if (!is_authenticated()) {
 	redirect_to(Pages::k_login);
@@ -18,6 +19,13 @@ $content = "";
 $image = "";
 $error = "";
 $is_a_comment = false;
+$category_list = get_categories($dbh);
+$select_options = "";
+foreach ($category_list as $category) {
+    $select_options .= <<<___EOF___
+        <option value="{$category['category_id']}">{$category['category_name']}</option>
+        ___EOF___;
+}
 
 // $post_id = $_GET["post_id"];
 $post_id = get_if_set("post_id", $_GET);
@@ -48,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // フォームからの入力値を取得
     $title = trim(get_if_set("title", $_POST, ""));
     $content = trim(get_if_set("content", $_POST, ""));
+    $category = trim(get_if_set("category", $_POST, ""));
 
     // 入力チェック
 
@@ -73,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // エラーがなければデータベース更新
         if (empty($error)) {
-            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image)) {
+            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category)) {
                 $_SESSION["info"] = "投稿を更新しました。";
 				redirect_to(Pages::k_index);
             } else {
@@ -164,6 +173,10 @@ $content = <<< ___EOF___
             <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
+
+            <select id="category" name="category">
+				<!-- SELECT OPTIONS -->
+			</select>
            
             <button type="button" onclick="showDialog()">保存</button>
 			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
@@ -192,6 +205,7 @@ ___EOF___;
 if (!$is_a_comment) {
     $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);
     $content = str_replace("<!-- IMAGE INPUT -->", $image_input, $content);
+    $content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
 }
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 	echo $html;
