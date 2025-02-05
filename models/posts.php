@@ -38,6 +38,67 @@ function get_comment_count(PDO $dbh, $post_id) {
 	return $statement->fetchAll()[0][0];
 }
 
+function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_order) {
+	if ($sort_order === "newest") {
+		$sort_order_inject = "";
+	} else {
+		$sort_order_inject = "like_count DESC, ";
+	}
+	$tags_placeholder = "";
+	for ($i = 0; $i < count($tags); ++$i) {
+		if ($i > 0) {
+			$tags_placeholder .= ", ";
+		}
+		$tags_placeholder .= "?";
+	}
+	$statement = $dbh->prepare("
+		SELECT
+			p.post_id,
+			p.user_id,
+			created_at,
+			title,
+			content,
+			image,
+			updated_at,
+			reply_to,
+			deleted_at,
+			u.name,
+			nickname,
+			icon,
+			(
+				SELECT COUNT(l.user_id)
+				FROM likes l
+				WHERE l.post_id = p.post_id 
+			) AS 'like_count',
+			(
+				SELECT COUNT(c.post_id)
+				FROM posts c
+				WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
+			) AS 'comment_count',
+			EXISTS(
+				SELECT 1
+				FROM likes
+				WHERE p.post_id = post_id AND user_id = ?
+			) AS 'liked_by_user',
+			GROUP_CONCAT(t.name) AS 'tags'
+		FROM posts p
+		JOIN users u ON u.user_id = p.user_id
+		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
+		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
+		WHERE p.post_id IN (
+        	SELECT p2.post_id FROM posts p2
+            JOIN post_tag pt2 ON p2.post_id = pt2.post_id
+            JOIN tags t2 ON pt2.tag_id = t2.tag_id
+            WHERE t2.name IN ($tags_placeholder)
+        ) AND p.reply_to IS NULL AND deleted_at IS NULL
+		GROUP BY p.post_id
+		ORDER BY $sort_order_inject created_at DESC
+		LIMIT $limit OFFSET $offset;
+	");
+	$statement->execute([$auth_id, ...$tags]);
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function get_post_by_id(PDO $dbh, $user_id, $post_id) {
 	$statement = $dbh->prepare("
 		SELECT
