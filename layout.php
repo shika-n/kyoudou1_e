@@ -49,6 +49,7 @@ $html = <<< ___EOF___
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_index->get_url()}">TOP</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_profile->get_url()}">プロファイル</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_okiniiri->get_url()}">お気に入り</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_category_list->get_url()}">カテゴリー一覧</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_kensaku->get_url()}">タグで検索</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_user_list->get_url()}">ユーザー一覧</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_logout->get_url()}">ログアウト</a>
