@@ -30,6 +30,6 @@ $scripts = <<< ___EOF___
 		reachBottomActionQuery.set("id", $category_id);
 	</script>
 ___EOF___;
-
+hide_markdown_image();
 $html = str_replace("<!-- CONTENT -->", $content . $scripts, $html);
 echo $html;
