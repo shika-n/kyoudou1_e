@@ -21,7 +21,7 @@ $content = <<< ___EOF___
 ___EOF___;
 foreach ($categories as $category) {
 	$content .= <<< ___EOF___
-		<a href="{$pages::k_category_posts->get_url()}?id={$category['category_id']}" class="min-w-20 p-4 text-center font-bold flex-grow rounded-lg bg-blue-300 active:bg-blue-400 transition-all hover:shadow-xl hover:-translate-y-1">
+		<a href="{$pages::k_category_posts->get_url()}?id={$category['category_id']}" class="min-w-20 p-4 text-center font-bold flex-grow rounded-lg bg-blue-300 active:bg-blue-400 transition-all hover:shadow-xl hover:-translate-y-1 active:translate-y-0">
 			{$category["category_name"]}
 		</a>
 	___EOF___;
