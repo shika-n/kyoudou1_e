@@ -368,3 +368,59 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 	
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function get_posts_by_category(PDO $dbh, $auth_id, $category_id, $limit, $offset, $sort_order) {
+	if ($sort_order === "newest") {
+		$sort_order_inject = "";
+	} else {
+		$sort_order_inject = "like_count DESC, ";
+	}
+	$statement = $dbh->prepare("
+		SELECT
+			p.post_id,
+			p.user_id,
+			created_at,
+			title,
+			content,
+			image,
+			updated_at,
+			reply_to,
+			deleted_at,
+			u.name,
+			nickname,
+			icon,
+			cat.category_name,
+			(
+				SELECT COUNT(l.user_id)
+				FROM likes l
+				WHERE l.post_id = p.post_id 
+			) AS 'like_count',
+			(
+				SELECT COUNT(c.post_id)
+				FROM posts c
+				WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
+			) AS 'comment_count',
+			EXISTS(
+				SELECT 1
+				FROM likes
+				WHERE p.post_id = post_id AND user_id = :auth_id1
+			) AS 'liked_by_user',
+			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
+		FROM posts p
+		JOIN users u ON u.user_id = p.user_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
+		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
+		WHERE p.reply_to IS NULL AND p.category_id = :category_id AND deleted_at IS NULL
+		GROUP BY p.post_id
+		ORDER BY $sort_order_inject created_at DESC
+		LIMIT :limit OFFSET :offset
+	");
+	$statement->bindParam(":auth_id1", $auth_id);
+	$statement->bindParam(":category_id", $category_id);
+	$statement->bindParam(":limit", $limit);
+	$statement->bindParam(":offset", $offset);
+	$statement->execute();
+	
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
