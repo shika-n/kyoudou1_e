@@ -1,7 +1,7 @@
 <?php
 
 function post(PDO $dbh, $user_id, $title, $content, $image, $category,$image_position) {
-	$statement = $dbh->prepare("INSERT INTO posts(user_id, title, content, created_at, updated_at, image, category_id) VALUES (?, ?, ?, ?, ?, ?, ?,?);");
+	$statement = $dbh->prepare("INSERT INTO posts(user_id, title, content, created_at, updated_at, image, category_id, image_position) VALUES (?, ?, ?, ?, ?, ?, ?,?);");
 	date_default_timezone_set("UTC");
 	$now = date("Y-m-d H:i:s");
 	if ($statement->execute([$user_id, $title, $content, $now, $now, $image, $category,$image_position])) {
@@ -15,7 +15,7 @@ function edit_post(PDO $dbh, $user_id, $post_id, $title, $content, $image, $cate
 	$statement = $dbh->prepare("UPDATE posts SET title = ?, content = ?, image = ?, updated_at = ?, category_id = ? ,image_position = ? WHERE user_id = ? AND post_id = ?;");
 	date_default_timezone_set("UTC");
 	$now = date("Y-m-d H:i:s");
-	return $statement->execute([$title, $content, $image, $now, $category, $user_id, $post_id,$image_position]);
+	return $statement->execute([$title, $content, $image, $now, $category, $image_position, $user_id, $post_id]);
 }
 
 function delete_post(PDO $dbh, $post_id) {
