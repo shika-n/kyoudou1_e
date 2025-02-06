@@ -309,9 +309,9 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 			$tags_html
 			<div class="mt-2 flex gap-2 items-center">
 				$like_button 
-				<div id="comment-count-{$row['post_id']}" class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
+				<a id="comment-count-{$row['post_id']}" href="{$pages::k_post_detail->get_url()}?id={$row['post_id']}" class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
 					コメント：{$row["comment_count"]}
-				</div>
+				</a>
 			</div>
 			$comment_section_html
 		</div>
