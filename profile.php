@@ -68,6 +68,7 @@ $content
 HTML;
 
 // ** レイアウトに組み込み＆出力 **
+hide_markdown_image();
 $html = str_replace("<!-- CONTENT -->", $user_info . $post_section . "<script src='js/reach_bottom_action.js'></script>", $html);
 echo $html;
 ?>

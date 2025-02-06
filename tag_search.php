@@ -31,4 +31,5 @@ if ($search_from_link) {
 	$scripts .= "<script>searchTags()</script>";
 }
 
+hide_markdown_image();
 echo str_replace("<!-- CONTENT -->", $content . $scripts, $html);

@@ -119,3 +119,8 @@ $loggedinusername = get_if_set("name", $_SESSION) ;
 if ($loggedinusername) {
 	$html = str_replace("ユーザー名", $loggedinusername, $html);
 }
+
+function hide_markdown_image() {
+	global $html;
+	$html = str_replace("<!-- HEAD -->", "<link rel='stylesheet' href='css/hidden_markdown_image.css'>", $html);
+}

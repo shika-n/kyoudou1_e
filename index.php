@@ -20,5 +20,6 @@ foreach ($post_arr as $row) {
 	$content .= post_panel($row, $target_timezone);
 }
 
+hide_markdown_image();
 $html = str_replace("<!-- CONTENT -->", $content . "<script src='js/reach_bottom_action.js'></script>", $html);
 echo $html;
