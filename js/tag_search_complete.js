@@ -10,9 +10,12 @@ function searchTags() {
 		return;
 	}
 	const query = searchField.value.trim().split(" ");
-	const params = new URLSearchParams({ "query": query });
+	const params = new URLSearchParams({
+		"query": query,
+		"type": "tags"
+	});
 	reachBottomActionQuery.set("query", query);
-	fetch("api/post_search_by_tag.php?" + params)
+	fetch("api/get_posts.php?" + params)
 		.then((response) => response.text())
 		.then((text) => {
 			searchResult.innerHTML = text;
