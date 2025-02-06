@@ -68,6 +68,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $content = trim(get_if_set("content", $_POST, ""));
     $category = trim(get_if_set("category", $_POST, ""));
 	$tags = get_if_set("tags", $_POST, []);
+	$image_position = get_if_set("image_position", $_POST, "above");
+
+	if ($image_position == "above") {
+		$image_position = 0;
+	} else {
+		$image_position = 1;
+	}
 
     // 入力チェック
 
@@ -105,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (empty($error)) {
 			$dbh->beginTransaction();
 
-            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category)) {
+            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category,$image_position)) {
 				$db_err = false;
 				$tag_ids = [];
 				foreach ($tags as $tag) {
@@ -213,6 +220,21 @@ $content = <<< ___EOF___
             <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
+			
+			<fieldset>
+			<legend>画像の表示位置を選んでください</legend>
+			<div style="display: flex; gap: 20px; align-items: center;">
+			<div>
+				<label>
+					<input type="radio" id="above" name="image_position" value="above" checked>
+					テキストの上
+				</label>
+				<label>
+					<input type="radio" id="below" name="image_position" value="below">
+					テキストの下
+					</label>
+					</div>
+				</fieldset>
 
 			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
 				<label for="chipInput" class="chips">タグ</label>
