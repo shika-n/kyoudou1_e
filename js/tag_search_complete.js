@@ -5,9 +5,6 @@ const searchResult = document.getElementById("searchResult");
 let selection = -1;
 let suggestions = [];
 
-reachBottomActionSourceUrl = "api/post_search_by_tag.php";
-reachBottomActionTargetContainerId = "searchResult";
-
 function searchTags() {
 	if (searchField.dataset.enableSearch === undefined) {
 		return;

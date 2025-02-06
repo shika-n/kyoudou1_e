@@ -202,6 +202,7 @@ $content = <<< ___EOF___
 				border-radius: 5px;
 				font-size: 16px;
 				cursor: pointer;
+				transition: all 0.1s;
 			}
 
 			.form-container button:hover:not(.chips) {

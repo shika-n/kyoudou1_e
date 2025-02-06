@@ -68,7 +68,16 @@ $content
 HTML;
 
 // ** レイアウトに組み込み＆出力 **
+$scripts = <<< ___EOF___
+	<script src='js/reach_bottom_action.js'></script>
+
+	<script>
+		reachBottomActionQuery.set("type", "profile");
+		reachBottomActionQuery.set("id", $target_id);
+	</script>
+___EOF___;
+
 hide_markdown_image();
-$html = str_replace("<!-- CONTENT -->", $user_info . $post_section . "<script src='js/reach_bottom_action.js'></script>", $html);
+$html = str_replace("<!-- CONTENT -->", $user_info . $post_section . $scripts, $html);
 echo $html;
 ?>
