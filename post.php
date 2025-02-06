@@ -18,6 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$category = get_if_set("category", $_POST);
 	$image_position = get_if_set("image_position", $_POST, "above");
 
+	if ($image_position == "above") {
+		$image_position = 0;
+	} else {
+		$image_position = 1;
+	}
+
 	$_SESSION["title"] = $title;
 	$_SESSION["content"] = $content;
 	$_SESSION["category"] = $category;
@@ -63,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$db_err = false;
 	$dbh->beginTransaction();
 
-	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category);
+	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category,$image_position);
 	$db_err = $db_err || $post_id === false;
 
 	foreach ($tags as $tag) {
