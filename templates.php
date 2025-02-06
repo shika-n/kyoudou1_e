@@ -25,11 +25,12 @@ function tag_chips($tags) {
 	}
 
 	$chips_html = "<div class='flex flex-wrap gap-1'>";
+	$search_page = Pages::k_kensaku;
 	foreach ($tags as $tag) {
 		$chips_html .= <<< ___EOF___
-			<span class="chips flex items-center gap-1 py-[0.2em] px-2 bg-gray-300 rounded-full min-w-0 text-xs">
+			<a href="{$search_page->get_url()}?query=$tag" class="chips flex items-center gap-1 py-[0.2em] px-2 bg-gray-300 hover:bg-gray-200 active:bg-gray-400 rounded-full min-w-0 text-xs transition-all">
 				$tag
-			</span>
+			</a>
 		___EOF___;
 	}
 	return $chips_html . "</div>";
