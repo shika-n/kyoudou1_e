@@ -54,6 +54,10 @@ if ($record) {
 			$tags_html .= chip(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
 		}
 	}
+
+	$image_position = get_if_set("image_position", $record);
+	$image_position_above_checked = $image_position == 0 ? "checked" : "";
+	$image_position_bottom_checked = $image_position == 1 ? "checked" : "";
 }
 
 // POSTリクエスト処理
@@ -221,37 +225,7 @@ $content = <<< ___EOF___
 
             <!-- IMAGE INPUT -->
 			
-			<fieldset>
-			<legend>画像の表示位置を選んでください</legend>
-			<div style="display: flex; gap: 20px; align-items: center;">
-			<div>
-				<label>
-					<input type="radio" id="above" name="image_position" value="above" checked>
-					テキストの上
-				</label>
-				<label>
-					<input type="radio" id="below" name="image_position" value="below">
-					テキストの下
-					</label>
-					</div>
-				</fieldset>
-			
-			<div>
-				<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
-					<label for="search-field">タグ</label>
-					$tags_html
-					<input id="search-field" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
-				</div>
-				<div class="relative">
-					<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
-				</div>
-				<script src="js/tag_search_complete.js"></script>
-				<script src="js/chip_input.js"></script>
-			</div>
 
-            <select id="category" name="category">
-				<!-- SELECT OPTIONS -->
-			</select>
            
             <button type="button" onclick="showDialog()">保存</button>
 			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
@@ -276,11 +250,39 @@ ___EOF___;
 $image_input = <<< ___EOF___
 <label for="image">画像 (任意)</label>
 <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
+<fieldset>
+	<legend>画像の表示位置を選んでください</legend>
+	<div style="display: flex; gap: 20px; align-items: center;">
+		<label>
+			<input type="radio" id="above" name="image_position" value="above" $image_position_above_checked>
+			テキストの上
+		</label>
+		<label>
+			<input type="radio" id="below" name="image_position" value="below" $image_position_bottom_checked>
+			テキストの下
+		</label>
+	</div>
+</fieldset>
+
+<div>
+	<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
+		<label for="search-field">タグ</label>
+		$tags_html
+		<input id="search-field" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+	</div>
+	<div class="relative">
+		<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
+	</div>
+	<script src="js/tag_search_complete.js"></script>
+	<script src="js/chip_input.js"></script>
+</div>
+<select id="category" name="category">
+	$select_options
+</select>
 ___EOF___;
 if (!$is_a_comment) {
     $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);
     $content = str_replace("<!-- IMAGE INPUT -->", $image_input, $content);
-    $content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
 }
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 	echo $html;
