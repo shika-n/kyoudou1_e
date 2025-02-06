@@ -13,7 +13,7 @@ $target_id = get_if_set("id", $_GET);
 if (!$target_id) {
     $target_id = $_SESSION["user_id"];
 }
-
+//
 $content = "";
 $user = get_user_by_id($dbh, $target_id);
 $icon = $user["icon"];

@@ -22,7 +22,7 @@ while ($record = $sql_res->fetch()) {
     $stmt = $dbh->prepare("SELECT COUNT(*) FROM follows WHERE user_id = ? AND user_id_target = ?");
     $stmt->execute([$current_user_id, $id]);
     $is_following = $stmt->fetchColumn() > 0;
-
+//
     if ($current_user_id !== $id) {
         $follow_text = $is_following ? "フォロー解除" : "フォロー";
         $follow_class = $is_following ? "bg-red-400" : "bg-blue-200";

@@ -14,4 +14,5 @@ function unfollow_user($dbh, $user_id, $user_id_target) {
     $stmt = $dbh->prepare("DELETE FROM follows WHERE user_id = ? AND user_id_target = ?");
     return $stmt->execute([$user_id, $user_id_target]);
 }
+//
 ?>

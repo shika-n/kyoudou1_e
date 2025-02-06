@@ -18,10 +18,10 @@ const buttonElement = this;
             console.log("フォロー成功");
             buttonElement.classList.remove("bg-blue-200", "bg-red-400");
         if (data.following) {
-            buttonElement.textContent = "フォロー解除";
+            buttonElement.textContent = "フォロー解除しました";
             buttonElement.classList.add("bg-red-400");
         } else {
-            buttonElement.textContent = "フォロー";
+            buttonElement.textContent = "フォローしました";
             buttonElement.classList.add("bg-blue-200");
     }
         } else {

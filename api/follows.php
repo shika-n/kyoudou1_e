@@ -26,13 +26,13 @@ if ($is_following) {
     if (unfollow_user($dbh, $user_id, $user_id_target)) {
         echo json_encode(["success" => true, "message" => "フォロー解除", "following" => false]);
     } else {
-        echo json_encode(["success" => false, "message" => "フォロー解除に失敗", "following" => true]);
+        echo json_encode(["success" => false, "message" => "解除失敗", "following" => true]);
     }
 } else {
     if (follow_user($dbh, $user_id, $user_id_target)) {
         echo json_encode(["success" => true, "message" => "フォローしました", "following" => true]);
     } else {
-        echo json_encode(["success" => false, "message" => "フォローに失敗", "following" => false]);
+        echo json_encode(["success" => false, "message" => "フォロー失敗しました", "following" => false]);
     }
 }
 exit;
