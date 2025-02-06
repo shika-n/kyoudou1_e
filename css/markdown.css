@@ -54,4 +54,8 @@
 		padding: 0em 0.2em;
 		background-color: lightgray;
 	}
+	hr {
+		margin: 0.5em 0em;
+		border-color: lightgray;
+	}
 }

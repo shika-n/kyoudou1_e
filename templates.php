@@ -239,7 +239,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 		$comment_section_html = comment_section($row["post_id"], $comments, $target_timezone);
 		if ($row["image"]) {
 			$image = <<< ___EOF___
-					<img class="mx-auto max-h-60" src="post_images/{$row['image']}">
+					<img class="mx-auto my-1 max-h-60 rounded-md" src="post_images/{$row['image']}">
 			___EOF___;
 		}
 	}
