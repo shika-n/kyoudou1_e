@@ -277,7 +277,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	$pages = Pages::k_base_url;
 
 	$image_layout = "";
-	if ($row["image_position"] == 0 ){
+	if (get_if_set("image_position", $row) == 0 ){
 		$image_layout = <<<__EOF__
 			<div class="leading-none">
 				{$image}
