@@ -40,7 +40,7 @@ if ($type === "timeline") {
 	}
 } else if ($type === "tags") {
 	$tags = explode(",", get_if_set("query", $_GET));
-	$post_arr = get_post_by_tags($dbh, $_SESSION["user_id"], $tags, $limit, $offset, "newest");
+	$post_arr = get_post_by_tags($dbh, $_SESSION["user_id"], $tags, $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
 } else if ($type === "category") {
 	$category_id = get_if_set("id", $_GET, 0);
 	$post_arr = get_posts_by_category($dbh, $_SESSION["user_id"], $category_id, $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
