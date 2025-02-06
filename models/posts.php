@@ -44,8 +44,9 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 	} else {
 		$sort_order_inject = "like_count DESC, ";
 	}
+	$tags_count = count($tags);
 	$tags_placeholder = "";
-	for ($i = 0; $i < count($tags); ++$i) {
+	for ($i = 0; $i < $tags_count; ++$i) {
 		if ($i > 0) {
 			$tags_placeholder .= ", ";
 		}
@@ -92,6 +93,8 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
             JOIN post_tag pt2 ON p2.post_id = pt2.post_id
             JOIN tags t2 ON pt2.tag_id = t2.tag_id
             WHERE t2.name IN ($tags_placeholder)
+			GROUP BY p2.post_id
+			HAVING COUNT(t2.tag_id) = $tags_count
         ) AND p.reply_to IS NULL AND deleted_at IS NULL
 		GROUP BY p.post_id
 		ORDER BY $sort_order_inject created_at DESC
