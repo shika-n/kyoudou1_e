@@ -4,6 +4,7 @@ const searchResult = document.getElementById("searchResult");
 
 let selection = -1;
 let suggestions = [];
+let mouseOverSuggestion = false;
 
 function searchTags() {
 	if (searchField.dataset.enableSearch === undefined) {
@@ -26,7 +27,7 @@ function searchTags() {
 function suggestionItem(value, frequency) {
 	return `
 		<li class="rounded-md px-1 hover:bg-blue-400/30" onclick="complete('${value}')">
-			<div class="flex justify-between gap-2">
+			<div class="flex justify-between gap-2 select-none">
 				<span>${value}</span>
 				<span>${frequency}</span>
 			</div>
@@ -59,10 +60,11 @@ function updateSuggestionsElements(json) {
 	}
 }
 
-function complete(suggestion) {
-	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + suggestion["name"] + " ";
+function complete(value) {
+	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + value + " ";
 	updateSuggestionsElements([]);
 	searchField.focus();
+	mouseOverSuggestion = false;
 }
 
 function updateSuggestions(searchValue) {
@@ -91,7 +93,7 @@ searchField.addEventListener("keydown", (e) => {
 	} else if (e.key == "Enter") {
 		e.preventDefault();
 		if (selection > -1) {
-			complete(suggestions[selection]);
+			complete(suggestions[selection]["name"]);
 		} else {
 			searchTags();
 		}
@@ -100,7 +102,13 @@ searchField.addEventListener("keydown", (e) => {
 	}
 });
 
-searchField.addEventListener("focusout", (e) => {
+
+suggestionList.addEventListener("mouseover", (_) => mouseOverSuggestion = true);
+suggestionList.addEventListener("mouseout", (_) => mouseOverSuggestion = false);
+
+searchField.addEventListener("focusout", (_) => {
 	selection = -1;
-	suggestionList.classList.add("hidden");
+	if (!mouseOverSuggestion) {
+		suggestionList.classList.add("hidden");
+	}
 });
