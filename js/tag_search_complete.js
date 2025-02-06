@@ -9,7 +9,10 @@ reachBottomActionSourceUrl = "api/post_search_by_tag.php";
 reachBottomActionTargetContainerId = "searchResult";
 
 function searchTags() {
-	const query = searchField.value.split(" ");
+	if (searchField.dataset.enableSearch === undefined) {
+		return;
+	}
+	const query = searchField.value.trim().split(" ");
 	const params = new URLSearchParams({ "query": query });
 	reachBottomActionQuery.set("query", query);
 	fetch("api/post_search_by_tag.php?" + params)
@@ -57,7 +60,7 @@ function updateSuggestionsElements(json) {
 }
 
 function complete(suggestion) {
-	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + suggestion["name"];
+	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + suggestion["name"] + " ";
 	updateSuggestionsElements([]);
 	searchField.focus();
 }

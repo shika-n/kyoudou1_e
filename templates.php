@@ -86,13 +86,13 @@ function post_owner_comp($id, $icon, $nickname, $created_at, $updated_at) {
 		$hover = "title='{$updated_at}に編集された'";
 	}
 	$post_owner_comp_layout = <<< ___EOF___
-		<div class="flex flex-row items-center truncate">
+		<div class="flex flex-row items-center">
 			<div class="rounded-full">
 				<img src="profile_pictures/{$icon}" class="min-w-8 w-8 rounded-full aspect-square object-cover object-center">
 			</div>
 			<div class="flex flex-col flex-wrap ml-5 text-sm px-2 divide-y divide-black">
 				<div class="font-semibold">
-					<a href="profile.php?id=$id">{$nickname}</a>
+					<a href="profile.php?id=$id" class="break-all line-clamp-1">{$nickname}</a>
 				</div>
 				<div>
 					<p <!-- HOVER -->>{$showed_datetime}</p>
