@@ -10,9 +10,14 @@ enum Pages: string {
 	case k_profile_edit = "/edit_profile.php";
 	case k_profile = "/profile.php";
 	
+	case k_okiniiri = "/follow.php";
+
+	case k_kensaku = "/tag_search.php";
+
 	case k_user_list = "/user_list.php";
 	
 	case k_post = "/post.php";
+	case k_post_detail = "/post_exclusive.php";
 
 	function get_url() {
 		if ($this === Pages::k_base_url) {

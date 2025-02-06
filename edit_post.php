@@ -3,7 +3,10 @@ require_once("db_open.php");
 require_once("util.php");
 require_once("layout.php");
 require_once("models/posts.php");
+require_once("models/tags.php");
 require_once("util.php");
+require_once("models/categories.php");
+require_once("templates.php");
 
 if (!is_authenticated()) {
 	redirect_to(Pages::k_login);
@@ -18,24 +21,43 @@ $content = "";
 $image = "";
 $error = "";
 $is_a_comment = false;
+$category_list = get_categories($dbh);
+$select_options = "";
+foreach ($category_list as $category) {
+    $select_options .= <<<___EOF___
+        <option value="{$category['category_id']}">{$category['category_name']}</option>
+        ___EOF___;
+}
 
 // $post_id = $_GET["post_id"];
 $post_id = get_if_set("post_id", $_GET);
 
 // データベースからユーザーの投稿内容を取得
-$sql = "SELECT * FROM posts WHERE user_id = :user_id AND post_id = :post_id";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(':user_id', $target_user_id, PDO::PARAM_INT);
-$stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
-$stmt->execute();
+$record = get_post_by_id($dbh, $_SESSION["user_id"], $post_id);
 
-if ($record = $stmt->fetch()) {
+if ($record) {
+	if ($record["user_id"] != $_SESSION["user_id"]) {
+		redirect_to(Pages::k_profile);
+	}
+
     $title = htmlspecialchars($record['title'], ENT_QUOTES, 'UTF-8');
     $content = htmlspecialchars($record['content'], ENT_QUOTES, 'UTF-8');
     $image = htmlspecialchars($record['image'], ENT_QUOTES, 'UTF-8');
     if (isset($record['reply_to'])) {
         $is_a_comment = true;
     }
+
+	$tags_html = "";
+	if ($record["tags"]) {
+		$tags = explode(",", get_if_set("tags", $record));
+		foreach ($tags as $key => $value) {
+			$tags_html .= chip(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
+		}
+	}
+
+	$image_position = get_if_set("image_position", $record);
+	$image_position_above_checked = $image_position == 0 ? "checked" : "";
+	$image_position_bottom_checked = $image_position == 1 ? "checked" : "";
 }
 
 // POSTリクエスト処理
@@ -48,6 +70,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // フォームからの入力値を取得
     $title = trim(get_if_set("title", $_POST, ""));
     $content = trim(get_if_set("content", $_POST, ""));
+    $category = trim(get_if_set("category", $_POST, ""));
+	$tags = get_if_set("tags", $_POST, []);
+	$image_position = get_if_set("image_position", $_POST, "above");
+
+	if ($image_position == "above") {
+		$image_position = 0;
+	} else {
+		$image_position = 1;
+	}
 
     // 入力チェック
 
@@ -71,13 +102,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
+		if (count($tags) > 10) {
+			$error = "タグは10個まで入力してください";
+		}
+		foreach ($tags as $tag) {
+			$tag = trim($tag);
+			if (mb_strlen($tag) < 1 || mb_strlen($tag) > 20) {
+				$error = "タグは1~20文字まで入力してください";
+			}
+		}
+
         // エラーがなければデータベース更新
         if (empty($error)) {
-            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image)) {
-                $_SESSION["info"] = "投稿を更新しました。";
-				redirect_to(Pages::k_index);
+			$dbh->beginTransaction();
+
+            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category,$image_position)) {
+				$db_err = false;
+				$tag_ids = [];
+				foreach ($tags as $tag) {
+					$tag = trim($tag);
+					$tag_id = get_tag_id_or_create($dbh, $tag);
+					$db_err = $db_err || $tag_id === false;
+					if ($tag_id !== false) {
+						$tag_ids[] = $tag_id;
+						$db_err = $db_err || !tag_post($dbh, $post_id, $tag_id);
+					}
+				}
+				$db_err = $db_err || !remove_unlisted_tag($dbh, $post_id, $tag_ids);
+				if ($db_err) {
+					$error = "タグの更新失敗しました";
+					$dbh->rollBack();
+				} else {
+					$dbh->commit();
+					$_SESSION["info"] = "投稿を更新しました。";
+					redirect_to(Pages::k_index);
+				}
             } else {
                 $error = "更新に失敗しました。";
+				$dbh->rollBack();
             }
         }
     }
@@ -119,21 +181,19 @@ $content = <<< ___EOF___
 
 			.form-container label {
 				display: block;
-				margin-bottom: 10px;
 				font-weight: bold;
 			}
 
-			.form-container input[type="text"],
+			.form-container input[type="text"]:not(.chips),
 			.form-container textarea {
 				width: 100%;
 				padding: 10px;
-				margin-bottom: 20px;
 				border: 1px solid #ccc;
 				border-radius: 5px;
 				box-sizing: border-box;
 			}
 
-			.form-container button {
+			.form-container button:not(.chips) {
 				width: 100%;
 				padding: 10px;
 				background-color: #007BFF;
@@ -144,7 +204,7 @@ $content = <<< ___EOF___
 				cursor: pointer;
 			}
 
-			.form-container button:hover {
+			.form-container button:hover:not(.chips) {
 				background-color: #0056b3;
 			}
 		</style>
@@ -155,7 +215,7 @@ $content = <<< ___EOF___
         <?php if (!empty($error)): ?>
             <p class="error-message"><?= $error ?></p>
         <?php endif; ?>
-        <form method="POST" enctype="multipart/form-data">
+		<form method="POST" class="form-container flex flex-col gap-4" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="$csrf_token">
 
             <!-- TITLE INPUT -->
@@ -164,6 +224,8 @@ $content = <<< ___EOF___
             <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
+			
+
            
             <button type="button" onclick="showDialog()">保存</button>
 			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
@@ -188,6 +250,35 @@ ___EOF___;
 $image_input = <<< ___EOF___
 <label for="image">画像 (任意)</label>
 <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
+<fieldset>
+	<legend>画像の表示位置を選んでください</legend>
+	<div style="display: flex; gap: 20px; align-items: center;">
+		<label>
+			<input type="radio" id="above" name="image_position" value="above" $image_position_above_checked>
+			テキストの上
+		</label>
+		<label>
+			<input type="radio" id="below" name="image_position" value="below" $image_position_bottom_checked>
+			テキストの下
+		</label>
+	</div>
+</fieldset>
+
+<div>
+	<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
+		<label for="search-field">タグ</label>
+		$tags_html
+		<input id="search-field" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+	</div>
+	<div class="relative">
+		<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
+	</div>
+	<script src="js/tag_search_complete.js"></script>
+	<script src="js/chip_input.js"></script>
+</div>
+<select id="category" name="category">
+	$select_options
+</select>
 ___EOF___;
 if (!$is_a_comment) {
     $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);

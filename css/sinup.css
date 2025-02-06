@@ -1,7 +1,7 @@
 body{
     background-color: rgb(242, 242, 242);
     text-align: center;
-	background-image: url(images/01.jpg);
+	background-image: url(../images/01.jpg);
 	background-size: cover;
 }
 
@@ -58,22 +58,6 @@ input:not([type="submit"]) {
 	padding: 2px 8px;
 }
 
-@media screen and (max-width:600px){
-    body{
-        background-color: rgb(242, 242, 242);
-        text-align: center;
-    }
-
-	.form-top{
-		width: 100vw;
-		/* 任意 */
-		box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.8);
-		border-radius: 16px;
-	}
-	.fullcenter {
-		display: block;
-	}
-}
 
 /* TODO: Login page broken atm when height < 630 */
 @media screen and (max-height:630px) { /* For register page */

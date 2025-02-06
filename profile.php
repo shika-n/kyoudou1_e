@@ -19,7 +19,7 @@ $user = get_user_by_id($dbh, $target_id);
 $icon = $user["icon"];
 $name = htmlspecialchars($user["name"], ENT_QUOTES, "UTF-8");
 $nickname = htmlspecialchars($user["nickname"], ENT_QUOTES, "UTF-8");
-[ $post_arr, $comments ] = get_posts_by_user($dbh, $_SESSION["user_id"], $target_id, 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
+$post_arr = get_posts_by_user($dbh, $_SESSION["user_id"], $target_id, 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
 
 $is_following = false;
 if ($target_id != $_SESSION["user_id"]) {
@@ -38,12 +38,13 @@ if (count($post_arr) === 0) {
     </div>
     HTML;
 } else {
-    date_default_timezone_set("UTC");
-    $target_timezone = new DateTimeZone("Asia/Tokyo");
-    $content .= sort_order_select();
-    foreach ($post_arr as $row) {
-        $content .= post_panel($row, $target_timezone, get_if_set($row["post_id"], $comments));
-    }
+	date_default_timezone_set("UTC");
+	$target_timezone = new DateTimeZone("Asia/Tokyo");
+    // 記事がある場合の表示
+	$content .= sort_order_select();
+	foreach ($post_arr as $row) {
+		$content .= post_panel($row, $target_timezone);
+	}
 }
 
 $pages = Pages::k_base_url;
