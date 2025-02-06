@@ -242,7 +242,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 			___EOF___;
 		}
 	}
-    
+
 	$like_button = "";
 	if ($row["user_id"] !== $_SESSION["user_id"]) {
 		$like_button = <<<__EOF__
@@ -274,6 +274,24 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	}
 
 	$pages = Pages::k_base_url;
+
+	$image_layout = "";
+	if ($row["image_position"] == 0 ){
+		$image_layout = <<<__EOF__
+			<div class="leading-none">
+				{$image}
+				<div class="markdown-content text-wrap break-all text-ellipsis overflow-hidden $line_clamp">{$row['content']}</div>
+			</div>
+		__EOF__;
+	}elseif ($row["image_position"] == 1 ){
+		$image_layout = <<<__EOF__
+		<div class="leading-none">
+			<div class="markdown-content text-wrap break-all text-ellipsis overflow-hidden $line_clamp">{$row['content']}</div>
+			{$image}
+		</div>
+	__EOF__;
+	}
+
 	return <<< ___EOF___
 		<div class="flex flex-col gap-1 border-2 rounded-lg border-black p-2 bg-slate-100">
 			<div class="flex justify-between">
@@ -286,10 +304,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 			<div class="font-semibold px-2 py-1 bg-slate-300 rounded-lg">
 				<p>{$row['category_name']}</p>
 			</div>
-			<div class="leading-none">
-				{$image}
-				<div class="markdown-content text-wrap break-all text-ellipsis overflow-hidden $line_clamp">{$row['content']}</div>
-			</div>
+			$image_layout
 			$tags_html
 			<div class="mt-2 flex gap-2 items-center">
 				$like_button 
@@ -301,4 +316,3 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 		</div>
 	___EOF___;
 }
-
