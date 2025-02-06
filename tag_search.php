@@ -3,6 +3,9 @@ require_once("layout.php");
 require_once("templates.php");
 require_once("util.php");
 
+if (!is_authenticated()) {
+	redirect_to(Pages::k_login);
+}
 
 $search_from_link = htmlspecialchars(get_if_set("query", $_GET), ENT_QUOTES, "UTF-8");
 
