@@ -16,6 +16,7 @@ function searchTags() {
 		.then((response) => response.text())
 		.then((text) => {
 			searchResult.innerHTML = text;
+			resetCurrentPage();
 		});
 }
 
