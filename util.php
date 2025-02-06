@@ -17,6 +17,7 @@ enum Pages: string {
 	case k_user_list = "/user_list.php";
 	
 	case k_post = "/post.php";
+	case k_post_detail = "/post_exclusive.php";
 
 	function get_url() {
 		if ($this === Pages::k_base_url) {

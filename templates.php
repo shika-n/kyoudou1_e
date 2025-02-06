@@ -273,6 +273,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 		$line_clamp = "line-clamp-3";
 	}
 
+	$pages = Pages::k_base_url;
 	return <<< ___EOF___
 		<div class="flex flex-col gap-1 border-2 rounded-lg border-black p-2 bg-slate-100">
 			<div class="flex justify-between">
@@ -280,7 +281,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 				$actions
 			</div>
 			<div class="font-semibold">
-				<a href="post_exclusive.php?id={$row['post_id']}">{$row['title']}</a>
+				<a href="{$pages::k_post_detail->get_url()}?id={$row['post_id']}">{$row['title']}</a>
 			</div>
 			<div class="font-semibold px-2 py-1 bg-slate-300 rounded-lg">
 				<p>{$row['category_name']}</p>
