@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$tags = get_if_set("tags", $_POST, []);
 	$image = get_if_set("image", $_FILES);
 	$category = get_if_set("category", $_POST);
+	$image_position = get_if_set("image_position", $_POST, "above");
 
 	$_SESSION["title"] = $title;
 	$_SESSION["content"] = $content;
@@ -152,6 +153,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			</div>
 			
 			<input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif" class="flex-grow">
+
+			<fieldset>
+			<legend>画像の表示位置を選んでください</legend>
+			<div style="display: flex; gap: 20px; align-items: center;">
+			<div>
+				<label>
+					<input type="radio" id="above" name="image_position" value="above" checked>
+					テキストの上
+				</label>
+				<label>
+					<input type="radio" id="below" name="image_position" value="below">
+					テキストの下
+					</label>
+				</div>
+			</fieldset>
 
 			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
 				<label for="chipInput">タグ</label>
