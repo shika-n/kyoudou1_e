@@ -15,12 +15,12 @@ function searchTags() {
 		"query": query,
 		"type": "tags"
 	});
-	reachBottomActionQuery.set("query", query);
+	reachBottomActionQuery.set("query", query); // reach_bottom_action.js
 	fetch("api/get_posts.php?" + params)
 		.then((response) => response.text())
 		.then((text) => {
 			searchResult.innerHTML = text;
-			resetCurrentPage();
+			resetCurrentPage(); // reach_bottom_action.js
 		});
 }
 
@@ -64,6 +64,9 @@ function complete(value) {
 	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + value + " ";
 	updateSuggestionsElements([]);
 	searchField.focus();
+	if (typeof convertToChip === "function") { // chip_input.js
+		convertToChip();
+	}
 	mouseOverSuggestion = false;
 }
 
