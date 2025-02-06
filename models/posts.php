@@ -119,6 +119,7 @@ function get_post_by_id(PDO $dbh, $auth_id, $post_id) {
 			u.name,
 			nickname,
 			icon,
+			image_position,
 			cat.category_name,
 			(
 				SELECT COUNT(l.user_id)
