@@ -3,6 +3,11 @@ let loading = false;
 let reachBottomActionSourceUrl = "api/get_posts.php";
 let reachBottomActionTargetContainerId = "content";
 const reachBottomActionQuery = new URLSearchParams();
+
+function resetCurrentPage() {
+	currentPage = 2;
+}
+
 function loadNextPosts() {
     if (loading) return;
     loading = true;
