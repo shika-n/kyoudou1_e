@@ -11,11 +11,11 @@ function post(PDO $dbh, $user_id, $title, $content, $image, $category,$image_pos
 	}
 }
 
-function edit_post(PDO $dbh, $user_id, $post_id, $title, $content, $image, $category) {
-	$statement = $dbh->prepare("UPDATE posts SET title = ?, content = ?, image = ?, updated_at = ?, category_id = ? WHERE user_id = ? AND post_id = ?;");
+function edit_post(PDO $dbh, $user_id, $post_id, $title, $content, $image, $category,$image_position) {
+	$statement = $dbh->prepare("UPDATE posts SET title = ?, content = ?, image = ?, updated_at = ?, category_id = ? ,image_position = ? WHERE user_id = ? AND post_id = ?;");
 	date_default_timezone_set("UTC");
 	$now = date("Y-m-d H:i:s");
-	return $statement->execute([$title, $content, $image, $now, $category, $user_id, $post_id]);
+	return $statement->execute([$title, $content, $image, $now, $category, $user_id, $post_id,$image_position]);
 }
 
 function delete_post(PDO $dbh, $post_id) {
