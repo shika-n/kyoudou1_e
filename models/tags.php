@@ -61,5 +61,9 @@ function remove_unlisted_tag(PDO $dbh, $post_id, $tags) {
 		$placeholder .= ")";
 	}
 	$statement = $dbh->prepare("DELETE FROM post_tag WHERE post_id = ? $placeholder");
-	return $statement->execute([$post_id, ...$tags]);
+	$result = $statement->execute([$post_id, ...$tags]);
+
+	// $statement = $dbh->prepare("DELETE FROM tags WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM post_tag)");
+	// $statement->execute([$post_id, ...$tags]);
+	return $result;
 }
