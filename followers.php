@@ -59,7 +59,7 @@ foreach ($sql_res as $record) {
     HTML;
 }
 $content = <<<HTML
-<h1 class="text-xl">ユーザー一覧</h1>
+<h1 class="text-xl">フォロワー一覧</h1>
 
 <div class="my-2 mx-2 p-2 text-xl border border-2 border-gray-300 rounded-lg">
     $user_list
