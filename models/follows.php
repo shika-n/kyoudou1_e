@@ -15,7 +15,7 @@ function unfollow_user($dbh, $user_id, $user_id_target) {
     return $stmt->execute([$user_id, $user_id_target]);
 }
 
-function get_followers(PDO $dbh, $auth_id) {
+function get_followers(PDO $dbh, $user_id) {
 	$statement = $dbh->prepare("
 		SELECT
 			u.user_id,
@@ -25,14 +25,14 @@ function get_followers(PDO $dbh, $auth_id) {
 			u.icon
 		FROM users u
 		JOIN follows f ON u.user_id = f.user_id
-		WHERE f.user_id_target = :auth_id;
+		WHERE f.user_id_target = :user_id;
 	");
-	$statement->bindParam(":auth_id", $auth_id);
+	$statement->bindParam(":user_id", $user_id);
 	$statement->execute();
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function get_followings(PDO $dbh, $auth_id) {
+function get_followings(PDO $dbh, $user_id) {
 	$statement = $dbh->prepare("
 		SELECT
 			u.user_id,
@@ -42,10 +42,20 @@ function get_followings(PDO $dbh, $auth_id) {
 			u.icon
 		FROM users u
 		JOIN follows f ON u.user_id = f.user_id_target
-		WHERE f.user_id = :auth_id;
+		WHERE f.user_id = :user_id;
 	");
-	$statement->bindParam(":auth_id", $auth_id);
+	$statement->bindParam(":user_id", $user_id);
 	$statement->execute();
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function get_ff_count(PDO $dbh, $user_id) {
+	$statement = $dbh->prepare("
+		SELECT
+		(SELECT COUNT(user_id_target) FROM follows WHERE user_id = ?) AS 'followings',
+		(SELECT COUNT(user_id) FROM follows WHERE user_id_target = ?) AS 'followers';	
+	");
+	$statement->execute([$user_id, $user_id]);
+	return $statement->fetchAll(PDO::FETCH_ASSOC)[0];
 }
 ?>

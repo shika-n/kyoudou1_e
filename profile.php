@@ -34,6 +34,8 @@ if ($follow_text === "フォロー" && $is_followed) {
 }
 $follow_class = $is_following ? "bg-red-400" : "bg-blue-200";
 
+$ff_count = get_ff_count($dbh, $target_id);
+
 if (count($post_arr) === 0) {
     $content = <<<HTML
     <div class="text-center text-gray-500 p-4">
@@ -56,11 +58,17 @@ $user_info = <<<HTML
     <div class="flex flex-col md:flex-row gap-4 rounded-lg p-4 items-center">
         <img src="profile_pictures/$icon" alt="アイコン" class="w-24 h-24 rounded-full aspect-square object-cover object-center">
         
-        <div class="flex flex-col md:flex-row items-center w-full border-2 border-gray-300 rounded-lg p-4">
+        <div class="flex flex-col lg:flex-row items-center w-full border-2 border-gray-300 rounded-lg p-4">
             <div class="flex-1 min-w-0">
                 <p class="font-bold text-lg overflow-hidden text-ellipsis">名前: $name</p>
                 <hr>
                 <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
+				<hr>
+				<div class="flex gap-2 font-bold">
+					<span>{$ff_count["followings"]} フォロー中</span>
+					<span>・</span>
+					<span>{$ff_count["followers"]} フォロワー</span>
+				</div>
             </div>
             
 HTML;
