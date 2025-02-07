@@ -49,6 +49,7 @@ $html = <<< ___EOF___
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_index->get_url()}">TOP</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_profile->get_url()}">プロファイル</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_okiniiri->get_url()}">お気に入り</a>
+					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_category_list->get_url()}">カテゴリー一覧</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_kensaku->get_url()}">タグで検索</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_user_list->get_url()}">ユーザー一覧</a>
 					<a class="w-40 py-2 px-4 bg-slate-300 hover:bg-slate-200 active:bg-slate-400 md:rounded-md transition-all" href="{$pages::k_logout->get_url()}">ログアウト</a>
@@ -103,7 +104,7 @@ $guest_html = <<< ___EOF___
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Eチームの掲示板</title>
 		<script src="https://cdn.tailwindcss.com"></script>
-		<link rel="stylesheet" href="css/sinup.css">
+		<link rel="stylesheet" href="sinup.css">
 	</head>
 	<body>
 		<header class="px-4 w-full justify-center items-center bg-slate-300">
@@ -118,4 +119,9 @@ ___EOF___;
 $loggedinusername = get_if_set("name", $_SESSION) ;
 if ($loggedinusername) {
 	$html = str_replace("ユーザー名", $loggedinusername, $html);
+}
+
+function hide_markdown_image() {
+	global $html;
+	$html = str_replace("<!-- HEAD -->", "<link rel='stylesheet' href='css/hidden_markdown_image.css'>", $html);
 }

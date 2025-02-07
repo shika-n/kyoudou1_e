@@ -16,6 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$tags = get_if_set("tags", $_POST, []);
 	$image = get_if_set("image", $_FILES);
 	$category = trim(get_if_set("categoryId", $_POST, ""));
+	$image_position = get_if_set("image_position", $_POST, "above");
+
+	if ($image_position == "above") {
+		$image_position = 0;
+	} else {
+		$image_position = 1;
+	}
 
 	$_SESSION["title"] = $title;
 	$_SESSION["content"] = $content;
@@ -62,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$db_err = false;
 	$dbh->beginTransaction();
 
-	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category);
+	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category,$image_position);
 	$db_err = $db_err || $post_id === false;
 
 	foreach ($tags as $tag) {
@@ -136,10 +143,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				border-radius: 5px;
 				font-size: 16px;
 				cursor: pointer;
+				transition: all 0.1s;
 			}
 
 			.form-container button:not(.chips,.category):hover {
 				background-color: #0056b3;
+			}
+
+			.form-container button:not(.chips):disabled {
+				background-color: #AAAAAA;
+			}
+			.form-container button:not(.chips):disabled:hover {
+				background-color: #AAAAAA;
+				cursor: not-allowed;
 			}
 		</style>
 		<form method="POST" class="form-container flex flex-col gap-4" enctype="multipart/form-data">
@@ -152,12 +168,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<p id="charCounter" class="pb-5"></p>
 				</div>
 			</div>
-			
+			<div class="flex">
+				<input type="file" id="image-select" accept="image/png, image/jpeg, image/gif" class="hidden">
+				<button type="button" id="select-image-button" onclick="selectImage()" class="max-w-32">画像を投入</button>
+				<script src="js/upload_image.js"></script>
+			</div>
+			<!--
 			<input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif" class="flex-grow">
 
-			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
-				<label for="chipInput">タグ</label>
-				<input id="chipInput" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+			<fieldset>
+			<legend>画像の表示位置を選んでください</legend>
+			<div style="display: flex; gap: 20px; align-items: center;">
+			<div>
+				<label>
+					<input type="radio" id="above" name="image_position" value="above" checked>
+					テキストの上
+				</label>
+				<label>
+					<input type="radio" id="below" name="image_position" value="below">
+					テキストの下
+					</label>
+				</div>
+			</fieldset>
+			-->
+			<div>
+				<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
+					<label for="search-field">タグ</label>
+					<input id="search-field" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+				</div>
+				<div class="relative">
+					<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
+				</div>
+				<script src="js/tag_search_complete.js"></script>
 				<script src="js/chip_input.js"></script>
 			</div>
 	

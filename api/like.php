@@ -2,6 +2,7 @@
 require_once("../db_open.php");
 require_once("../models/likes.php");
 require_once("../models/unlikes.php");
+require_once("../models/posts.php");
 require_once("../util.php");
 
 session_start();
@@ -13,6 +14,11 @@ if (!is_authenticated()) {
 // user_id + post_id 取得
 $user_id = $_SESSION["user_id"];
 $post_id = $_GET["post_id"];
+
+if (get_post_by_id($dbh, $user_id, $_GET["post_id"])["user_id"] == $user_id) {
+	echo "400 Bad Request";
+	return http_response_code(400);
+}
 
 if (!is_liked($dbh, $post_id)) {
 	// いいね

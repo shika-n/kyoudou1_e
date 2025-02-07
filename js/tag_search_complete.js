@@ -4,25 +4,30 @@ const searchResult = document.getElementById("searchResult");
 
 let selection = -1;
 let suggestions = [];
-
-reachBottomActionSourceUrl = "api/post_search_by_tag.php";
-reachBottomActionTargetContainerId = "searchResult";
+let mouseOverSuggestion = false;
 
 function searchTags() {
-	const query = searchField.value.split(" ");
-	const params = new URLSearchParams({ "query": query });
-	reachBottomActionQuery.set("query", query);
-	fetch("api/post_search_by_tag.php?" + params)
+	if (searchField.dataset.enableSearch === undefined) {
+		return;
+	}
+	const query = searchField.value.trim().split(" ");
+	const params = new URLSearchParams({
+		"query": query,
+		"type": "tags"
+	});
+	reachBottomActionQuery.set("query", query); // reach_bottom_action.js
+	fetch("api/get_posts.php?" + params)
 		.then((response) => response.text())
 		.then((text) => {
 			searchResult.innerHTML = text;
+			resetCurrentPage(); // reach_bottom_action.js
 		});
 }
 
 function suggestionItem(value, frequency) {
 	return `
 		<li class="rounded-md px-1 hover:bg-blue-400/30" onclick="complete('${value}')">
-			<div class="flex justify-between gap-2">
+			<div class="flex justify-between gap-2 select-none">
 				<span>${value}</span>
 				<span>${frequency}</span>
 			</div>
@@ -55,10 +60,14 @@ function updateSuggestionsElements(json) {
 	}
 }
 
-function complete(suggestion) {
-	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + suggestion["name"];
+function complete(value) {
+	searchField.value = searchField.value.substring(0, searchField.value.lastIndexOf(" ") + 1) + value + " ";
 	updateSuggestionsElements([]);
 	searchField.focus();
+	if (typeof convertToChip === "function") { // chip_input.js
+		convertToChip();
+	}
+	mouseOverSuggestion = false;
 }
 
 function updateSuggestions(searchValue) {
@@ -87,7 +96,7 @@ searchField.addEventListener("keydown", (e) => {
 	} else if (e.key == "Enter") {
 		e.preventDefault();
 		if (selection > -1) {
-			complete(suggestions[selection]);
+			complete(suggestions[selection]["name"]);
 		} else {
 			searchTags();
 		}
@@ -96,7 +105,13 @@ searchField.addEventListener("keydown", (e) => {
 	}
 });
 
-searchField.addEventListener("focusout", (e) => {
+
+suggestionList.addEventListener("mouseover", (_) => mouseOverSuggestion = true);
+suggestionList.addEventListener("mouseout", (_) => mouseOverSuggestion = false);
+
+searchField.addEventListener("focusout", (_) => {
 	selection = -1;
-	suggestionList.classList.add("hidden");
+	if (!mouseOverSuggestion) {
+		suggestionList.classList.add("hidden");
+	}
 });

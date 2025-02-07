@@ -54,6 +54,10 @@ if ($record) {
 			$tags_html .= chip(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
 		}
 	}
+
+	$image_position = get_if_set("image_position", $record);
+	$image_position_above_checked = $image_position == 0 ? "checked" : "";
+	$image_position_bottom_checked = $image_position == 1 ? "checked" : "";
 }
 
 // POSTリクエスト処理
@@ -68,6 +72,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $content = trim(get_if_set("content", $_POST, ""));
     $category = trim(get_if_set("category", $_POST, ""));
 	$tags = get_if_set("tags", $_POST, []);
+	$image_position = get_if_set("image_position", $_POST, "above");
+
+	if ($image_position == "above") {
+		$image_position = 0;
+	} else {
+		$image_position = 1;
+	}
 
     // 入力チェック
 
@@ -105,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (empty($error)) {
 			$dbh->beginTransaction();
 
-            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category)) {
+            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category,$image_position)) {
 				$db_err = false;
 				$tag_ids = [];
 				foreach ($tags as $tag) {
@@ -191,6 +202,7 @@ $content = <<< ___EOF___
 				border-radius: 5px;
 				font-size: 16px;
 				cursor: pointer;
+				transition: all 0.1s;
 			}
 
 			.form-container button:hover:not(.chips) {
@@ -213,17 +225,8 @@ $content = <<< ___EOF___
             <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
+			
 
-			<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
-				<label for="chipInput" class="chips">タグ</label>
-				$tags_html
-				<input id="chipInput" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
-				<script src="js/chip_input.js"></script>
-			</div>
-
-            <select id="category" name="category">
-				<!-- SELECT OPTIONS -->
-			</select>
            
             <button type="button" onclick="showDialog()">保存</button>
 			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
@@ -246,13 +249,47 @@ $title_input = <<< ___EOF___
 <input type="text" id="title" name="title" value="$title" maxlength="20" required>
 ___EOF___;
 $image_input = <<< ___EOF___
+<div class="flex">
+	<input type="file" id="image-select" accept="image/png, image/jpeg, image/gif" class="hidden">
+	<button type="button" id="select-image-button" onclick="selectImage()" class="max-w-32">画像を投入</button>
+	<script src="js/upload_image.js"></script>
+</div>
+<!--
 <label for="image">画像 (任意)</label>
 <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
+<fieldset>
+	<legend>画像の表示位置を選んでください</legend>
+	<div style="display: flex; gap: 20px; align-items: center;">
+		<label>
+			<input type="radio" id="above" name="image_position" value="above" $image_position_above_checked>
+			テキストの上
+		</label>
+		<label>
+			<input type="radio" id="below" name="image_position" value="below" $image_position_bottom_checked>
+			テキストの下
+		</label>
+	</div>
+</fieldset>
+-->
+<div>
+	<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
+		<label for="search-field">タグ</label>
+		$tags_html
+		<input id="search-field" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
+	</div>
+	<div class="relative">
+		<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
+	</div>
+	<script src="js/tag_search_complete.js"></script>
+	<script src="js/chip_input.js"></script>
+</div>
+<select id="category" name="category">
+	$select_options
+</select>
 ___EOF___;
 if (!$is_a_comment) {
     $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);
     $content = str_replace("<!-- IMAGE INPUT -->", $image_input, $content);
-    $content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
 }
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 	echo $html;

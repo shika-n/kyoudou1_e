@@ -1,7 +1,5 @@
 <?php
 require_once("util.php");
-require_once("externals/php-markdown/Michelf/Markdown.inc.php");
-use Michelf\Markdown;
 
 function chip($value) {
 	return <<< ___EOF___
@@ -25,11 +23,12 @@ function tag_chips($tags) {
 	}
 
 	$chips_html = "<div class='flex flex-wrap gap-1'>";
+	$search_page = Pages::k_kensaku;
 	foreach ($tags as $tag) {
 		$chips_html .= <<< ___EOF___
-			<span class="chips flex items-center gap-1 py-[0.2em] px-2 bg-gray-300 rounded-full min-w-0 text-xs">
+			<a href="{$search_page->get_url()}?query=$tag" class="chips flex items-center gap-1 py-[0.2em] px-2 bg-gray-300 hover:bg-gray-200 active:bg-gray-400 rounded-full min-w-0 text-xs transition-all">
 				$tag
-			</span>
+			</a>
 		___EOF___;
 	}
 	return $chips_html . "</div>";
@@ -85,13 +84,13 @@ function post_owner_comp($id, $icon, $nickname, $created_at, $updated_at) {
 		$hover = "title='{$updated_at}に編集された'";
 	}
 	$post_owner_comp_layout = <<< ___EOF___
-		<div class="flex flex-row items-center truncate">
+		<div class="flex flex-row items-center">
 			<div class="rounded-full">
 				<img src="profile_pictures/{$icon}" class="min-w-8 w-8 rounded-full aspect-square object-cover object-center">
 			</div>
 			<div class="flex flex-col flex-wrap ml-5 text-sm px-2 divide-y divide-black">
 				<div class="font-semibold">
-					<a href="profile.php?id=$id">{$nickname}</a>
+					<a href="profile.php?id=$id" class="break-all line-clamp-1">{$nickname}</a>
 				</div>
 				<div>
 					<p <!-- HOVER -->>{$showed_datetime}</p>
@@ -230,20 +229,18 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	$like_icon = like_svg($row);
 	$post_owner = post_owner_comp($id, $row["icon"], $row["nickname"], $created_at , $updated_at);
 
-	$row["content"] = Markdown::defaultTransform($row["content"]); 
 
 	$comment_section_html = "";
+	$image = "";
 	if ($enable_comments) {
 		$comment_section_html = comment_section($row["post_id"], $comments, $target_timezone);
+		if ($row["image"]) {
+			$image = <<< ___EOF___
+					<img class="mx-auto my-1 max-h-60 rounded-md" src="post_images/{$row['image']}">
+			___EOF___;
+		}
 	}
-	
-	$image = "";
-	if ($row["image"]) {
-		$image = <<< ___EOF___
-				<img class="mx-auto max-h-60" src="post_images/{$row['image']}">
-		___EOF___;
-	}
-    
+
 	$like_button = "";
 	if ($row["user_id"] !== $_SESSION["user_id"]) {
 		$like_button = <<<__EOF__
@@ -274,6 +271,25 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 		$line_clamp = "line-clamp-3";
 	}
 
+	$pages = Pages::k_base_url;
+
+	$image_layout = "";
+	if (get_if_set("image_position", $row) == 0 ){
+		$image_layout = <<<__EOF__
+			<div class="leading-none">
+				{$image}
+				<div class="markdown-content text-wrap break-all text-ellipsis overflow-hidden $line_clamp">{$row['content']}</div>
+			</div>
+		__EOF__;
+	}elseif ($row["image_position"] == 1 ){
+		$image_layout = <<<__EOF__
+		<div class="leading-none">
+			<div class="markdown-content text-wrap break-all text-ellipsis overflow-hidden $line_clamp">{$row['content']}</div>
+			{$image}
+		</div>
+	__EOF__;
+	}
+
 	return <<< ___EOF___
 		<div class="flex flex-col gap-1 border-2 rounded-lg border-black p-2 bg-slate-100">
 			<div class="flex justify-between">
@@ -281,24 +297,20 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 				$actions
 			</div>
 			<div class="font-semibold">
-				<a href="post_exclusive.php?id={$row['post_id']}">{$row['title']}</a>
+				<a href="{$pages::k_post_detail->get_url()}?id={$row['post_id']}">{$row['title']}</a>
 			</div>
 			<div class="font-semibold px-2 py-1 bg-slate-300 rounded-lg">
 				<p>{$row['category_name']}</p>
 			</div>
-			<div class="leading-none">
-				{$image}
-				<div class="markdown-content text-wrap break-all text-ellipsis overflow-hidden $line_clamp">{$row['content']}</div>
-			</div>
+			$image_layout
 			$tags_html
 			<div class="mt-2 flex gap-2 items-center">
 				$like_button 
-				<div id="comment-count-{$row['post_id']}" class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
+				<a id="comment-count-{$row['post_id']}" href="{$pages::k_post_detail->get_url()}?id={$row['post_id']}" class="px-2 py-1 bg-slate-300 rounded-lg text-xs">
 					コメント：{$row["comment_count"]}
-				</div>
+				</a>
 			</div>
 			$comment_section_html
 		</div>
 	___EOF___;
 }
-

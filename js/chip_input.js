@@ -1,5 +1,5 @@
 const chipsField = document.getElementById("chipsField");
-const chipInput = document.getElementById("chipInput");
+const chipInput = document.getElementById("search-field");
 
 function chip(value) {
 	return `
@@ -17,13 +17,17 @@ function chip(value) {
 	`;
 }
 
+function convertToChip() {
+	if (chipInput.value.trim().length > 0) {
+		chipInput.insertAdjacentHTML("beforebegin", chip(chipInput.value.trim()));
+		chipInput.value = "";
+	}
+}
+
 chipInput.addEventListener("keydown", (e) => {
-	if (e.key == " ") {
+	if (e.key == " " || e.key == "Enter") {
 		e.preventDefault();
-		if (chipInput.value.trim().length > 0) {
-			chipInput.insertAdjacentHTML("beforebegin", chip(chipInput.value));
-			chipInput.value = "";
-		}
+		convertToChip();
 	} else if (e.key == "Backspace") {
 		if (chipInput.value.length == 0) {
 			e.preventDefault();
