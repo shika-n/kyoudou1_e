@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$content = trim(get_if_set("content", $_POST, ""));
 	$tags = get_if_set("tags", $_POST, []);
 	$image = get_if_set("image", $_FILES);
-	$category = trim(get_if_set("categoryId", $_POST, ""));
+	$category_ids = get_if_set("categoryIds", $_POST, [99]);
 	$image_position = get_if_set("image_position", $_POST, "above");
 
 	if ($image_position == "above") {
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	$_SESSION["title"] = $title;
 	$_SESSION["content"] = $content;
-	$_SESSION["category"] = $category;
+	$_SESSION["category_ids"] = $category_ids;
 
 	if (!$title || mb_strlen($title) > 20) {
 		$_SESSION["error"] = "タイトルは1~20文字まで入力してください";
@@ -64,12 +64,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$_SESSION["title"] = null;
 	$_SESSION["content"] = null;
 	$_SESSION["error"] = null;
-	$_SESSION["category"] = null;
+	$_SESSION["category_ids"] = null;
 
 	$db_err = false;
 	$dbh->beginTransaction();
 
-	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, $category,$image_position);
+	$db_category_ids = array_column(get_categories($dbh), "category_id");
+	foreach ($category_ids as $category_id) {
+		if (array_search($category_id, $db_category_ids) === false) {
+			$_SESSION["error"] = "カテゴリーエラー";
+			$dbh->rollBack();
+			redirect_back();
+		}
+	}
+
+	$post_id = post($dbh, $_SESSION["user_id"], $title, $content, $image_filename, 99,$image_position);
 	$db_err = $db_err || $post_id === false;
 
 	foreach ($tags as $tag) {
@@ -80,6 +89,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$db_err = $db_err || !tag_post($dbh, $post_id, $tag_id);
 		}
 	}
+
+	$db_err = $db_err || !set_post_categories($dbh, $post_id, $category_ids);
 	
 	if ($db_err) {
 		$dbh->rollBack();
@@ -206,7 +217,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div class="text-center">
 				<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">カテゴリーを選択</button>
 				<p class="mt-4 text-lg">カテゴリー: <span id="selectedCategory" class="font-semibold">その他</span></p>
-				<input type="hidden" id="categoryId" name="categoryId" value="99">
+				<div id="hiddenCategoryInputs">
+					<input type="hidden" name="categoryIds[]" value="99">
+				</div>
 			</div>
 			<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
 				<div class="bg-white p-6 rounded-lg shadow-lg w-96">

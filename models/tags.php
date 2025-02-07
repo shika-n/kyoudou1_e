@@ -36,7 +36,7 @@ function get_tag_id_or_create(PDO $dbh, $name) {
 function is_post_tagged(PDO $dbh, $post_id, $tag_id) {
 	$statement = $dbh->prepare("SELECT 1 FROM post_tag WHERE post_id = ? AND tag_id = ?");
 	$statement->execute([$post_id, $tag_id]);
-	return $statement->fetchAll(PDO::FETCH_COLUMN)[0] === 1;
+	return count($statement->fetchAll(PDO::FETCH_COLUMN)) === 1;
 }
 
 function tag_post(PDO $dbh, $post_id, $tag_id) {

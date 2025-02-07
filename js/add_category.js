@@ -1,22 +1,21 @@
-let lastSelectedCategory = document.getElementById("selectedCategory").textContent; // chosen category in the form
-//console.log("last=",lastSelectedCategory);
-let lastId = document.getElementById("categoryId").value;
-    let tempSelectedCategory = lastSelectedCategory; // selected category in the category window
-    let tempId = lastId;
+let tempCategoryArr = [];
+let categoryArr = [];
+
+const initialCategories = document.querySelectorAll("input[name='categoryIds[]']");
+initialCategories.forEach(elem => categoryArr.push(document.getElementById(elem.value)));
+
     function openCategoryWindow() {
         document.getElementById("categoryWindow").classList.toggle("hidden");
+		tempCategoryArr = [];
         let categories = document.querySelectorAll(".category");
         categories.forEach(cat => {
-			if (cat.textContent.includes(lastSelectedCategory)) {
+			if (categoryArr.find((e) => e === cat)) {
+				tempCategoryArr.push(cat);
 				cat.classList.add("bg-blue-500", "text-white");
 			} else {
                 cat.classList.remove("bg-blue-500", "text-white");
             }
         });
-        tempSelectedCategory = lastSelectedCategory;
-        tempId = lastId;
-        //console.log("temp=", tempSelectedCategory);
-        //console.log("last=",lastSelectedCategory);
     }
 
     function closeCategoryWindow() {
@@ -24,24 +23,42 @@ let lastId = document.getElementById("categoryId").value;
     }
 
     function selectCategory(element) {
-        let categories = document.querySelectorAll(".category");
-        categories.forEach(cat => cat.classList.remove("bg-blue-500", "text-white"));
-        element.classList.add("bg-blue-500", "text-white");
-		tempSelectedCategory = element.textContent;
-        tempId = element.id;
+	console.log(tempCategoryArr);
+		elementIndex = tempCategoryArr.findIndex((val) => {
+			return val === element;
+		});
+		if (elementIndex != -1) {
+			const removedElements = tempCategoryArr.splice(elementIndex, 1);
+			if (removedElements.length > 0) {
+				removedElements[0].classList.remove("bg-blue-500", "text-white");
+			}
+		} else {
+			tempCategoryArr.push(element);
+			element.classList.add("bg-blue-500", "text-white");
+		}
     }
 
     function chooseCategory() {
-        lastSelectedCategory = tempSelectedCategory;
-        lastId = tempId;
-        document.getElementById("selectedCategory").textContent = lastSelectedCategory;
-        document.getElementById("categoryId").value = lastId;
-        document.getElementById("categoryId").setAttribute("value", lastId);
+        const selectedCategory = document.getElementById("selectedCategory");
+		const hiddenCategoryInputs = document.getElementById("hiddenCategoryInputs");
+		selectedCategory.textContent = "";
+		hiddenCategoryInputs.innerHTML = "";
+
+		categoryArr = tempCategoryArr;
+
+		categoryArr.forEach((cat, i) => {
+			hiddenCategoryInputs.innerHTML += `
+				<input type="hidden" name="categoryIds[]" value="${cat.id}">
+			`;
+			if (i > 0) {
+				selectedCategory.textContent += ", ";
+			}
+			selectedCategory.textContent += cat.textContent;
+		});
+
         closeCategoryWindow();
     }
 
     function cancelSelection() {
-        tempSelectedCategory = lastSelectedCategory;
-        tempId = lastId;
         closeCategoryWindow();
     }

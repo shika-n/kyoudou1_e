@@ -45,11 +45,20 @@ if ($record) {
     $title = htmlspecialchars($record['title'], ENT_QUOTES, 'UTF-8');
     $content = htmlspecialchars($record['content'], ENT_QUOTES, 'UTF-8');
     $image = htmlspecialchars($record['image'], ENT_QUOTES, 'UTF-8');
-	$category = htmlspecialchars($record['category_id'], ENT_QUOTES, 'UTF-8');
-	$category_name = htmlspecialchars($record['category_name'], ENT_QUOTES, 'UTF-8');
+	$category_ids = explode(",", $record['category_ids']);
+	$categories = htmlspecialchars($record['categories'], ENT_QUOTES, "UTF-8");
     if (isset($record['reply_to'])) {
         $is_a_comment = true;
     }
+
+	$hidden_category_input_html = "";
+	foreach ($category_list as $category) {
+		if (array_search($category["category_id"], $category_ids) !== false) {
+			$hidden_category_input_html .= <<< ___EOF___
+				<input type="hidden" name="categoryIds[]" value="{$category["category_id"]}">
+			___EOF___;
+		}
+	}
 
 	$tags_html = "";
 	if ($record["tags"]) {
@@ -74,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // フォームからの入力値を取得
     $title = trim(get_if_set("title", $_POST, ""));
     $content = trim(get_if_set("content", $_POST, ""));
-    $category = trim(get_if_set("categoryId", $_POST, ""));
+	$category_ids = get_if_set("categoryIds", $_POST, [99]);
 	$tags = get_if_set("tags", $_POST, []);
 	$image_position = get_if_set("image_position", $_POST, "above");
 
@@ -120,7 +129,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (empty($error)) {
 			$dbh->beginTransaction();
 
-            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, $category,$image_position)) {
+			$db_category_ids = array_column(get_categories($dbh), "category_id");
+			foreach ($category_ids as $category_id) {
+				if (array_search($category_id, $db_category_ids) === false) {
+					$_SESSION["error"] = "カテゴリーエラー";
+					$dbh->rollBack();
+					redirect_back();
+				}
+			}
+
+            if (edit_post($dbh, $target_user_id, $post_id, $title, $content, $image, 99,$image_position)) {
 				$db_err = false;
 				$tag_ids = [];
 				foreach ($tags as $tag) {
@@ -133,6 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 					}
 				}
 				$db_err = $db_err || !remove_unlisted_tag($dbh, $post_id, $tag_ids);
+				$db_err = $db_err || !set_post_categories($dbh, $post_id, $category_ids);
 				if ($db_err) {
 					$error = "タグの更新失敗しました";
 					$dbh->rollBack();
@@ -230,26 +249,6 @@ $content = <<< ___EOF___
 
             <!-- IMAGE INPUT -->
 			
-			<div class="text-center">
-				<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">カテゴリーを選択</button>
-				<p class="mt-4 text-lg">カテゴリー: <span id="selectedCategory" class="font-semibold">{$category_name}</span></p>
-				<input type="hidden" id="categoryId" name="categoryId" value="{$category}">
-			</div>
-			<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
-				<div class="bg-white p-6 rounded-lg shadow-lg w-96">
-					<div class="text-center text-lg mb-2">
-						<p>カテゴリーを選択してください</p>
-					</div>
-					<div class="grid grid-cols-3 gap-3 mb-4">
-						<!-- SELECT OPTIONS -->
-					</div>
-					<div class="flex justify-between gap-2">
-						<button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" onclick="chooseCategory()">追加</button>
-						<button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="cancelSelection()">戻る</button>
-					</div>
-				</div>
-			</div>
-           
             <button type="button" onclick="showDialog()">保存</button>
 			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
 				<div class="bg-white w-fit h-fit p-4 rounded-xl">
@@ -263,7 +262,6 @@ $content = <<< ___EOF___
 			</div>
         </form>
     </div>
-	<script src="js/add_category.js"><script>
 </body>
 </html>
 ___EOF___;
@@ -306,9 +304,31 @@ $image_input = <<< ___EOF___
 	<script src="js/tag_search_complete.js"></script>
 	<script src="js/chip_input.js"></script>
 </div>
+<div class="text-center">
+	<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">カテゴリーを選択</button>
+	<p class="mt-4 text-lg">カテゴリー: <span id="selectedCategory" class="font-semibold">{$categories}</span></p>
+	<div id="hiddenCategoryInputs">
+		$hidden_category_input_html
+	</div>
+</div>
+<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
+	<div class="bg-white p-6 rounded-lg shadow-lg w-96">
+		<div class="text-center text-lg mb-2">
+			<p>カテゴリーを選択してください</p>
+		</div>
+		<div class="grid grid-cols-3 gap-3 mb-4">
+			<!-- SELECT OPTIONS -->
+		</div>
+		<div class="flex justify-between gap-2">
+			<button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" onclick="chooseCategory()">追加</button>
+			<button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="cancelSelection()">戻る</button>
+		</div>
+	</div>
+</div>
+<script src="js/add_category.js"></script>
 ___EOF___;
 if (!$is_a_comment) {
-	$content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
+	$image_input = str_replace("<!-- SELECT OPTIONS -->", $select_options, $image_input);
     $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);
     $content = str_replace("<!-- IMAGE INPUT -->", $image_input, $content);
 }
