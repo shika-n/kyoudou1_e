@@ -24,9 +24,11 @@ $is_a_comment = false;
 $category_list = get_categories($dbh);
 $select_options = "";
 foreach ($category_list as $category) {
-    $select_options .= <<<___EOF___
-        <option value="{$category['category_id']}">{$category['category_name']}</option>
-        ___EOF___;
+	$select_options .= <<<___EOF___
+	<button type="button" id="{$category['category_id']}" class="category flex items-center justify-center p-3 text-center border rounded-lg cursor-pointer transition select-none relative aspect-square w-full break-words overflow-hidden text-ellipsis whitespace-normal" onclick="selectCategory(this)">
+		{$category['category_name']}
+	</button>
+	___EOF___;
 }
 
 // $post_id = $_GET["post_id"];
@@ -43,6 +45,8 @@ if ($record) {
     $title = htmlspecialchars($record['title'], ENT_QUOTES, 'UTF-8');
     $content = htmlspecialchars($record['content'], ENT_QUOTES, 'UTF-8');
     $image = htmlspecialchars($record['image'], ENT_QUOTES, 'UTF-8');
+	$category = htmlspecialchars($record['category_id'], ENT_QUOTES, 'UTF-8');
+	$category_name = htmlspecialchars($record['category_name'], ENT_QUOTES, 'UTF-8');
     if (isset($record['reply_to'])) {
         $is_a_comment = true;
     }
@@ -70,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // フォームからの入力値を取得
     $title = trim(get_if_set("title", $_POST, ""));
     $content = trim(get_if_set("content", $_POST, ""));
-    $category = trim(get_if_set("category", $_POST, ""));
+    $category = trim(get_if_set("categoryId", $_POST, ""));
 	$tags = get_if_set("tags", $_POST, []);
 	$image_position = get_if_set("image_position", $_POST, "above");
 
@@ -184,7 +188,7 @@ $content = <<< ___EOF___
 				font-weight: bold;
 			}
 
-			.form-container input[type="text"]:not(.chips),
+			.form-container input[type="text"]:not(.chips,.category),
 			.form-container textarea {
 				width: 100%;
 				padding: 10px;
@@ -193,7 +197,7 @@ $content = <<< ___EOF___
 				box-sizing: border-box;
 			}
 
-			.form-container button:not(.chips) {
+			.form-container button:not(.chips,.category) {
 				width: 100%;
 				padding: 10px;
 				background-color: #007BFF;
@@ -205,7 +209,7 @@ $content = <<< ___EOF___
 				transition: all 0.1s;
 			}
 
-			.form-container button:hover:not(.chips) {
+			.form-container button:hover:not(.chips,.category) {
 				background-color: #0056b3;
 			}
 		</style>
@@ -226,7 +230,25 @@ $content = <<< ___EOF___
 
             <!-- IMAGE INPUT -->
 			
-
+			<div class="text-center">
+				<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">カテゴリーを選択</button>
+				<p class="mt-4 text-lg">カテゴリー: <span id="selectedCategory" class="font-semibold">{$category_name}</span></p>
+				<input type="hidden" id="categoryId" name="categoryId" value="{$category}">
+			</div>
+			<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
+				<div class="bg-white p-6 rounded-lg shadow-lg w-96">
+					<div class="text-center text-lg mb-2">
+						<p>カテゴリーを選択してください</p>
+					</div>
+					<div class="grid grid-cols-3 gap-3 mb-4">
+						<!-- SELECT OPTIONS -->
+					</div>
+					<div class="flex justify-between gap-2">
+						<button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" onclick="chooseCategory()">追加</button>
+						<button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="cancelSelection()">戻る</button>
+					</div>
+				</div>
+			</div>
            
             <button type="button" onclick="showDialog()">保存</button>
 			<div id="dialog-panel" class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md">
@@ -241,6 +263,7 @@ $content = <<< ___EOF___
 			</div>
         </form>
     </div>
+	<script src="js/add_category.js"><script>
 </body>
 </html>
 ___EOF___;
@@ -283,11 +306,9 @@ $image_input = <<< ___EOF___
 	<script src="js/tag_search_complete.js"></script>
 	<script src="js/chip_input.js"></script>
 </div>
-<select id="category" name="category">
-	$select_options
-</select>
 ___EOF___;
 if (!$is_a_comment) {
+	$content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
     $content = str_replace("<!-- TITLE INPUT -->", $title_input, $content);
     $content = str_replace("<!-- IMAGE INPUT -->", $image_input, $content);
 }

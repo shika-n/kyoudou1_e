@@ -150,10 +150,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				background-color: #0056b3;
 			}
 
-			.form-container button:not(.chips):disabled {
+			.form-container button:not(.chips,.category):disabled {
 				background-color: #AAAAAA;
 			}
-			.form-container button:not(.chips):disabled:hover {
+			.form-container button:not(.chips,.category):disabled:hover {
 				background-color: #AAAAAA;
 				cursor: not-allowed;
 			}
@@ -210,14 +210,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			</div>
 			<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
 				<div class="bg-white p-6 rounded-lg shadow-lg w-96">
-					<p>カテゴリーを選択してください</p>
-					<p>カテゴリーを選択することで、記事が見つけやすくなります！</p>
+					<div class="text-center text-lg mb-2">
+						<p>カテゴリーを選択してください</p>
+					</div>
 					<div class="grid grid-cols-3 gap-3 mb-4">
 						<!-- SELECT OPTIONS -->
 					</div>
-					<div class="flex justify-between">
-						<button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" onclick="chooseCategory()">Choose</button>
-						<button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="cancelSelection()">Cancel</button>
+					<div class="flex justify-between gap-2">
+						<button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" onclick="chooseCategory()">追加</button>
+						<button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="cancelSelection()">戻る</button>
 					</div>
 				</div>
 			</div>

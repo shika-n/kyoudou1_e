@@ -1,6 +1,6 @@
 let lastSelectedCategory = document.getElementById("selectedCategory").textContent; // chosen category in the form
 //console.log("last=",lastSelectedCategory);
-let lastId = document.getElementById("categoryId").textContent;
+let lastId = document.getElementById("categoryId").value;
     let tempSelectedCategory = lastSelectedCategory; // selected category in the category window
     let tempId = lastId;
     function openCategoryWindow() {
