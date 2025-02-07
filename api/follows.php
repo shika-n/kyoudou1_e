@@ -21,18 +21,19 @@ if (!$user_id_target || $user_id_target == $user_id) {
 }
 
 $is_following = is_following($dbh, $user_id, $user_id_target);
+$is_followed = is_following($dbh, $user_id_target, $user_id);
 
 if ($is_following) {
     if (unfollow_user($dbh, $user_id, $user_id_target)) {
-        echo json_encode(["success" => true, "message" => "フォロー解除", "following" => false]);
+        echo json_encode(["success" => true, "message" => "フォロー解除", "following" => false, "is_followed" => $is_followed]);
     } else {
-        echo json_encode(["success" => false, "message" => "解除失敗", "following" => true]);
+        echo json_encode(["success" => false, "message" => "解除失敗", "following" => true, "is_followed" => $is_followed]);
     }
 } else {
     if (follow_user($dbh, $user_id, $user_id_target)) {
-        echo json_encode(["success" => true, "message" => "フォローしました", "following" => true]);
+        echo json_encode(["success" => true, "message" => "フォローしました", "following" => true, "is_followed" => $is_followed]);
     } else {
-        echo json_encode(["success" => false, "message" => "フォロー失敗しました", "following" => false]);
+        echo json_encode(["success" => false, "message" => "フォロー失敗しました", "following" => false, "is_followed" => $is_followed]);
     }
 }//
 exit;

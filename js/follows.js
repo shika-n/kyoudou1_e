@@ -22,7 +22,11 @@ const buttonElement = this;
             buttonElement.textContent = "フォロー解除";
             buttonElement.classList.add("bg-red-400");
         } else {
-            buttonElement.textContent = "フォロー";
+			if (data.is_followed) {
+				buttonElement.textContent = "フォローバック";
+			} else {
+				buttonElement.textContent = "フォロー";
+			}
             buttonElement.classList.add("bg-blue-200");
     }
         } else {

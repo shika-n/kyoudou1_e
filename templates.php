@@ -1,5 +1,7 @@
 <?php
 require_once("util.php");
+require_once("externals/php-markdown/Michelf/Markdown.inc.php");
+use Michelf\Markdown;
 
 function chip($value) {
 	return <<< ___EOF___
@@ -229,6 +231,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	$like_icon = like_svg($row);
 	$post_owner = post_owner_comp($id, $row["icon"], $row["nickname"], $created_at , $updated_at);
 
+	$row["content"] = Markdown::defaultTransform($row["content"]); 
 
 	$comment_section_html = "";
 	$image = "";
