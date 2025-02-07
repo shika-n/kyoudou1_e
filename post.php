@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$content = trim(get_if_set("content", $_POST, ""));
 	$tags = get_if_set("tags", $_POST, []);
 	$image = get_if_set("image", $_FILES);
-	$category = get_if_set("category", $_POST);
+	$category = trim(get_if_set("categoryId", $_POST, ""));
 
 	$_SESSION["title"] = $title;
 	$_SESSION["content"] = $content;
@@ -90,8 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$select_options = "";
 	foreach ($category_list as $category) {
 		$select_options .= <<<___EOF___
-			<option value="{$category['category_id']}">{$category['category_name']}</option>
-			___EOF___;
+		<button type="button" id="{$category['category_id']}" class="category flex items-center justify-center p-3 text-center border rounded-lg cursor-pointer transition select-none relative aspect-square w-full break-words overflow-hidden text-ellipsis whitespace-normal" onclick="selectCategory(this)">
+			{$category['category_name']}
+		</button>
+		___EOF___;
 	}
 	
 	$content = <<< ___EOF___
@@ -116,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				font-weight: bold;
 			}
 
-			.form-container input[type="text"]:not(.chips),
+			.form-container input[type="text"]:not(.chips,.category),
 			.form-container textarea {
 				width: 100%;
 				padding: 10px;
@@ -125,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				box-sizing: border-box;
 			}
 
-			.form-container button:not(.chips) {
+			.form-container button:not(.chips,.category) {
 				width: 100%;
 				padding: 10px;
 				background-color: #007BFF;
@@ -136,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				cursor: pointer;
 			}
 
-			.form-container button:not(.chips):hover {
+			.form-container button:not(.chips,.category):hover {
 				background-color: #0056b3;
 			}
 		</style>
@@ -159,12 +161,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				<script src="js/chip_input.js"></script>
 			</div>
 	
-			<select id="category" name="category">
-				<!-- SELECT OPTIONS -->
-			</select>
+			<div class="text-center">
+				<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">Choose Category</button>
+				<p class="mt-4 text-lg">Selected Category: <span id="selectedCategory" class="font-semibold">その他</span></p>
+				<input type="hidden" id="categoryId" name="categoryId" value="99">
+			</div>
+			<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
+				<div class="bg-white p-6 rounded-lg shadow-lg w-96">
+					<p>カテゴリーを選択してください</p>
+					<p>カテゴリーを選択することで、記事が見つけやすくなります！</p>
+					<div class="grid grid-cols-3 gap-3 mb-4">
+						<!-- SELECT OPTIONS -->
+					</div>
+					<div class="flex justify-between">
+						<button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" onclick="chooseCategory()">Choose</button>
+						<button type="button" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="cancelSelection()">Cancel</button>
+					</div>
+				</div>
+			</div>
 			<button type="submit">投稿</button>
 		</form>
 		<script src="js/char_counter.js"></script>
+		<script src="js/add_category.js"></script>
 	___EOF___;
 	$content = str_replace("<!-- SELECT OPTIONS -->", $select_options, $content);
 	$_SESSION["error"] = null;
