@@ -141,10 +141,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				border-radius: 5px;
 				font-size: 16px;
 				cursor: pointer;
+				transition: all 0.1s;
 			}
 
 			.form-container button:not(.chips):hover {
 				background-color: #0056b3;
+			}
+
+			.form-container button:not(.chips):disabled {
+				background-color: #AAAAAA;
+			}
+			.form-container button:not(.chips):disabled:hover {
+				background-color: #AAAAAA;
+				cursor: not-allowed;
 			}
 		</style>
 		<form method="POST" class="form-container flex flex-col gap-4" enctype="multipart/form-data">
@@ -157,7 +166,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<p id="charCounter" class="pb-5"></p>
 				</div>
 			</div>
-			
+			<div class="flex">
+				<input type="file" id="image-select" accept="image/png, image/jpeg, image/gif" class="hidden">
+				<button type="button" id="select-image-button" onclick="selectImage()" class="max-w-32">画像を投入</button>
+				<script src="js/upload_image.js"></script>
+			</div>
+			<!--
 			<input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif" class="flex-grow">
 
 			<fieldset>
@@ -174,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					</label>
 				</div>
 			</fieldset>
-
+			-->
 			<div>
 				<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
 					<label for="search-field">タグ</label>

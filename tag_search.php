@@ -25,10 +25,16 @@ ___EOF___;;
 $scripts = <<< ___EOF___
 	<script src='js/reach_bottom_action.js'></script>
 	<script src="js/tag_search_complete.js"></script>
+
+	<script>
+		reachBottomActionTargetContainerId = "searchResult";
+		reachBottomActionQuery.set("type", "tags");
+	</script>
 ___EOF___;
 
 if ($search_from_link) {
 	$scripts .= "<script>searchTags()</script>";
 }
 
+hide_markdown_image();
 echo str_replace("<!-- CONTENT -->", $content . $scripts, $html);

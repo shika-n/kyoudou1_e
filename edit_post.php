@@ -202,6 +202,7 @@ $content = <<< ___EOF___
 				border-radius: 5px;
 				font-size: 16px;
 				cursor: pointer;
+				transition: all 0.1s;
 			}
 
 			.form-container button:hover:not(.chips) {
@@ -248,6 +249,12 @@ $title_input = <<< ___EOF___
 <input type="text" id="title" name="title" value="$title" maxlength="20" required>
 ___EOF___;
 $image_input = <<< ___EOF___
+<div class="flex">
+	<input type="file" id="image-select" accept="image/png, image/jpeg, image/gif" class="hidden">
+	<button type="button" id="select-image-button" onclick="selectImage()" class="max-w-32">画像を投入</button>
+	<script src="js/upload_image.js"></script>
+</div>
+<!--
 <label for="image">画像 (任意)</label>
 <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
 <fieldset>
@@ -263,7 +270,7 @@ $image_input = <<< ___EOF___
 		</label>
 	</div>
 </fieldset>
-
+-->
 <div>
 	<div id="chipsField" class="flex flex-wrap items-center gap-1 text-sm border border-gray-300 p-2 rounded-md">
 		<label for="search-field">タグ</label>
