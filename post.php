@@ -207,9 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					<label for="search-field">タグ</label>
 					<input id="search-field" placeholder="タグを入力してください" maxlength="20" class="flex-grow h-fit focus:outline-none">
 				</div>
-				<div class="relative">
-					<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
-				</div>
+				<ol id="suggestion-list" class="hidden absolute p-1 bg-white/30 rounded-md border border-gray-400 shadow-xl backdrop-blur-md text-sm"></ol>
 				<script src="js/tag_search_complete.js"></script>
 				<script src="js/chip_input.js"></script>
 			</div>
