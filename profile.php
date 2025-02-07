@@ -3,6 +3,7 @@ require_once("layout.php");
 include "db_open.php";  
 include("models/posts.php");
 include("models/users.php");
+require_once("models/follows.php");
 require_once("templates.php");
 
 if (!is_authenticated()) {
@@ -20,12 +21,17 @@ $nickname = htmlspecialchars($user["nickname"], ENT_QUOTES, "UTF-8");
 $post_arr = get_posts_by_user($dbh, $_SESSION["user_id"], $target_id, 5, 0, get_if_set("sort_order", $_SESSION, "newest"));
 
 $is_following = false;
+$is_followed = false;
+
 if ($target_id != $_SESSION["user_id"]) {
-    $stmt = $dbh->prepare("SELECT COUNT(*) FROM follows WHERE user_id = ? AND user_id_target = ?");
-    $stmt->execute([$_SESSION["user_id"], $target_id]);
-    $is_following = $stmt->fetchColumn() > 0;
+	$is_following = is_following($dbh, $_SESSION["user_id"], $target_id);
+	$is_followed = is_following($dbh, $target_id, $_SESSION["user_id"]);
 }
+
 $follow_text = $is_following ? "フォロー解除" : "フォロー";
+if ($follow_text === "フォロー" && $is_followed) {
+	$follow_text .= "バック";
+}
 $follow_class = $is_following ? "bg-red-400" : "bg-blue-200";
 
 if (count($post_arr) === 0) {
