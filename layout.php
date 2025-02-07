@@ -105,7 +105,7 @@ $guest_html = <<< ___EOF___
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Eチームの掲示板</title>
 		<script src="https://cdn.tailwindcss.com"></script>
-		<link rel="stylesheet" href="sinup.css">
+		<link rel="stylesheet" href="css/sinup.css">
 	</head>
 	<body>
 		<header class="px-4 w-full justify-center items-center bg-slate-300">
