@@ -66,7 +66,9 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 			u.name,
 			nickname,
 			icon,
-			cat.category_name,
+			GROUP_CONCAT(
+				cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+			) AS 'categories',
 			(
 				SELECT COUNT(l.user_id)
 				FROM likes l
@@ -85,7 +87,8 @@ function get_post_by_tags(PDO $dbh, $auth_id, $tags, $limit, $offset, $sort_orde
 			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
-		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.post_id IN (
@@ -121,7 +124,9 @@ function get_post_by_id(PDO $dbh, $auth_id, $post_id) {
 			icon,
 			image_position,
 			p.category_id,
-			cat.category_name,
+			GROUP_CONCAT(
+				cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+			) AS 'categories',
 			(
 				SELECT COUNT(l.user_id)
 				FROM likes l
@@ -140,7 +145,8 @@ function get_post_by_id(PDO $dbh, $auth_id, $post_id) {
 			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
-		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.post_id = :post_id AND deleted_at IS NULL
@@ -169,7 +175,9 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 				u.name,
 				nickname,
 				icon,
-				cat.category_name,
+				GROUP_CONCAT(
+					cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+				) AS 'categories',
 				image_position,
 				(
 					SELECT COUNT(l.user_id)
@@ -189,7 +197,8 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 				GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 			FROM posts p
 			JOIN users u ON u.user_id = p.user_id
-			LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+			LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+			LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
 			LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 			LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 			WHERE p.post_id = :post_id AND p.reply_to IS NULL AND deleted_at IS NULL
@@ -214,7 +223,7 @@ function get_post_detail_by_id(PDO $dbh, $post_id, $auth_id) {
 				u.nickname,
 				u.icon,
 				p.image_position,
-				NULL AS 'category_name',
+				NULL AS 'categories',
 				(
 					SELECT COUNT(l.user_id)
 					FROM likes l
@@ -281,7 +290,9 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 			u.name,
 			nickname,
 			icon,
-			cat.category_name,
+			GROUP_CONCAT(
+				cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+			) AS 'categories',
 			(
 				SELECT COUNT(l.user_id)
 				FROM likes l
@@ -300,7 +311,8 @@ function get_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
-		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.reply_to IS NULL AND deleted_at IS NULL
@@ -334,7 +346,9 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 			u.name,
 			nickname,
 			icon,
-			cat.category_name,
+			GROUP_CONCAT(
+				cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+			) AS 'categories',
 			(
 				SELECT COUNT(l.user_id)
 				FROM likes l
@@ -353,7 +367,8 @@ function get_posts_by_user(PDO $dbh, $auth_id, $user_id, $limit, $offset, $sort_
 			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
-		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.reply_to IS NULL AND p.user_id = :user_id AND deleted_at IS NULL
@@ -390,7 +405,9 @@ function get_posts_by_category(PDO $dbh, $auth_id, $category_id, $limit, $offset
 			u.name,
 			nickname,
 			icon,
-			cat.category_name,
+			GROUP_CONCAT(
+				cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+			) AS 'categories',
 			(
 				SELECT COUNT(l.user_id)
 				FROM likes l
@@ -409,10 +426,15 @@ function get_posts_by_category(PDO $dbh, $auth_id, $category_id, $limit, $offset
 			GROUP_CONCAT(t.name ORDER BY t.name) AS 'tags'
 		FROM posts p
 		JOIN users u ON u.user_id = p.user_id
-		LEFT OUTER JOIN categories cat ON cat.category_id = p.category_id
+		LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
-		WHERE p.reply_to IS NULL AND p.category_id = :category_id AND deleted_at IS NULL
+		WHERE p.post_id IN (
+			SELECT pc2.post_id
+			FROM post_category pc2
+			WHERE pc2.category_id = :category_id
+		) AND p.reply_to IS NULL AND deleted_at IS NULL
 		GROUP BY p.post_id
 		ORDER BY $sort_order_inject created_at DESC
 		LIMIT :limit OFFSET :offset
