@@ -4,4 +4,6 @@ profile_pictures/*
 !profile_pictures/man.png
 post_images/*
 
+api/debug.log
+
 .vscode
