@@ -34,5 +34,5 @@ if ($is_following) {
     } else {
         echo json_encode(["success" => false, "message" => "フォロー失敗しました", "following" => false]);
     }
-}
+}//
 exit;

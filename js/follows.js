@@ -3,6 +3,7 @@ document.querySelectorAll(".follow-btn").forEach(button => {
 button.addEventListener("click", function () {
 const targetId = this.getAttribute("data-user-id");
 const buttonElement = this; 
+
     fetch("api/follows.php", {
         method: "POST",
         headers: {
@@ -18,10 +19,10 @@ const buttonElement = this;
             console.log("フォロー成功");
             buttonElement.classList.remove("bg-blue-200", "bg-red-400");
         if (data.following) {
-            buttonElement.textContent = "フォロー解除しました";
+            buttonElement.textContent = "フォロー解除";
             buttonElement.classList.add("bg-red-400");
         } else {
-            buttonElement.textContent = "フォローしました";
+            buttonElement.textContent = "フォロー";
             buttonElement.classList.add("bg-blue-200");
     }
         } else {
