@@ -204,8 +204,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			</div>
 	
 			<div class="text-center">
-				<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">Choose Category</button>
-				<p class="mt-4 text-lg">Selected Category: <span id="selectedCategory" class="font-semibold">その他</span></p>
+				<button type="button" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="openCategoryWindow()">カテゴリーを選択</button>
+				<p class="mt-4 text-lg">カテゴリー: <span id="selectedCategory" class="font-semibold">その他</span></p>
 				<input type="hidden" id="categoryId" name="categoryId" value="99">
 			</div>
 			<div class="hidden fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/50 z-50 backdrop-blur-md" id="categoryWindow">
