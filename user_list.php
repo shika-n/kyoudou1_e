@@ -1,6 +1,7 @@
 <?php
 require_once("layout.php");
 include "db_open.php";
+require_once("models/follows.php");
 
 if (!is_authenticated()) {
     redirect_to(Pages::k_login);
@@ -22,11 +23,13 @@ while ($record = $sql_res->fetch()) {
     $follow_button_mobile = "";    // レスポンシブデザイン
 
     if ($current_user_id !== $id) {
-        $stmt = $dbh->prepare("SELECT COUNT(*) FROM follows WHERE user_id = ? AND user_id_target = ?");
-        $stmt->execute([$current_user_id, $id]);
-        $is_following = $stmt->fetchColumn() > 0;
+		$is_following = is_following($dbh, $_SESSION["user_id"], $id);
+		$is_followed = is_following($dbh, $id, $_SESSION["user_id"]);
 
         $follow_text = $is_following ? "フォロー解除" : "フォロー";    // テキスト動き
+		if ($follow_text === "フォロー" && $is_followed) {
+			$follow_text .= "バック";
+		}
         $follow_class = $is_following ? "bg-red-400" : "bg-blue-200";    //ボタンカラー
 
         $follow_button_pc = <<<HTML

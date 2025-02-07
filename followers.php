@@ -18,9 +18,7 @@ foreach ($sql_res as $record) {
     $user = htmlspecialchars($record['name'], ENT_QUOTES, 'UTF-8');
     $nickname = htmlspecialchars($record['nickname'], ENT_QUOTES, 'UTF-8');
 
-    $stmt = $dbh->prepare("SELECT COUNT(*) FROM follows WHERE user_id = ? AND user_id_target = ?");
-    $stmt->execute([$current_user_id, $id]);
-    $is_following = $stmt->fetchColumn() > 0;
+	$is_following = is_following($dbh, $_SESSION["user_id"], $id);
 
     if ($current_user_id !== $id) {
         $follow_text = $is_following ? "フォロー解除" : "フォローバック";
