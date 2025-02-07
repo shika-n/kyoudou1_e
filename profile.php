@@ -62,6 +62,7 @@ $user_info = <<<HTML
                 <hr>
                 <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
             </div>
+            
 HTML;
 if ($target_id != $_SESSION["user_id"]) {
     $user_info .= <<<HTML
@@ -70,7 +71,7 @@ if ($target_id != $_SESSION["user_id"]) {
         </button>
 HTML;
 }
-$user_info .= "</div></div></div>";
+$user_info .= "</div><!-- EDIT --></div></div>";
 
 if ($target_id != $_SESSION["user_id"]) {
     $user_info .= <<<HTML
@@ -81,6 +82,10 @@ if ($target_id != $_SESSION["user_id"]) {
     </div>
 HTML;
 }
+if ($target_id == $_SESSION["user_id"]) {
+    $user_info = str_replace("<!-- EDIT -->", "<a href='{$pages::k_profile_edit->get_url()}'>編集</a>", $user_info);
+}
+
 $post_section = <<<HTML
 <hr>
 <h2 class="text-xl font-bold mb-4 text-center">記事一覧</h2>
@@ -88,7 +93,6 @@ $content
 HTML;
 $html = str_replace("<!-- CONTENT -->", $user_info . $post_section, $html);
 
-// ** レイアウトに組み込み＆出力 **
 $scripts = <<< ___EOF___
 	<script src='js/reach_bottom_action.js'></script>
 
