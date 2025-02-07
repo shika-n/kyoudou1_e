@@ -33,7 +33,7 @@ while ($record = $sql_res->fetch()) {
         $follow_class = $is_following ? "bg-red-400" : "bg-blue-200";    //ボタンカラー
 
         $follow_button_pc = <<<HTML
-        <button class="follow-btn border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full absolute md:right-32 lg:right-32 xl:right-48 hidden md:block $follow_class" data-user-id="$id">
+        <button class="follow-btn border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $follow_class" data-user-id="$id">
             $follow_text
         </button>
         HTML;
@@ -48,7 +48,7 @@ while ($record = $sql_res->fetch()) {
     <div class="flex flex-col md:flex-row flex-wrap items-left md:items-center align-middle mb-4">
         <div class="flex items-center w-full">
             <img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
-            <div class="flex flex-col md:flex-row flex-wrap items-baseline overflow-hidden">
+            <div class="flex flex-col md:flex-row flex-wrap flex-grow items-baseline overflow-hidden">
                 <a href="{$pages::k_profile->get_url()}?id=$id" class="w-full mr-2 font-bold hover:underline truncate">$nickname</a>
                 <span class="w-full text-sm text-left text-gray-700 truncate">$user</span>
             </div>
