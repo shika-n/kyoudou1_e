@@ -244,8 +244,8 @@ $content = <<< ___EOF___
 
             <!-- TITLE INPUT -->
 
-            <label for="content">コンテンツ</label>
-            <textarea id="content" name="content" rows="5" maxlength="8192" required>$content</textarea>
+            <label for="post_content">コンテンツ</label>
+            <textarea id="post_content" name="content" rows="5" maxlength="8192" required>$content</textarea>
 
             <!-- IMAGE INPUT -->
 			
