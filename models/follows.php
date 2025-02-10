@@ -58,4 +58,13 @@ function get_ff_count(PDO $dbh, $user_id) {
 	$statement->execute([$user_id, $user_id]);
 	return $statement->fetchAll(PDO::FETCH_ASSOC)[0];
 }
+
+function mutual_follow(PDO $dbh, $user_id, $user_id_target) {
+	return follow_user($dbh, $user_id, $user_id_target) && follow_user($dbh, $user_id_target, $user_id);
+}
+
+function mutual_unfollow(PDO $dbh, $user_id, $user_id_target) {
+	return unfollow_user($dbh, $user_id, $user_id_target) && unfollow_user($dbh, $user_id_target, $user_id);
+}
+
 ?>
