@@ -21,6 +21,7 @@ $limit = 5;
 $offset = $limit * ($page - 1);
 
 $type = get_if_set("type", $_GET);
+$post_arr = [];
 
 if ($type === "timeline") {
 	$post_arr = get_posts($dbh, $_SESSION["user_id"], $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
@@ -44,6 +45,10 @@ if ($type === "timeline") {
 } else if ($type === "category") {
 	$category_id = get_if_set("id", $_GET, 0);
 	$post_arr = get_posts_by_category($dbh, $_SESSION["user_id"], $category_id, $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
+} else if ($type === "followings") {
+	$post_arr = get_posts_by_followings($dbh, $_SESSION["user_id"], $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
+} else if ($type === "liked") {
+	// get liked posts
 } else {
 	header("Content-Type: text/json", true, 400);
 	echo json_encode([
@@ -53,7 +58,6 @@ if ($type === "timeline") {
 }
 
 $content = "";
-
 foreach ($post_arr as $row) {
 	$content .= post_panel($row, $target_timezone);
 }

@@ -294,7 +294,7 @@ function post_panel($row, $target_timezone, $comments = null, $enable_comments =
 	}
 
 	return <<< ___EOF___
-		<div class="flex flex-col gap-1 border-2 rounded-lg border-black p-2 bg-slate-100">
+		<div class="post-panel flex flex-col gap-1 border-2 rounded-lg border-black p-2 bg-slate-100">
 			<div class="flex justify-between">
 				$post_owner
 				$actions
