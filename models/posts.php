@@ -450,3 +450,62 @@ function get_posts_by_category(PDO $dbh, $auth_id, $category_id, $limit, $offset
 	
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function get_posts_by_followings(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
+	if ($sort_order === "newest") {
+		$sort_order_inject = "";
+	} else {
+		$sort_order_inject = "like_count DESC, ";
+	}
+	$statement = $dbh->prepare("
+		SELECT
+			p.post_id,
+			p.user_id,
+			created_at,
+			title,
+			content,
+			image,
+			updated_at,
+			reply_to,
+			deleted_at,
+			u.name,
+			nickname,
+			icon,
+			GROUP_CONCAT(
+				DISTINCT cat.category_name ORDER BY cat.category_name SEPARATOR ', '
+			) AS 'categories',
+			(
+				SELECT COUNT(l.user_id)
+				FROM likes l
+				WHERE l.post_id = p.post_id 
+			) AS 'like_count',
+			(
+				SELECT COUNT(c.post_id)
+				FROM posts c
+				WHERE c.reply_to = p.post_id AND c.deleted_at IS NULL
+			) AS 'comment_count',
+			EXISTS(
+				SELECT 1
+				FROM likes
+				WHERE p.post_id = post_id AND user_id = :user_id1
+			) AS 'liked_by_user',
+			GROUP_CONCAT(DISTINCT t.name ORDER BY t.name) AS 'tags'
+		FROM posts p
+		JOIN users u ON u.user_id = p.user_id
+		LEFT OUTER JOIN post_category pc ON p.post_id = pc.post_id
+		LEFT OUTER JOIN categories cat ON cat.category_id = pc.category_id
+		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
+		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
+		WHERE p.reply_to IS NULL AND deleted_at IS NULL AND p.user_id IN (
+        	SELECT f.user_id_target FROM follows f WHERE f.user_id = :user_id2
+        )
+		GROUP BY p.post_id
+		ORDER BY $sort_order_inject created_at DESC
+		LIMIT $limit OFFSET $offset
+	");
+	$statement->bindParam(":user_id1", $user_id);
+	$statement->bindParam(":user_id2", $user_id);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
