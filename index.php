@@ -18,9 +18,9 @@ $post_arr = get_posts($dbh, $_SESSION["user_id"], 5, 0, get_if_set("sort_order",
 $content .= sort_order_select();
 $content .= <<< ___EOF___
 	<div class="flex">
-		<button type="button" class="px-2 py-1 bg-gray-200 hover:bg-gray-100 border border-black rounded-t-md" onclick="changeTopTab('timeline')">すべて</button>
-		<button type="button" class="px-2 py-1 bg-gray-200 hover:bg-gray-100 border border-black rounded-t-md" onclick="changeTopTab('followings')">フォローした投稿者から</button>
-		<button type="button" class="px-2 py-1 bg-gray-200 hover:bg-gray-100 border border-black rounded-t-md" onclick="changeTopTab('liked')">いいね！した記事</button>
+		<button type="button" class="tab-button px-2 py-1 bg-gray-200 hover:bg-gray-100 border border-black rounded-t-md border-b-4 border-b-blue-400" onclick="changeTopTab(event, 'timeline')">すべて</button>
+		<button type="button" class="tab-button px-2 py-1 bg-gray-200 hover:bg-gray-100 border border-black rounded-t-md" onclick="changeTopTab(event, 'followings')">フォローした投稿者から</button>
+		<button type="button" class="tab-button px-2 py-1 bg-gray-200 hover:bg-gray-100 border border-black rounded-t-md" onclick="changeTopTab(event, 'liked')">いいね！した記事</button>
 	</div>
 ___EOF___;
 foreach ($post_arr as $row) {
