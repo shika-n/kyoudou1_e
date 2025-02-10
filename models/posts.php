@@ -556,13 +556,14 @@ function get_liked_posts(PDO $dbh, $user_id, $limit, $offset, $sort_order) {
 		LEFT OUTER JOIN post_tag pt ON p.post_id = pt.post_id
 		LEFT OUTER JOIN tags t ON pt.tag_id = t.tag_id
 		WHERE p.reply_to IS NULL AND deleted_at IS NULL AND p.post_id IN (
-		SELECT post_id FROM likes l WHERE l.user_id = :user_id1
+		SELECT l.post_id FROM likes l WHERE l.user_id = :user_id2
 		)
 		GROUP BY p.post_id
 		ORDER BY $sort_order_inject created_at DESC
 		LIMIT $limit OFFSET $offset
 	");
 	$statement->bindParam(":user_id1", $user_id);
+	$statement->bindParam(":user_id2", $user_id);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

@@ -48,7 +48,7 @@ if ($type === "timeline") {
 } else if ($type === "followings") {
 	$post_arr = get_posts_by_followings($dbh, $_SESSION["user_id"], $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
 } else if ($type === "liked") {
-	// get liked posts
+	$post_arr = get_liked_posts($dbh, $_SESSION["user_id"], $limit, $offset, get_if_set("sort_order", $_SESSION, "newest"));
 } else {
 	header("Content-Type: text/json", true, 400);
 	echo json_encode([
