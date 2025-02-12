@@ -14,9 +14,9 @@ $user_id_from = get_if_set("request_from_user_id", $_GET);
 
 if (delete_request($dbh, $user_id_from, $user_id)) {
 	header("Content-Type: text/json;", true, 200);
-	return json_encode(["message" => "OK"]);
+	echo json_encode(["message" => "OK"]);
 } else {
 	header("Content-Type: text/json;", true, 400);
-	return json_encode(["message" => "OKじゃない"]);
+	echo json_encode(["message" => "OKじゃない"]);
 }
 
