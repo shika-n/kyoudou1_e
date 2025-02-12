@@ -65,9 +65,7 @@ $user_info = <<<HTML
                 <p class="font-bold text-lg overflow-hidden text-ellipsis">ニックネーム: $nickname</p>
 				<hr>
 				<div class="flex gap-2 font-bold">
-					<span>{$ff_count["followings"]} フォロー中</span>
-					<span>・</span>
-					<span>{$ff_count["followers"]} フォロワー</span>
+					<span>{$ff_count["followings"]} フレンド</span>
 				</div>
             </div>
             
