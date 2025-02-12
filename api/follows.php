@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 require_once("../db_open.php");
 require_once("../models/follows.php");
 require_once("../models/unfollows.php");
+require_once("../models/follow_requests.php");
 require_once("../util.php");
 
 if (!is_authenticated()) {
@@ -20,20 +21,31 @@ if (!$user_id_target || $user_id_target == $user_id) {
     exit;
 }
 
-$is_following = is_following($dbh, $user_id, $user_id_target);
+$is_following = is_following($dbh, $user_id, $user_id_target) ;
 $is_followed = is_following($dbh, $user_id_target, $user_id);
+$request_sent_or_received = is_request_sent($dbh, $user_id, $user_id_target) || is_request_sent($dbh, $user_id_target, $user_id);
 
 if ($is_following) {
-    if (unfollow_user($dbh, $user_id, $user_id_target)) {
-        echo json_encode(["success" => true, "message" => "フォロー解除", "following" => false, "is_followed" => $is_followed]);
+	$dbh->beginTransaction();
+    if (unfollow_user($dbh, $user_id, $user_id_target) && unfollow_user($dbh, $user_id_target, $user_id)) {
+		$dbh->commit();
+        echo json_encode(["success" => true, "message" => "フレンド解除", "is_friend" => false]);
     } else {
-        echo json_encode(["success" => false, "message" => "解除失敗", "following" => true, "is_followed" => $is_followed]);
+		$dbh->rollBack();
+        http_response_code(400);
+		echo json_encode(["success" => false, "message" => "解除失敗", "is_friend" => $is_following]);
     }
 } else {
-    if (follow_user($dbh, $user_id, $user_id_target)) {
-        echo json_encode(["success" => true, "message" => "フォローしました", "following" => true, "is_followed" => $is_followed]);
-    } else {
-        echo json_encode(["success" => false, "message" => "フォロー失敗しました", "following" => false, "is_followed" => $is_followed]);
-    }
+	if (!$request_sent_or_received) {
+		if (send_friend_request($dbh, $user_id, $user_id_target)) {
+			echo json_encode(["success" => true, "message" => "フレンド申請送信しました", "is_friend" => $is_following]);
+		} else {
+			http_response_code(400);
+			echo json_encode(["success" => false, "message" => "フレンド申請失敗しました", "is_friend" => $is_following]);
+		}
+	} else {
+        http_response_code(400);
+		echo json_encode(["success" => false, "message" => "すでに申請済みです", "is_friend" => $is_following]);
+	}
 }//
 exit;

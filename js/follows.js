@@ -15,20 +15,15 @@ const buttonElement = this;
 .then(response => response.json())
     .then(data => {
         console.log("サーバーからのレスポンス:", data);
-        if (data.success) {
-            console.log("フォロー成功");
+        if (data.success ) {
             buttonElement.classList.remove("bg-blue-200", "bg-red-400");
-        if (data.following) {
-            buttonElement.textContent = "フォロー解除";
-            buttonElement.classList.add("bg-red-400");
-        } else {
-			if (data.is_followed) {
-				buttonElement.textContent = "フォローバック";
-			} else {
-				buttonElement.textContent = "フォロー";
+			buttonElement.classList.add("bg-gray-300");
+			if (data.message.startsWith("フレンド申請")) {
+				buttonElement.textContent = "申請済み";
+			} else if (data.message.startsWith("フレンド削除")) {
+				buttonElement.textContent = "削除済み";
 			}
-            buttonElement.classList.add("bg-blue-200");
-    }
+			buttonElement.setAttribute("disabled", true);
         } else {
             console.error("エラー:", data.message);
     }
