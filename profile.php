@@ -106,14 +106,15 @@ HTML;
 	} else if ($request_received) {
 		$follow_text = "フレンド申請一覧へ";
 		$follow_class = "bg-gray-300";
+		$friend_requests_url = Pages::k_friend_requests->get_url();
 		$pc_friend_button = <<<HTML
-			<a href="#" class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full md:ml-4 md:static md:mt-0 mt-4 $follow_class hidden md:block">
+			<a href="$friend_requests_url" class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full md:ml-4 md:static md:mt-0 mt-4 $follow_class hidden md:block">
 				$follow_text
 			</a>
 		HTML;
 		$mobile_friend_button = <<<HTML
 			<div class="flex justify-center md:hidden mt-4">
-				<a href="#" class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full $follow_class block md:hidden" data-user-id="$target_id">
+				<a href="$friend_requests_url" class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full $follow_class block md:hidden" data-user-id="$target_id">
 					$follow_text
 				</a>
 			</div>

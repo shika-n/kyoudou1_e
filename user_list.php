@@ -62,14 +62,15 @@ while ($record = $sql_res->fetch()) {
 		if ($request_received) {
 			$follow_text = "フレンド申請一覧へ";
 			$follow_class = "bg-gray-300";
+			$friend_requests_url = Pages::k_friend_requests->get_url();
 			$follow_button_pc = <<<HTML
-				<a href="#" class="border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $follow_class">
+				<a href="$friend_requests_url" class="border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $follow_class">
 					$follow_text
 				</a>
 			HTML;
 
 			$follow_button_mobile = <<<HTML
-				<a href="#" class="border-2 p-2 rounded-full block md:hidden mt-2 md:mt-0 $follow_class">
+				<a href="$friend_requests_url" class="border-2 p-2 rounded-full block md:hidden mt-2 md:mt-0 $follow_class">
 					$follow_text
 				</a>
 			HTML;
