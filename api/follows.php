@@ -27,7 +27,7 @@ $request_sent_or_received = is_request_sent($dbh, $user_id, $user_id_target) || 
 
 if ($is_following) {
 	$dbh->beginTransaction();
-    if (unfollow_user($dbh, $user_id, $user_id_target) && unfollow_user($dbh, $user_id_target, $user_id)) {
+    if (mutual_unfollow($dbh, $user_id, $user_id_target)) {
 		$dbh->commit();
         echo json_encode(["success" => true, "message" => "フレンド解除", "is_friend" => false]);
     } else {
