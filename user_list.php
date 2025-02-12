@@ -46,28 +46,30 @@ while ($record = $sql_res->fetch()) {
 
 		if ($request_sent) {
 			$follow_text = "申請済み";
+			$follow_class = "bg-gray-300";
 			$follow_button_pc = <<<HTML
-				<button class="border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block bg-gray-300" disabled>
+				<button class="border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $follow_class" disabled>
 					$follow_text
 				</button>
 			HTML;
 
 			$follow_button_mobile = <<<HTML
-				<button class="border-2 p-2 rounded-full block md:hidden mt-2 md:mt-0 bg-gray-300" disabled>
+				<button class="border-2 p-2 rounded-full block md:hidden mt-2 md:mt-0 $follow_class" disabled>
 					$follow_text
 				</button>
 			HTML;
 		}
 		if ($request_received) {
 			$follow_text = "フレンド申請一覧へ";
+			$follow_class = "bg-gray-300";
 			$follow_button_pc = <<<HTML
-				<a href="#" class="border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block bg-gray-300">
+				<a href="#" class="border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $follow_class">
 					$follow_text
 				</a>
 			HTML;
 
 			$follow_button_mobile = <<<HTML
-				<a href="#" class="border-2 p-2 rounded-full block md:hidden mt-2 md:mt-0 bg-gray-300">
+				<a href="#" class="border-2 p-2 rounded-full block md:hidden mt-2 md:mt-0 $follow_class">
 					$follow_text
 				</a>
 			HTML;

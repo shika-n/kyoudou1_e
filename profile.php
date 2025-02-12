@@ -4,6 +4,7 @@ include "db_open.php";
 include("models/posts.php");
 include("models/users.php");
 require_once("models/follows.php");
+require_once("models/follow_requests.php");
 require_once("templates.php");
 
 if (!is_authenticated()) {
@@ -26,13 +27,12 @@ $is_followed = false;
 if ($target_id != $_SESSION["user_id"]) {
 	$is_following = is_following($dbh, $_SESSION["user_id"], $target_id);
 	$is_followed = is_following($dbh, $target_id, $_SESSION["user_id"]);
+	$request_sent = is_request_sent($dbh, $_SESSION["user_id"], $target_id);
+	$request_received = is_request_sent($dbh, $target_id, $_SESSION["user_id"]);
 }
 
-$follow_text = $is_following ? "フォロー解除" : "フォロー";
-if ($follow_text === "フォロー" && $is_followed) {
-	$follow_text .= "バック";
-}
-$follow_class = $is_following ? "bg-red-400" : "bg-blue-200";
+$follow_text = $is_following && $is_followed ? "フレンドから解除" : "フレンド申請";
+$follow_class = $is_following && $is_followed ? "bg-red-400" : "bg-blue-200";
 
 $ff_count = get_ff_count($dbh, $target_id);
 
@@ -72,24 +72,59 @@ $user_info = <<<HTML
             </div>
             
 HTML;
+
+$pc_friend_button = "";
+$mobile_friend_button = "";
 if ($target_id != $_SESSION["user_id"]) {
-    $user_info .= <<<HTML
+    $pc_friend_button = <<<HTML
         <button class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full md:ml-4 md:static md:mt-0 mt-4 $follow_class hidden md:block" data-user-id="$target_id">
             $follow_text
         </button>
 HTML;
-}
-$user_info .= "</div><!-- EDIT --></div></div>";
-
-if ($target_id != $_SESSION["user_id"]) {
-    $user_info .= <<<HTML
+    $mobile_friend_button = <<<HTML
     <div class="flex justify-center md:hidden mt-4">
         <button class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full $follow_class block md:hidden" data-user-id="$target_id">
             $follow_text
         </button>
     </div>
 HTML;
+	if ($request_sent) {
+		$follow_text = "申請済み";
+		$follow_class = "bg-gray-300";
+		$pc_friend_button = <<<HTML
+			<button class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full md:ml-4 md:static md:mt-0 mt-4 $follow_class hidden md:block" disabled>
+				$follow_text
+			</button>
+		HTML;
+		$mobile_friend_button = <<<HTML
+			<div class="flex justify-center md:hidden mt-4">
+				<button class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full $follow_class block md:hidden" data-user-id="$target_id" disabled>
+					$follow_text
+				</button>
+			</div>
+		HTML;
+	} else if ($request_received) {
+		$follow_text = "フレンド申請一覧へ";
+		$follow_class = "bg-gray-300";
+		$pc_friend_button = <<<HTML
+			<a href="#" class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full md:ml-4 md:static md:mt-0 mt-4 $follow_class hidden md:block">
+				$follow_text
+			</a>
+		HTML;
+		$mobile_friend_button = <<<HTML
+			<div class="flex justify-center md:hidden mt-4">
+				<a href="#" class="follow-btn border-2 p-3 pl-12 pr-12 rounded-full $follow_class block md:hidden" data-user-id="$target_id">
+					$follow_text
+				</a>
+			</div>
+		HTML;
+	}
 }
+
+$user_info .= $pc_friend_button;
+$user_info .= "</div><!-- EDIT --></div></div>";
+$user_info .= $mobile_friend_button;
+
 if ($target_id == $_SESSION["user_id"]) {
     $user_info = str_replace("<!-- EDIT -->", "<a href='{$pages::k_profile_edit->get_url()}'>編集</a>", $user_info);
 }
