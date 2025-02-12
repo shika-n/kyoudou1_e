@@ -12,4 +12,11 @@ if (!is_authenticated()) {
 $user_id = $_SESSION["user_id"];
 $user_id_from = get_if_set("request_from_user_id", $_GET);
 
-delete_request($dbh, $user_id_from, $user_id);
+if (delete_request($dbh, $user_id_from, $user_id)) {
+	header("Content-Type: text/json;", true, 200);
+	return json_encode(["message" => "OK"]);
+} else {
+	header("Content-Type: text/json;", true, 400);
+	return json_encode(["message" => "OKじゃない"]);
+}
+
