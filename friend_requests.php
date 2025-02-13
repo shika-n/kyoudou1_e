@@ -24,31 +24,31 @@ foreach ($sql_res as $record) {
     $accept_class = $is_pending ? "bg-blue-200" : "bg-gray-200";
     $deny_class = $is_pending ? "bg-red-400" : "bg-gray-200";
     $accept_button_pc = <<<HTML
-    <button class="accept-btn border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $accept_class" data-user-id="$id">
+    <button id="accept-pc" class="accept-btn border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $accept_class" data-user-id="$id">
         $accept_text
     </button>
     HTML;
 
     $accept_button_mobile = <<<HTML
-    <button class="accept-btn border-2 p-2 rounded-full $accept_class block md:hidden mt-2 md:mt-0" data-user-id="$id">
+    <button id="accept-mobile" class="accept-btn border-2 p-2 rounded-full $accept_class block md:hidden mt-2 md:mt-0" data-user-id="$id">
         $accept_text
     </button>
     HTML;
 
     $deny_button_pc = <<<HTML
-    <button class="deny-btn border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $deny_class" data-user-id="$id">
+    <button id="deny-pc" class="deny-btn border-2 p-2 md:p-3 md:pl-12 md:pr-12 rounded-full min-w-fit hidden md:block $deny_class" data-user-id="$id">
         $deny_text
     </button>
     HTML;
 
     $deny_button_mobile = <<<HTML
-    <button class="deny-btn border-2 p-2 rounded-full $deny_class block md:hidden mt-2 md:mt-0" data-user-id="$id">
+    <button id="deny-mobile" class="deny-btn border-2 p-2 rounded-full $deny_class block md:hidden mt-2 md:mt-0" data-user-id="$id">
         $deny_text
     </button>
     HTML;
     
     $user_list .= <<<HTML
-    <div class="flex flex-col md:flex-row flex-wrap items-left md:items-center align-middle mb-4">
+    <div id="user{$id}" class="flex flex-col md:flex-row flex-wrap items-left md:items-center align-middle mb-4">
         <div class="flex items-center w-full">
             <img src="profile_pictures/$icon" alt="icon" class="w-12 h-12 rounded-full mr-4 aspect-square object-cover object-center">
             <div class="flex flex-col md:flex-row flex-wrap flex-grow items-baseline overflow-hidden">
@@ -80,6 +80,6 @@ HTML;
 $html = str_replace("<!-- CONTENT -->", $content, $html);
 echo $html;
 ?>
-<script src="js/follows.js"></script>
+<script src="js/friend_request.js"></script>
 </body>
 </html>
